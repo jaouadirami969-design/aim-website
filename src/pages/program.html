@@ -1,0 +1,235 @@
+<!--page
+{
+  "slug": "program.html",
+  "nav": "program",
+  "title": "The summer program",
+  "description": "Finance & Investment Summer Program: two weeks, eight lessons, a simulated $1,000,000 portfolio, three levels (Beginner, Intermediate, Advanced), on the McGill University campus or live online. Sessions, schedule, prices and FAQ.",
+  "head": "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"Course\",\"name\":\"Finance & Investment Summer Program — Beginner\",\"description\":\"A two-week finance and investment program for ages 13 to 18: eight lessons, a simulated $1,000,000 portfolio and a certificate of completion.\",\"provider\":{\"@type\":\"EducationalOrganization\",\"name\":\"AIM — Academy of Investment & Management\",\"url\":\"https://aimsummer.com\"},\"educationalLevel\":\"Beginner\",\"audience\":{\"@type\":\"EducationalAudience\",\"audienceType\":\"High school students aged 13 to 18\"},\"inLanguage\":\"en\"}</script>"
+}
+-->
+<section class="page-hero">
+  <div class="container">
+    <span class="kicker">{{ site.program }}</span>
+    <h1>Two weeks. Eight lessons.<br>One portfolio to defend.</h1>
+    <p class="lead">A university-level introduction to finance and investing for students aged 13 to 18 — taught by a CEO who teaches finance at McGill, on campus or live online. No experience needed: just curiosity.</p>
+    <div class="page-hero__actions">
+      <a class="btn btn--primary btn--lg" href="apply.html">Apply now</a>
+      <a class="btn btn--ghost btn--lg" href="#sessions">Sessions &amp; prices</a>
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-label="Program at a glance">
+  <div class="container">
+    {{> glance }}
+  </div>
+</section>
+
+<section class="band band--tint" aria-labelledby="desc-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Class 1 · Beginner</span>
+      <h2 id="desc-title">What you'll actually learn</h2>
+      <p>The first class is the heart of the program. Eight lessons, two weeks, one capstone — here is the whole journey.</p>
+    </div>
+    <article class="desc">
+      <div class="desc__head">
+        <div class="desc__kicker">Class 1 · Beginner — class description</div>
+        <h3 class="desc__title">Finance &amp; Investment Management</h3>
+        <p class="desc__meta">AIM · {{ site.program }} · 2 weeks · McGill University or Online · Beginner-friendly · Ages 13–18</p>
+      </div>
+      <div class="desc__body">
+        <p class="desc__lead">How does money really work? What moves the stock market? And how do real investors decide what to buy? In two weeks and eight lessons, you'll find out — from a CEO who teaches finance at McGill.</p>
+        <p>This class starts with the psychology of money and the power of compound interest, then goes straight to what matters most for your future: <b>investing and the stock market</b>. Taught by <b>Ilyas Zakiat</b> — CEO of BIASafe AI, former portfolio manager and McGill finance lecturer — it turns complex ideas into clear, practical skills you'll use for the rest of your life. No experience needed: just curiosity.</p>
+        <div class="dweeks">
+          <div class="dw">
+            <span class="dw__n">Week 1</span>
+            <h4>Money, Markets &amp; the Investor's Mind</h4>
+            <ul>
+              <li><b>How money really works</b> — the time value of money, simple vs. compound interest</li>
+              <li><b>The stock market &amp; the mind</b> — what a share is, what moves prices, investor biases, risk and diversification</li>
+              <li><b>Goals, risk &amp; financials</b> — your goals, your risk tolerance, and the five numbers that value a company</li>
+              <li><b>Reading the statements</b> — balance sheet, income statement, cash flow and the analyst's checklist</li>
+            </ul>
+          </div>
+          <div class="dw">
+            <span class="dw__n">Week 2</span>
+            <h4>Building Your Portfolio</h4>
+            <ul>
+              <li><b>Building a portfolio</b> — passive index investing, dollar-cost averaging, the blind portfolio challenge</li>
+              <li><b>Value investing</b> — buying great companies on sale, and telling a bargain from a value trap</li>
+              <li><b>Growth investing</b> — backing the companies of tomorrow, without paying too much for the future</li>
+              <li><b>Momentum &amp; diversification</b> — the habit that protects every strategy</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dfinal"><p><b>Capstone — you'll manage a million dollars.</b> A simulated $1,000,000 portfolio on a virtual stock exchange with real market data: one strategy, defined and defended in front of the class — and a CEO.</p></div>
+        <div class="dout"><p><b>You'll leave with</b> the tools real investors use, your own portfolio strategy, the confidence to talk about markets like a pro — and a certificate of completion.</p></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="levels-title" id="levels">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Three levels</span>
+      <h2 id="levels-title">Come back next summer — and the one after.</h2>
+      <p>Each class has eight lessons and its own capstone. Finish one level and the next one opens to you. Most students start with the Beginner class.</p>
+    </div>
+    <ol class="levels">
+      {{#each site.levels}}
+      <li class="level">
+        <span class="level__n">{{ this.n }}</span>
+        <h3 class="level__name">Class {{ this.n }} · {{ this.name }}</h3>
+        <p class="level__course">{{ this.course }}</p>
+        <p class="level__who">{{ this.who }}</p>
+        <p class="level__learn">{{ this.learn }}</p>
+        <div class="level__cap"><b>Capstone project</b><strong>{{ this.capstone }}</strong>{{ this.capstoneDetail }}</div>
+      </li>
+      {{/each}}
+    </ol>
+  </div>
+</section>
+
+<section class="band band--tint" aria-labelledby="day-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">The format</span>
+      <h2 id="day-title">A typical day, and the two weeks.</h2>
+      <p>Mornings are for the big ideas with Ilyas; afternoons are hands-on in the Investment Lab, on your own $1,000,000 portfolio.</p>
+    </div>
+    <div class="sched">
+      <div class="sched__col">
+        <div class="sched__h">A typical day — 8 am to 2 pm</div>
+        <div class="slot"><span class="slot__t">8:00</span><span><b>Market Morning</b> — today's financial news, explained simply</span></div>
+        <div class="slot"><span class="slot__t">8:30</span><span><b>Main lesson</b> — the key idea of the day, with Ilyas</span></div>
+        <div class="slot slot--pz"><span class="slot__t">10:00</span><span>Break</span></div>
+        <div class="slot"><span class="slot__t">10:15</span><span><b>Workshop</b> — real cases, exercises, games</span></div>
+        <div class="slot slot--pz"><span class="slot__t">11:30</span><span>Lunch</span></div>
+        <div class="slot"><span class="slot__t">12:00</span><span><b>Investment Lab</b> — team project and your virtual portfolio</span></div>
+        <div class="slot"><span class="slot__t">13:30</span><span><b>Recap &amp; questions</b> — what we keep from today</span></div>
+      </div>
+      <div class="sched__col">
+        <div class="sched__h">The two weeks — 10 days, 60 hours</div>
+        <div class="wk">
+          <div class="wk__l">Week 1 · Money, Markets &amp; the Investor's Mind</div>
+          <div class="wk__d"><b>D1</b><span>Welcome — how money really works (lesson 1)</span></div>
+          <div class="wk__d"><b>D2</b><span>The stock market and the investor's mind (lesson 2)</span></div>
+          <div class="wk__d"><b>D3</b><span>Goals, risk and the five numbers of a company (lesson 3)</span></div>
+          <div class="wk__d"><b>D4</b><span>Reading the financial statements (lesson 4)</span></div>
+          <div class="wk__d"><b>D5</b><span>Workshop: we open the $1,000,000 virtual portfolio</span></div>
+        </div>
+        <div class="wk">
+          <div class="wk__l">Week 2 · Building Your Portfolio</div>
+          <div class="wk__d"><b>D6</b><span>Index investing, without the stress (lesson 5)</span></div>
+          <div class="wk__d"><b>D7</b><span>Value investing — great companies on sale (lesson 6)</span></div>
+          <div class="wk__d"><b>D8</b><span>Growth investing — the companies of tomorrow (lesson 7)</span></div>
+          <div class="wk__d"><b>D9</b><span>Momentum and diversification (lesson 8)</span></div>
+          <div class="wk__d"><b>D10</b><span>Portfolio presentations and certificates</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="muted" style="margin:1.25rem 0 0;font-size:var(--fs-1)">The online class follows the same eight lessons live; its exact daily schedule is confirmed before registration opens.</p>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="sessions-title" id="sessions">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Summer 2027</span>
+      <h2 id="sessions-title">Sessions and prices</h2>
+      <p>Three two-week sessions between the end of school and the start of the next year. Two are listed now; the third opens when the first two fill up.</p>
+    </div>
+    <ul class="sessions">
+      {{#each site.sessions}}
+      <li class="sess{{#unless this.open}} sess--waitlist{{/unless}}">
+        <div class="sess__n">{{ this.name }}</div>
+        <div class="sess__w">{{ this.when }}</div>
+        <div class="sess__where">{{ this.where }}</div>
+        <span class="tag{{#if this.open}} tag--sky{{/if}}">{{ this.label }}</span>
+      </li>
+      {{/each}}
+    </ul>
+    <div class="prices">
+      <div class="price price--featured">
+        <span class="price__k">On the McGill campus</span>
+        <span class="price__v">{{ site.facts.priceCampus }} <small>{{ site.facts.tax }}</small></span>
+        <ul>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> 2 weeks, Monday to Friday, 8 am – 2 pm (60 hours)</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Small class of 32 students, taught in person by Ilyas Zakiat</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Investment Lab every afternoon on the $1,000,000 portfolio</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Online certificate of completion</li>
+        </ul>
+        <a class="btn btn--primary" href="apply.html">Apply for the campus class</a>
+      </div>
+      <div class="price">
+        <span class="price__k">Online, live</span>
+        <span class="price__v">{{ site.facts.priceOnline }} <small>{{ site.facts.tax }}</small></span>
+        <ul>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> The same 8 lessons and the same instructor, live from anywhere</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Recordings, exercises and your portfolio in the student portal</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Online schedule confirmed before registration opens</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Online certificate of completion</li>
+        </ul>
+        <a class="btn btn--ghost" href="apply.html">Apply for the online class</a>
+      </div>
+    </div>
+    <p class="muted" style="margin:1.25rem 0 0;font-size:var(--fs-1)">Prices are in Canadian dollars, before taxes. Students 13 and under need a parent or guardian to register.</p>
+  </div>
+</section>
+
+<section class="band band--tint" aria-label="Why take the course">
+  <div class="container">
+    {{> why-course }}
+  </div>
+</section>
+
+<section class="band" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Questions parents ask</span>
+      <h2 id="faq-title">Good to know before you apply</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Does my child need any finance background?</summary>
+        <div class="faq__a"><p>No. The Beginner class starts from zero — what money is, what a share is — and builds up to a full portfolio strategy. Curiosity is the only prerequisite. Students who already invest will still learn a professional method they have never seen at school.</p></div>
+      </details>
+      <details>
+        <summary>What ages can join?</summary>
+        <div class="faq__a"><p>Students aged 13 to 18 — from Secondary 2 to the first session of CEGEP. Under Quebec's privacy law (Law 25), students 13 and under are registered by a parent or guardian.</p></div>
+      </details>
+      <details>
+        <summary>Is the program in English or French?</summary>
+        <div class="faq__a"><p>Classes, materials and the student portal are in English. Our team is bilingual, so parents are welcome to write to us in French.</p></div>
+      </details>
+      <details>
+        <summary>Where exactly does the campus class take place?</summary>
+        <div class="faq__a"><p>On the McGill University campus in downtown Montreal. The exact building and room are confirmed by email before the session starts. AIM is an independent program run by Ilyas Zakiat, who teaches finance at McGill; it is not a McGill University program.</p></div>
+      </details>
+      <details>
+        <summary>What does my child need to bring?</summary>
+        <div class="faq__a"><p>A laptop (or a tablet with a keyboard), a notebook, and lunch for the campus class. All software we use — the virtual stock exchange, spreadsheets, our student portal — is free.</p></div>
+      </details>
+      <details>
+        <summary>Is there a certificate?</summary>
+        <div class="faq__a"><p>Yes. Every student who completes the two weeks and presents a portfolio receives an online certificate of completion signed by the instructor — useful for CEGEP and university applications.</p></div>
+      </details>
+      <details>
+        <summary>Is real money involved?</summary>
+        <div class="faq__a"><p>Never. The $1,000,000 portfolio is simulated on a virtual stock exchange with real market data. Students learn the method without any financial risk.</p></div>
+      </details>
+      <details>
+        <summary>How do we register and pay?</summary>
+        <div class="faq__a"><p>Start with the form below — it only tells us you're interested. We reply within two business days with the next steps. Registration and secure online payment open before each session; the full details are sent to parents by email.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-label="Sign up">
+  <div class="container">
+    {{> signup-form }}
+  </div>
+</section>

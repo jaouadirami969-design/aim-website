@@ -1,0 +1,52 @@
+<!--page
+{
+  "slug": "portal.html",
+  "nav": "portal",
+  "title": "Student portal",
+  "description": "The AIM student portal: your class recordings, exercises, your $1,000,000 virtual portfolio and your certificate — opening with the first session.",
+  "noindex": true
+}
+-->
+<section class="page-hero">
+  <div class="container">
+    <span class="kicker">Student portal</span>
+    <h1>Your classes, your portfolio, your certificate — in one place.</h1>
+    <p class="lead">Student accounts open when the first session starts. Until then, the three free lessons are open to everyone — no account needed.</p>
+  </div>
+</section>
+
+<section class="band" aria-label="Log in">
+  <div class="container portal">
+    <div class="login">
+      <div class="login__head">
+        <h2>Log in</h2>
+        <p>Use the email address you registered with.</p>
+      </div>
+      <form id="login-form" novalidate>
+        <label class="fld"><span class="fld__lab">Email</span><input class="fld__inp" type="email" name="email" autocomplete="username" placeholder="you@example.com"></label>
+        <label class="fld"><span class="fld__lab">Password</span><input class="fld__inp" type="password" name="password" autocomplete="current-password" placeholder="••••••••"></label>
+        <button class="btn btn--primary btn--lg" type="submit" style="width:100%">Log in</button>
+        <p class="form-status is-ok" role="status">Student accounts open with the first session of summer 2027. You'll receive your login by email the week before your class starts.</p>
+        <p class="muted" style="margin:0;font-size:var(--fs-1)">Not a student yet? <a href="apply.html">Apply here</a> — or start with a <a href="learn-finance-basics.html">free lesson</a>.</p>
+      </form>
+    </div>
+    <div>
+      <h2 style="font-family:var(--font-body);font-size:var(--fs-4)">What you'll find inside</h2>
+      <ul class="features">
+        <li class="feature"><span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span><h3>Class recordings</h3><p>Every one of the eight lessons, to watch again — and the slides to download.</p></li>
+        <li class="feature"><span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg></span><h3>Exercises &amp; quizzes</h3><p>Short exercises after each lesson, corrected by the instructor, and the answer keys.</p></li>
+        <li class="feature"><span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-trend"/></svg></span><h3>Your $1,000,000 portfolio</h3><p>Track your virtual portfolio and prepare your capstone pitch.</p></li>
+        <li class="feature"><span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-award"/></svg></span><h3>Your certificate</h3><p>Download your certificate of completion and share it on LinkedIn or in your CEGEP application.</p></li>
+        <li class="feature"><span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-grad"/></svg></span><h3>Next levels</h3><p>Finish a class and the next level unlocks — Intermediate, then Advanced.</p></li>
+        <li class="feature"><span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg></span><h3>Parent access</h3><p>Parents get their own view of attendance, progress and announcements.</p></li>
+      </ul>
+    </div>
+  </div>
+</section>
+<script>
+  // The portal is not open yet: the login form explains when accounts arrive instead of submitting.
+  document.getElementById('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    this.querySelector('.form-status').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+</script>

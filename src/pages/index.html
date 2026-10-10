@@ -1,0 +1,210 @@
+<!--page
+{
+  "slug": "index.html",
+  "nav": "home",
+  "title": "Home",
+  "fullTitle": "AIM — Finance & Investment Summer Program for ages 13–18 · McGill University or online",
+  "description": "A two-week finance and investment summer program for students aged 13 to 18, taught by a CEO who teaches finance at McGill. Eight lessons, a simulated $1,000,000 portfolio, a certificate — on the McGill campus or live online. Three free lessons to start today."
+}
+-->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__bg">{{> logo-mark-faint }}</div>
+  <div class="container hero__grid">
+    <div>
+      <span class="hero__kicker"><span class="dot"></span> {{ site.program }} · Ages 13 to 18</span>
+      <h1 id="hero-title">Learn to invest like a CEO.</h1>
+      <p class="hero__lead">Two weeks at McGill University — or live online. Eight lessons, one simulated $1,000,000 portfolio to manage, and a CEO who teaches finance at McGill as your instructor.</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary btn--lg" href="apply.html">Apply now</a>
+        <button class="btn btn--ghost btn--lg" type="button" data-video="{{ site.videos.intro }}" data-video-title="Meet Rami and Ilyas — why we started AIM">
+          <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> Watch the intro
+        </button>
+      </div>
+      <ul class="hero__proof">
+        <li><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 2 weeks · 60 hours</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-award"/></svg> Certificate of completion</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg> 3 free lessons to start today</li>
+      </ul>
+    </div>
+    <div class="hero__art">
+      {{> hero-art }}
+    </div>
+  </div>
+</section>
+
+<section class="band band--tint band--tight" aria-label="Key numbers">
+  <div class="container">
+    <ul class="stats">
+      <li class="stat"><div class="stat__v">8 lessons</div><div class="stat__l">in 2 weeks, Monday to Friday</div></li>
+      <li class="stat"><div class="stat__v">$1,000,000</div><div class="stat__l">to manage in a simulated portfolio</div></li>
+      <li class="stat"><div class="stat__v">3 levels</div><div class="stat__l">Beginner, Intermediate, Advanced</div></li>
+      <li class="stat"><div class="stat__v">32 students</div><div class="stat__l">per class on the McGill campus</div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="learn-title" id="learn">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Learn for free</span>
+      <h2 id="learn-title">Start today — three short lessons, no sign-up needed.</h2>
+      <p>Each lesson is a 2-to-4-minute video by Rami, a written guide you can read in ten minutes, and a mini-quiz to check what stuck.</p>
+    </div>
+    <ul class="lessons">
+      <li>
+        <a class="lcard" href="learn-finance-basics.html">
+          <div class="lcard__cover">{{> cover-1 }}<span class="lcard__n">1</span><span class="lcard__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 3 min</span></div>
+          <div class="lcard__body">
+            <span class="lcard__kicker">Lesson 1 · Finance</span>
+            <h3 class="lcard__t">Finance basics</h3>
+            <p class="lcard__d">What finance really is, saving vs. investing, budgeting, compound interest, inflation, and why risk and return go together.</p>
+            <span class="lcard__cta">Start lesson 1 <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="lcard" href="learn-stock-market-basics.html">
+          <div class="lcard__cover">{{> cover-2 }}<span class="lcard__n">2</span><span class="lcard__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 4 min</span></div>
+          <div class="lcard__body">
+            <span class="lcard__kicker">Lesson 2 · The stock market</span>
+            <h3 class="lcard__t">Stock market basics</h3>
+            <p class="lcard__d">What a stock is, how the TSX and Wall Street work, indexes, ETFs and dividends, bull and bear markets, and why diversification wins.</p>
+            <span class="lcard__cta">Start lesson 2 <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="lcard" href="learn-start-investing-in-canada.html">
+          <div class="lcard__cover">{{> cover-3 }}<span class="lcard__n">3</span><span class="lcard__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 4 min</span></div>
+          <div class="lcard__body">
+            <span class="lcard__kicker">Lesson 3 · Getting started</span>
+            <h3 class="lcard__t">How to start investing in Canada</h3>
+            <p class="lcard__d">TFSA, RRSP, FHSA and RESP in plain English, how to choose a broker, your first ETF in five steps, and the scams to avoid.</p>
+            <span class="lcard__cta">Start lesson 3 <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="band band--sky" aria-labelledby="pillars-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="pillars-title">Why AIM?</h2>
+      <p>Three things you won't find together in any other finance program for teens in Montreal.</p>
+    </div>
+    <ul class="pillars">
+      <li class="pillar">
+        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg></span>
+        <h3>A CEO as your teacher</h3>
+        <p>Ilyas Zakiat is the CEO and founder of BIASafe AI, a former portfolio manager, and a finance lecturer at McGill. You learn how investing is actually done — from someone who does it.</p>
+      </li>
+      <li class="pillar">
+        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-campus"/></svg></span>
+        <h3>A real university campus</h3>
+        <p>Spend two weeks on the McGill University campus in downtown Montreal, 8 am to 2 pm, Monday to Friday — or follow the same class live online from anywhere.</p>
+      </li>
+      <li class="pillar">
+        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-trend"/></svg></span>
+        <h3>A million-dollar capstone</h3>
+        <p>You'll run a simulated $1,000,000 portfolio with real market data, choose one strategy, and defend it on pitch day — then leave with a certificate of completion.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="glance-title">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">The summer program</span>
+      <h2>Two weeks. Eight lessons. One portfolio to defend.</h2>
+      <p>Everything a student — and a parent — needs to know, on one card. The full lesson-by-lesson program is on the program page.</p>
+    </div>
+    {{> glance }}
+    <p style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap">
+      <a class="btn btn--sky" href="program.html">See the full program</a>
+      <a class="btn btn--ghost" href="program.html#levels">The 3 levels</a>
+    </p>
+  </div>
+</section>
+
+<section class="band band--tint" aria-labelledby="instr-home-title">
+  <div class="container">
+    <div class="instr">
+      <div>
+        <h2 id="instr-home-title">Experienced Instructor &amp; Industry Expert</h2>
+        <p>Learn from Ilyas Zakiat, a CEO and McGill finance lecturer who combines real-world investment experience with high-quality teaching — in a supportive, engaging and safe learning environment.</p>
+        <ul>
+          <li><span class="ck"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> CEO &amp; Founder of BIASafe AI</li>
+          <li><span class="ck"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> Finance Lecturer at McGill University</li>
+          <li><span class="ck"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span> CFA, CAIA and FRM designations</li>
+        </ul>
+        <p style="margin:1.25rem 0 0"><a class="btn btn--ghost" href="why-aim.html#instructor">About your instructor</a></p>
+      </div>
+      <img class="instr__photo" src="assets/img/ilyas-zakiat.png" alt="Ilyas Zakiat, your instructor" width="220" height="220">
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-label="Why take the course">
+  <div class="container">
+    {{> why-course }}
+  </div>
+</section>
+
+<section class="band band--tint" aria-labelledby="sessions-title" id="sessions">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Summer 2027</span>
+      <h2 id="sessions-title">Three sessions, two ways to join.</h2>
+      <p>Quebec's summer is short: classes end in late June and school starts again in late August. We run three two-week sessions in between.</p>
+    </div>
+    <ul class="sessions">
+      {{#each site.sessions}}
+      <li class="sess{{#unless this.open}} sess--waitlist{{/unless}}">
+        <div class="sess__n">{{ this.name }}</div>
+        <div class="sess__w">{{ this.when }}</div>
+        <div class="sess__where">{{ this.where }}</div>
+        <span class="tag{{#if this.open}} tag--sky{{/if}}">{{ this.label }}</span>
+      </li>
+      {{/each}}
+    </ul>
+    <div class="prices">
+      <div class="price price--featured">
+        <span class="price__k">On the McGill campus</span>
+        <span class="price__v">{{ site.facts.priceCampus }} <small>{{ site.facts.tax }}</small></span>
+        <ul>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> 2 weeks, Monday to Friday, 8 am – 2 pm (60 hours)</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Small class of 32 students, taught in person by Ilyas Zakiat</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Investment Lab every afternoon on the $1,000,000 portfolio</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Online certificate of completion</li>
+        </ul>
+        <a class="btn btn--primary" href="apply.html">Apply for the campus class</a>
+      </div>
+      <div class="price">
+        <span class="price__k">Online, live</span>
+        <span class="price__v">{{ site.facts.priceOnline }} <small>{{ site.facts.tax }}</small></span>
+        <ul>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> The same 8 lessons and the same instructor, live from anywhere</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Recordings, exercises and your portfolio in the student portal</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Online schedule confirmed before registration opens</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Online certificate of completion</li>
+        </ul>
+        <a class="btn btn--ghost" href="apply.html">Apply for the online class</a>
+      </div>
+    </div>
+    <p class="muted" style="margin:1.25rem 0 0;font-size:var(--fs-1)">Prices are in Canadian dollars, before taxes. Students 13 and under need a parent or guardian to register.</p>
+  </div>
+</section>
+
+<section class="band" aria-label="Sign up">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Apply — or just ask</span>
+      <h2>Tell us about you. We'll reply within two business days.</h2>
+      <p>Students, parents and counselors welcome. No commitment: this form only tells us you're interested.</p>
+    </div>
+    {{> signup-form }}
+  </div>
+</section>
