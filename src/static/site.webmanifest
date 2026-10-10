@@ -1,0 +1,12 @@
+{
+  "name": "AIM — Academy of Investment & Management",
+  "short_name": "AIM",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#3FA9F5",
+  "icons": [
+    { "src": "assets/logo/badge.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "assets/logo/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

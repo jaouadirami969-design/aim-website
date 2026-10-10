@@ -1,0 +1,55 @@
+<div class="formcard" id="signup">
+  <div class="formcard__head">
+    <h2 class="formcard__title">Sign up — or find out more</h2>
+    <p class="formcard__sub">{{ site.program }} · 2 weeks · McGill or Online</p>
+  </div>
+  <form class="formcard__form" id="signup-form" action="{{#if site.formEndpoint}}{{ site.formEndpoint }}{{else}}mailto:{{ site.email }}{{/if}}" method="post" data-endpoint="{{ site.formEndpoint }}" data-email="{{ site.email }}" novalidate>
+    <div class="fgrid">
+      <label class="fld"><span class="fld__lab">First name</span><input class="fld__inp" type="text" name="first_name" autocomplete="given-name" required></label>
+      <label class="fld"><span class="fld__lab">Address</span><input class="fld__inp" type="text" name="address" autocomplete="address-line1"></label>
+      <label class="fld"><span class="fld__lab">Last name</span><input class="fld__inp" type="text" name="last_name" autocomplete="family-name" required></label>
+      <label class="fld"><span class="fld__lab">Apt.</span><input class="fld__inp" type="text" name="apt" autocomplete="address-line2"></label>
+      <label class="fld"><span class="fld__lab">Email</span><input class="fld__inp" type="email" name="email" autocomplete="email" required></label>
+      <label class="fld"><span class="fld__lab">City / Town</span><input class="fld__inp" type="text" name="city" autocomplete="address-level2"></label>
+      <label class="fld"><span class="fld__lab">Phone</span><input class="fld__inp" type="tel" name="phone" autocomplete="tel"></label>
+      <label class="fld"><span class="fld__lab">Province</span><input class="fld__inp" type="text" name="province" autocomplete="address-level1" placeholder="Quebec"></label>
+      <label class="fld"><span class="fld__lab">Country</span><input class="fld__inp" type="text" name="country" autocomplete="country-name" value="Canada"></label>
+      <label class="fld"><span class="fld__lab">Postal code</span><input class="fld__inp" type="text" name="postal_code" autocomplete="postal-code"></label>
+    </div>
+
+    <fieldset class="fset">
+      <legend class="fset__legend">Category that best describes you:</legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="category" value="High school student" required><span>High school student</span></label>
+        <label class="opt"><input type="radio" name="category" value="Parent of a high school student"><span>Parent of a high school student</span></label>
+        <label class="opt"><input type="radio" name="category" value="College / University counselor"><span>College / University counselor</span></label>
+        <label class="opt"><input type="radio" name="category" value="Adviser"><span>Adviser</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="fset">
+      <legend class="fset__legend">I'm interested in:</legend>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="interest" value="Beginner class — McGill campus"><span>Beginner class — McGill campus</span></label>
+        <label class="opt"><input type="checkbox" name="interest" value="Beginner class — Online (live)"><span>Beginner class — Online (live)</span></label>
+        <label class="opt"><input type="checkbox" name="interest" value="Just finding out more"><span>Just finding out more</span></label>
+      </div>
+    </fieldset>
+
+    <label class="fld fld--full"><span class="fld__lab">Your question or message <small>(optional)</small></span><textarea class="fld__inp" name="message" rows="3"></textarea></label>
+
+    <label class="consent">
+      <input type="checkbox" name="consent" value="yes" required>
+      <span>I'm 14 or older — or I'm the parent or guardian of the student. We only use this information to answer you and to send program news. <a href="privacy.html">Privacy &amp; consent (Law 25)</a></span>
+    </label>
+
+    <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <input type="hidden" name="_subject" value="New sign-up — {{ site.program }}">
+
+    <div class="formcard__actions">
+      <button class="btn btn--primary btn--lg" type="submit">Learn more</button>
+      <p class="formcard__note">We reply within two business days. No spam, ever.</p>
+    </div>
+    <p class="form-status" role="status" aria-live="polite"></p>
+  </form>
+</div>

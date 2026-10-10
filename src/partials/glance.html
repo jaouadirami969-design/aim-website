@@ -1,0 +1,27 @@
+<section class="glance" aria-labelledby="glance-title">
+  <div class="glance__head">
+    <div class="glance__badge">{{> logo-badge }}</div>
+    <div>
+      <h2 class="glance__title" id="glance-title">Program at a glance</h2>
+      <p class="glance__sub">AIM · {{ site.program }}</p>
+    </div>
+  </div>
+  <dl class="ggrid">
+    <div class="gi"><dt>Experience level</dt><dd>{{ site.facts.level }} <small>· {{ site.facts.levels }}</small></dd></div>
+    <div class="gi"><dt>Camp length</dt><dd>{{ site.facts.length }}</dd></div>
+    <div class="gi"><dt>Schedule</dt><dd>{{ site.facts.hours }} <small>· {{ site.facts.schedule }}</small></dd></div>
+    <div class="gi"><dt>Sessions</dt><dd>{{ site.facts.sessions }} <small>· {{ site.facts.sessionsDetail }}</small></dd></div>
+    <div class="gi"><dt>Ages</dt><dd>{{ site.facts.ages }}</dd></div>
+    <div class="gi"><dt>Location</dt><dd>{{ site.facts.location }} <small>· {{ site.facts.locationDetail }}</small></dd></div>
+    <div class="gi"><dt>Price — McGill</dt><dd>{{ site.facts.priceCampus }} <small>{{ site.facts.tax }}</small></dd></div>
+    <div class="gi"><dt>Price — Online</dt><dd>{{ site.facts.priceOnline }} <small>{{ site.facts.tax }}</small></dd></div>
+    <div class="gi"><dt>Instructor</dt><dd>{{ site.facts.instructor }} <small>— {{ site.facts.instructorDetail }}</small></dd></div>
+    <div class="gi"><dt>Class size</dt><dd>{{ site.facts.classSize }} <small>· {{ site.facts.classSizeDetail }}</small></dd></div>
+    <div class="gi"><dt>Course</dt><dd>{{ site.facts.course }} <small>· {{ site.facts.courseDetail }}</small></dd></div>
+    <div class="gi"><dt>Certificate</dt><dd>{{ site.facts.certificate }} <small>{{ site.facts.certificateDetail }}</small></dd></div>
+  </dl>
+  <div class="gdesc">
+    <h3 class="gdesc__lab">Class description</h3>
+    <p>Learn how money really works, what moves the stock market and how real investors choose what to buy — then put it into practice by managing a simulated $1,000,000 portfolio. In two weeks and eight lessons, guided by a CEO who teaches finance at McGill, you'll go from curious to confident: value investing, growth investing, reading financial statements and building a diversified portfolio.</p>
+  </div>
+</section>

@@ -1,0 +1,15 @@
+<div class="modal" id="video-modal" hidden>
+  <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="video-modal-title">
+    <button class="modal__close" type="button" data-modal-close aria-label="Close video">
+      <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+    </button>
+    <h2 id="video-modal-title" class="modal__title">Video</h2>
+    <div class="modal__frame" id="video-modal-frame"></div>
+    <div class="modal__soon" id="video-modal-soon" hidden>
+      <div class="modal__soon-badge">{{> logo-badge }}</div>
+      <p class="modal__soon-title">This video is being filmed.</p>
+      <p>It will be posted here and on our YouTube channel. In the meantime, the written lesson has everything you need.</p>
+    </div>
+  </div>
+</div>

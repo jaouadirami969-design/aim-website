@@ -1,0 +1,19 @@
+<section class="why" aria-labelledby="why-course-title">
+  <div class="why__head">
+    <div class="why__badge">{{> logo-badge }}</div>
+    <div>
+      <h2 class="why__title" id="why-course-title">Why take the course?</h2>
+      <div class="why__bar"></div>
+      <p class="why__sub">Six reasons to spend two weeks of your summer with a CEO</p>
+    </div>
+  </div>
+  <ul class="wgrid">
+    {{#each site.reasons}}
+    <li class="wi">
+      <span class="wic"><svg class="icon" aria-hidden="true"><use href="#i-{{ this.icon }}"/></svg></span>
+      <h3 class="wi__t">{{ this.title }}</h3>
+      <p class="wi__d">{{ this.text }}</p>
+    </li>
+    {{/each}}
+  </ul>
+</section>

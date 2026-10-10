@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{#if page.fullTitle}}{{ page.fullTitle }}{{else}}{{ page.title }} · {{ site.name }} — {{ site.program }}{{/if}}</title>
+  <meta name="description" content="{{ page.description }}">
+  {{#if page.noindex}}<meta name="robots" content="noindex">{{/if}}
+  <link rel="canonical" href="{{ page.url }}">
+  <meta name="theme-color" content="#3FA9F5">
+  <link rel="icon" href="assets/logo/badge.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/logo/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ site.name }} — {{ site.fullName }}">
+  <meta property="og:title" content="{{#if page.fullTitle}}{{ page.fullTitle }}{{else}}{{ page.title }} · {{ site.name }}{{/if}}">
+  <meta property="og:description" content="{{ page.description }}">
+  <meta property="og:url" content="{{ page.url }}">
+  <meta property="og:image" content="{{ site.url }}/assets/logo/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preload" href="assets/fonts/poppins-regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="assets/fonts/lora-variable.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="assets/css/main.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "{{ site.name }} — {{ site.fullName }}",
+    "alternateName": "{{ site.fullNameFr }}",
+    "url": "{{ site.url }}",
+    "logo": "{{ site.url }}/assets/logo/badge.svg",
+    "email": "{{ site.email }}",
+    "address": { "@type": "PostalAddress", "addressLocality": "Montreal", "addressRegion": "QC", "addressCountry": "CA" },
+    "slogan": "{{ site.tagline }}"
+  }
+  </script>
+  {{{ page.head }}}
+</head>
+<body data-page="{{ page.nav }}">
+  <a class="skip-link" href="#main">Skip to content</a>
+  {{> header }}
+  <main id="main">
+{{{ content }}}
+  </main>
+  {{> footer }}
+  {{> video-modal }}
+  <script src="assets/js/main.js" defer></script>
+  {{#if page.quiz}}<script src="assets/js/quiz.js" defer></script>{{/if}}
+</body>
+</html>

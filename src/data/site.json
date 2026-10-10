@@ -1,0 +1,132 @@
+{
+  "name": "AIM",
+  "fullName": "Academy of Investment & Management",
+  "fullNameFr": "Académie d'Investissement et de Management",
+  "program": "Finance & Investment Summer Program",
+  "tagline": "Aim higher.",
+  "slogan": "Invest like a CEO",
+  "url": "https://aimsummer.com",
+  "domain": "aimsummer.com",
+  "email": "hello@aimsummer.com",
+  "city": "Montreal, Quebec",
+  "language": "en",
+
+  "social": {
+    "facebook": "https://www.facebook.com/",
+    "instagram": "https://www.instagram.com/",
+    "youtube": "https://www.youtube.com/"
+  },
+
+  "_comment_form": "Paste a Formspree endpoint (https://formspree.io/f/xxxx) to receive sign-ups by email. Empty = the form opens the visitor's email app instead.",
+  "formEndpoint": "",
+
+  "_comment_videos": "YouTube video IDs (the part after v= in the URL). Empty = a 'coming soon' message is shown.",
+  "videos": {
+    "intro": "",
+    "lesson1": "",
+    "lesson2": "",
+    "lesson3": ""
+  },
+
+  "facts": {
+    "ages": "13 to 18 years old",
+    "level": "Beginner-friendly",
+    "levels": "3 levels: Beginner, Intermediate, Advanced",
+    "length": "2 weeks, Monday – Friday",
+    "hours": "60 hours",
+    "schedule": "8 am – 2 pm, 6 hours a day",
+    "sessions": "Summer",
+    "sessionsDetail": "June to August",
+    "location": "McGill University",
+    "locationDetail": "or Online (live)",
+    "priceCampus": "$1,895",
+    "priceOnline": "$1,495",
+    "tax": "+ tax",
+    "instructor": "Ilyas Zakiat, CEO",
+    "instructorDetail": "CEO & Founder of BIASafe AI · Finance Lecturer at McGill",
+    "classSize": "32 students",
+    "classSizeDetail": "McGill",
+    "course": "Finance & Investment Management",
+    "courseDetail": "8 lessons",
+    "certificate": "Online certificate",
+    "certificateDetail": "at the end of the course"
+  },
+
+  "sessions": [
+    { "name": "Session 1", "when": "Late June – early July 2027", "where": "McGill campus · Online", "open": true, "label": "Registration opens soon" },
+    { "name": "Session 2", "when": "July 2027, before the construction holiday", "where": "McGill campus · Online", "open": true, "label": "Registration opens soon" },
+    { "name": "Session 3", "when": "August 2027", "where": "McGill campus · Online", "open": false, "label": "Join the waitlist" }
+  ],
+
+  "lessons": [
+    {
+      "n": 1,
+      "slug": "learn-finance-basics.html",
+      "title": "Finance basics",
+      "kicker": "Lesson 1 · Free",
+      "teaser": "What finance really is, saving vs. investing, budgeting, compound interest, inflation, risk and return.",
+      "video": "lesson1",
+      "read": "9 min read",
+      "watch": "3 min video"
+    },
+    {
+      "n": 2,
+      "slug": "learn-stock-market-basics.html",
+      "title": "Stock market basics",
+      "kicker": "Lesson 2 · Free",
+      "teaser": "What a stock is, how the TSX and Wall Street work, indexes, ETFs, dividends, bull and bear markets, diversification.",
+      "video": "lesson2",
+      "read": "10 min read",
+      "watch": "4 min video"
+    },
+    {
+      "n": 3,
+      "slug": "learn-start-investing-in-canada.html",
+      "title": "How to start investing in Canada",
+      "kicker": "Lesson 3 · Free",
+      "teaser": "TFSA, RRSP, FHSA and RESP explained, choosing a broker, buying your first ETF in 5 steps, mistakes and scams to avoid.",
+      "video": "lesson3",
+      "read": "10 min read",
+      "watch": "4 min video"
+    }
+  ],
+
+  "levels": [
+    {
+      "n": 1,
+      "name": "Beginner",
+      "course": "Finance & Investment Management",
+      "who": "Ages 13–18 · no experience needed",
+      "learn": "How money really works, how the stock market moves, how to read a company, and how to build a portfolio — value, growth, momentum and diversification.",
+      "capstone": "You'll manage a million dollars",
+      "capstoneDetail": "A simulated $1,000,000 portfolio on a virtual stock exchange — one strategy, defined and defended in front of the class."
+    },
+    {
+      "n": 2,
+      "name": "Intermediate",
+      "course": "Portfolio Management & the Markets",
+      "who": "Graduates of the Beginner class",
+      "learn": "The economy and the markets, bonds, ETFs and asset allocation, measuring risk, valuation (DCF), moats, market history and factor investing.",
+      "capstone": "The Fund Manager Challenge",
+      "capstoneDetail": "Run a $1,000,000 multi-asset portfolio with a written investment policy, a benchmark and a risk scorecard — and present it to an investment committee."
+    },
+    {
+      "n": 3,
+      "name": "Advanced",
+      "course": "Advanced Investment Management: How the Pros Invest",
+      "who": "Graduates of the Intermediate class",
+      "learn": "How Wall Street works, options and futures, rates and currencies, quantitative investing, hedge funds, private markets, risk management and AI.",
+      "capstone": "The Investment Committee Pitch",
+      "capstoneDetail": "Design a professional strategy, run it on $1,000,000 with written risk limits and a trading journal — then pitch it to a mock investment committee."
+    }
+  ],
+
+  "reasons": [
+    { "icon": "chevrons", "title": "Head start", "text": "Get a head start on CEGEP and university." },
+    { "icon": "trend", "title": "Skills that matter", "text": "Learn finance, economics and investment management — topics that matter today." },
+    { "icon": "award", "title": "Certificate", "text": "Earn an online certificate at the end of the course." },
+    { "icon": "user", "title": "Learn from a CEO", "text": "Learn from a CEO who teaches finance at McGill." },
+    { "icon": "briefcase", "title": "Careers", "text": "Discover finance programs and careers." },
+    { "icon": "campus", "title": "Campus life", "text": "Experience university life at McGill while still in high school." }
+  ]
+}

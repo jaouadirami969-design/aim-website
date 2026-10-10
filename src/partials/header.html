@@ -1,0 +1,41 @@
+<header class="site-header">
+  <div class="container site-header__row">
+    <a class="brand" href="index.html" aria-label="{{ site.name }} — {{ site.fullName }}, home">
+      {{> logo-badge }}
+      <span class="brand__text">
+        <span class="brand__name">AIM</span>
+        <span class="brand__sub">{{ site.fullName }}</span>
+      </span>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
+      <svg class="icon icon--close" aria-hidden="true"><use href="#i-close"/></svg>
+      <span>Menu</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Main">
+      <ul class="site-nav__list">
+        <li class="has-menu">
+          <button class="site-nav__link site-nav__button" type="button" aria-expanded="false" aria-controls="menu-learn"{{nav:learn}}>
+            Learn for free <svg class="icon icon--sm" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+          </button>
+          <ul id="menu-learn" class="submenu">
+            {{#each site.lessons}}
+            <li><a href="{{ this.slug }}"><span class="submenu__n">{{ this.n }}</span><span><strong>{{ this.title }}</strong><small>{{ this.watch }} · {{ this.read }}</small></span></a></li>
+            {{/each}}
+          </ul>
+        </li>
+        <li><a class="site-nav__link" href="program.html"{{nav:program}}>The summer program</a></li>
+        <li><a class="site-nav__link" href="why-aim.html"{{nav:why}}>Why AIM</a></li>
+        <li><a class="site-nav__link" href="apply.html"{{nav:apply}}>Apply</a></li>
+      </ul>
+      <div class="site-nav__actions">
+        <a class="btn btn--ghost" href="portal.html"{{nav:portal}}>
+          <svg class="icon icon--sm" aria-hidden="true"><use href="#i-lock"/></svg> Log in
+        </a>
+        <a class="btn btn--primary" href="apply.html">Apply now</a>
+      </div>
+    </nav>
+  </div>
+</header>
