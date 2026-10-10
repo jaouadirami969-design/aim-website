@@ -117,7 +117,7 @@ button { font: inherit; }
 
 /* ---------- header ---------- */
 .site-header {
-  position: sticky; top: 0; z-index: 50;
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
   background: var(--white); border-bottom: 1px solid var(--sky-l);
 }
 .site-header__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: var(--header-h); }
