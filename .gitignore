@@ -1,0 +1,12 @@
+# build output (GitHub Actions / Netlify rebuild it from src/)
+dist/
+# local screenshots and scratch files
+shots/
+# dependencies (none are needed today, but just in case)
+node_modules/
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
