@@ -95,7 +95,7 @@
       consent_info: fd.get('consent_info') === 'yes',
       consent_newsletter: fd.get('consent_newsletter') === 'yes',
       consent_text: consentText,
-      website: String(fd.get('aim_hp') || ''),
+      website: fd.get('aim_hp') ? 'trap' : '',
       source_page: location.origin + location.pathname,
       referrer: document.referrer || undefined,
       ...utm,

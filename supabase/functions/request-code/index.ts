@@ -29,12 +29,10 @@ Deno.serve(async (req) => {
   const ip = clientIp(req);
   const sb = admin();
 
-  // 1. Honeypot — bots fill every field. Nothing is stored or sent; a real person who trips it (browser autofill)
-  //    gets a clear message instead of a silent fake success.
-  if (str(body.website)) {
-    await logEvent(sb, null, null, "honeypot", { ip_hash: await hashIp(ip) });
-    return fail(req, 400, "spam_suspected", "Something went wrong on our side. Please reload the page and try again — or write to hello@aimsummer.com.");
-  }
+  // 1. Honeypot — a signal, not a wall. Chrome's address autofill was seen filling the hidden field for real
+  //    parents, so a filled trap is only logged; the limits below and the 6-digit code are the real protection.
+  const trapped = Boolean(str(body.website));
+  if (trapped) await logEvent(sb, null, null, "honeypot", { ip_hash: await hashIp(ip) });
 
   // 2. The consent box is the whole point of the page (Law 25 / CASL): no box, no email.
   if (body.consent_info !== true) {

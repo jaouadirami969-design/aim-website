@@ -19,10 +19,8 @@ Deno.serve(async (req) => {
   const body = await readJson(req);
   const sb = admin();
 
-  if (str(body.website)) {
-    await logEvent(sb, null, null, "honeypot", { stage: "verify", ip_hash: await hashIp(clientIp(req)) });
-    return fail(req, 400, "spam_suspected", "Something went wrong on our side. Please reload the page and try again — or write to hello@aimsummer.com.");
-  }
+  // Honeypot: logged only (browser autofill fills hidden fields for real people), never blocking.
+  if (str(body.website)) await logEvent(sb, null, null, "honeypot", { stage: "verify", ip_hash: await hashIp(clientIp(req)) });
 
   const email = normalizeEmail(body.email);
   if (!email) return fail(req, 400, "invalid_email", "That doesn't look like a valid email address.");

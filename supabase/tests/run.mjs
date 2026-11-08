@@ -33,7 +33,6 @@ r = await call(requestCode, { email: 'x@mailinator.com', consent_info: true }); 
 r = await call(requestCode, { email: 'sophie@gmail.co', consent_info: true }); expect('typo suggestion', r.body.error === 'typo_suspected' && r.body.suggestion === 'sophie@gmail.com', r);
 r = await call(requestCode, { email: 'a@nxdomain-zzz.com', consent_info: true }); expect('nxdomain', r.body.error === 'domain_no_mail', r);
 r = await call(requestCode, { email: 'a@nomx.org', consent_info: true }); expect('no mx no A', r.body.error === 'domain_no_mail', r);
-r = await call(requestCode, { email: 'bot@gmail.com', consent_info: true, website: 'http://spam' }); expect('honeypot blocked, nothing stored', r.status === 400 && r.body.error === 'spam_suspected' && db.tables.leads.length === 0, r);
 r = await call(requestCode, { email: ' Sophie.Tremblay@Gmail.com ', first_name: 'Sophie', role: 'parent', interest: 'campus', consent_info: true, consent_newsletter: true, consent_text: 'I agree', source_page: 'https://aimsummer.com/learn-more.html' });
 expect('request ok', r.status === 200 && r.body.ok && r.body.email === 'sophie.tremblay@gmail.com' && r.body.masked.startsWith('so') && r.body.resend_in === 60, r);
 expect('cors echo', r.cors === 'https://aimsummer.com', r);
@@ -76,6 +75,8 @@ for (const c of db.tables.email_codes) c.created_at = new Date(Date.now() - 1800
 r = await call(requestCode, { email: 'sophie.tremblay@gmail.com', consent_info: true }); expect('5 per hour cap', r.status === 429 && r.body.error === 'too_many_requests', { r, n: db.tables.email_codes.length });
 // brevo failure on code email → 502 and code retired
 r = await call(requestCode, { email: 'bounce@gmail.com', consent_info: true }); expect('brevo failure', r.status === 502 && r.body.error === 'email_failed' && db.tables.email_codes.filter(c => c.email === 'bounce@gmail.com' && !c.consumed_at).length === 0, r);
+// honeypot: logged, never blocking (browser autofill fills hidden fields for real people)
+r = await call(requestCode, { email: 'trap-test@gmail.com', consent_info: true, website: 'http://spam' }); expect('honeypot logged, not blocking', r.status === 200 && r.body.ok === true && db.tables.lead_events.some(e => e.type === 'honeypot'), r);
 // OPTIONS preflight
 const pre = await requestCode(new Request('https://x/f', { method: 'OPTIONS', headers: { origin: 'https://www.aimsummer.com' } })); expect('preflight', pre.status === 204 && pre.headers.get('access-control-allow-origin') === 'https://www.aimsummer.com');
 const bad = await requestCode(new Request('https://x/f', { method: 'OPTIONS', headers: { origin: 'https://evil.example' } })); expect('foreign origin not echoed', bad.headers.get('access-control-allow-origin') === 'https://aimsummer.com');
