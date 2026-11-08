@@ -837,6 +837,23 @@ select.fld__inp { appearance: none; -webkit-appearance: none; background-image: 
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
 
+/* ---------- photos (home campus band, program format) ---------- */
+.photo-band { padding-top: 3.5rem; }
+.photo-band__grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 2.5rem 3.5rem; align-items: center; }
+.photo-band__fig { margin: 0; }
+.photo-band__fig img { display: block; width: 100%; height: auto; border-radius: var(--radius); box-shadow: var(--shadow); aspect-ratio: 3 / 2; object-fit: cover; background: var(--sky-t); }
+.photo-band__fig figcaption { margin-top: 0.6rem; font-size: var(--fs-0); color: var(--muted); }
+.photo-band__text h2 { margin-bottom: 0.75rem; }
+.photo-band__text p { max-width: 54ch; }
+.photo-band__text .checks { margin: 1.25rem 0 1.5rem; }
+.photo-band__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.photo-wide { margin: 0; }
+.photo-wide img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); background: var(--white); }
+.photo-wide figcaption { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem 1.5rem; margin-top: 1rem; font-size: var(--fs-1); color: var(--ink); }
+.photo-wide figcaption span { padding-left: 0.9rem; border-left: 3px solid var(--yel); }
+@media (max-width: 900px) { .photo-band__grid { grid-template-columns: 1fr; } .photo-band { padding-top: 2.75rem; } }
+@media (max-width: 720px) { .photo-wide figcaption { grid-template-columns: 1fr; } }
+
 /* ---------- print ---------- */
 @media print {
   .site-header, .site-footer, .video, .modal, .nav-toggle { display: none !important; }
