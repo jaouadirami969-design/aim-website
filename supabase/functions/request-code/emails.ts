@@ -100,114 +100,138 @@ ${ORG_NAME} · ${ORG_ADDRESS} · ${SENDER_EMAIL}`;
   return { subject, html, text, params: { CODE: p.code, FIRST_NAME: p.firstName || "" } };
 }
 
-/* ============================================================ 2. the info pack */
+/* ============================================================ 2. the info pack
+   One personal email, written by Rami, composed from blocks chosen by WHO is asking
+   (student / parent / counselor / other) and WHAT they picked (campus / online / just finding out).
+   Deliberately plain — paragraphs, a few bold lead-ins, three links, no banner, no buttons, no price
+   table — so Gmail files it with personal mail (Primary), not with newsletters (Promotions). */
 
-export function infoPackEmail(p: { firstName?: string | null; email: string; role?: string | null; interest?: string | null }) {
-  const first = p.firstName ? esc(p.firstName) : "there";
-  const subject = "Your AIM info pack — Finance & Investment Summer Program 2027";
-  const preheader = "Two weeks at McGill or live online, ages 13–18, taught by a CEO. Dates, prices, what's included and how to apply.";
-  const youAre = p.role === "parent" ? "your child" : "you";
-  const body = `
-    <p style="margin:0 0 6px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:${C.amber};font-weight:bold;">Your info pack</p>
-    <h1 style="margin:0 0 14px;font-family:Georgia,'Times New Roman',serif;font-size:27px;line-height:1.2;color:${C.deep};">Hi ${first} — here is everything in one email.</h1>
-    <p style="margin:0 0 10px;">Thank you for your interest in AIM. Below: what the program is, the three classes, campus vs. online, the 2027 dates and prices, what's included, and how to apply. Reply to this email with any question — a real person answers within two business days.</p>
+export type Role = "student" | "parent" | "counselor" | "other" | "";
+export type Interest = "campus" | "online" | "info" | "";
 
-    ${h2("The program in 30 seconds")}
-    ${card(`
-      <strong style="color:${C.deep};">Finance &amp; Investment Summer Program</strong> — a two-week program for students aged <strong>13 to 18</strong>, on the <strong>McGill University downtown campus</strong> in Montréal or <strong>live online</strong>.<br><br>
-      Every lesson is taught live by <strong>Ilyas Zakiat</strong> — CEO and founder of BIASafe AI and finance lecturer at McGill University. Students learn how money, companies and markets really work, manage a <strong>simulated $1,000,000 portfolio</strong>, defend their strategy on pitch day, and leave with a <strong>certificate of completion</strong>. All classes are taught in <strong>English</strong>.`)}
+export const INFO_SENDER_NAME = Deno.env.get("INFO_SENDER_NAME") || "Rami Jaouadi (AIM)";
+const SIGNER = Deno.env.get("INFO_SIGNER") || "Rami Jaouadi";
+const SIGNER_ROLE = Deno.env.get("INFO_SIGNER_ROLE") || "Co-founder, AIM — with Ilyas Zakiat, instructor";
 
-    ${h2("Three classes — you join one")}
-    ${card(`<strong style="color:${C.deep};">Class 1 · Beginner — Introduction to Finance &amp; Investment</strong><br>No finance background needed. How money works, how the stock market moves, how to read a company, how to build a first portfolio. <em>Capstone: you'll manage a million dollars.</em>`)}
-    ${card(`<strong style="color:${C.deep};">Class 2 · Intermediate</strong><br>The economy and the markets, bonds, ETFs, measuring risk, valuation, market history. <em>Capstone: the Fund Manager Challenge.</em> Requires Class 1 with AIM.`, C.white)}
-    ${card(`<strong style="color:${C.deep};">Class 3 · Advanced</strong><br>How Wall Street works, options and futures, quantitative investing, hedge funds, risk management and AI. <em>Capstone: the Investment Committee Pitch.</em> Requires Classes 1 and 2 with AIM.`)}
+const L = {
+  program: `${SITE_URL}/program.html`,
+  apply: `${SITE_URL}/apply.html`,
+  lesson: `${SITE_URL}/learn-finance-basics.html`,
+};
+const a = (href: string, label: string) => `<a href="${href}" style="color:${C.skyD};">${label}</a>`;
+const b = (s: string) => `<b style="color:${C.deep};">${s}</b>`;
+const p = (s: string) => `<p style="margin:0 0 14px;">${s}</p>`;
+const ul = (items: string[]) => `<ul style="margin:0 0 14px;padding-left:22px;">${items.map((i) => `<li style="margin:0 0 6px;">${i}</li>`).join("")}</ul>`;
 
-    ${h2("On campus or online")}
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-      <td width="50%" valign="top" style="padding:0 6px 0 0;">
-        <div style="background:${C.skyT};border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.5;height:100%;">
-          <strong style="color:${C.deep};font-size:15px;">McGill campus</strong><br>
-          10 days, Monday to Friday, <strong>9 am – 3 pm</strong><br>
-          9–12: the lesson with Ilyas Zakiat<br>
-          12–1: supervised lunch break<br>
-          1–3: practice, exercises, the virtual exchange<br>
-          <strong>60 hours</strong> · max. 32 students
-        </div>
-      </td>
-      <td width="50%" valign="top" style="padding:0 0 0 6px;">
-        <div style="background:${C.yelT};border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.5;height:100%;">
-          <strong style="color:${C.deep};font-size:15px;">Live online</strong><br>
-          Same dates, same instructor<br>
-          Monday to Friday, <strong>1 – 3 pm</strong> (Montréal time)<br>
-          Fully taught live by Ilyas Zakiat<br>
-          Recordings in the student portal<br>
-          <strong>20 hours</strong> · same certificate
-        </div>
-      </td>
-    </tr></table>
+/** Very small HTML → plain-text conversion for the text/plain part. */
+export function toText(html: string): string {
+  return html
+    .replace(/<a [^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/g, "$2 ($1)")
+    .replace(/<ul[^>]*>/g, "\n").replace(/<li[^>]*>/g, "• ").replace(/<\/li>/g, "\n")
+    .replace(/<\/p>|<\/ul>/g, "\n\n").replace(/<br\s*\/?>/g, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&").replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"")
+    .replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+}
 
-    ${h2("Summer 2027 — dates and prices")}
-    ${card(`
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:15px;">
-        <tr><td style="padding:4px 0;color:${C.deep};"><strong>Session 1</strong></td><td style="padding:4px 0;">Late June – early July 2027</td></tr>
-        <tr><td style="padding:4px 0;color:${C.deep};"><strong>Session 2</strong></td><td style="padding:4px 0;">July 2027, before the construction holiday</td></tr>
-        <tr><td style="padding:4px 0;color:${C.deep};"><strong>Session 3</strong></td><td style="padding:4px 0;">August 2027 — waitlist</td></tr>
-        <tr><td style="padding:10px 0 4px;color:${C.deep};"><strong>Campus</strong></td><td style="padding:10px 0 4px;"><strong>$1,895</strong> + taxes</td></tr>
-        <tr><td style="padding:4px 0;color:${C.deep};"><strong>Online</strong></td><td style="padding:4px 0;"><strong>$1,495</strong> + taxes</td></tr>
-      </table>
-      <div style="margin-top:10px;font-size:14px;color:${C.muted};">Each session runs on campus and online. Exact dates and registration open in <strong style="color:${C.deep};">December 2026</strong> on aimsummer.com — payment options are confirmed at registration. Prices in Canadian dollars.</div>`)}
+function norm<T extends string>(v: unknown, allowed: readonly T[]): T | "" {
+  return allowed.includes(v as T) ? (v as T) : "";
+}
 
-    ${h2("What's included · what to bring")}
-    ${card(`
-      <strong style="color:${C.deep};">Included:</strong> all lessons and practice sessions, the virtual stock exchange with real market data, the student portal (lessons, exercises, recordings), all materials and readings, the capstone project and the certificate of completion. All software is free — nothing to buy, nothing to install.<br><br>
-      <strong style="color:${C.deep};">To bring:</strong> a laptop (or a tablet with a keyboard) and its charger, a notebook and pen — and, on campus, a packed lunch and a water bottle.`)}
+export function infoPackEmail(input: { firstName?: string | null; email: string; role?: string | null; interest?: string | null }) {
+  const role = norm<Role>(input.role, ["student", "parent", "counselor", "other"]);
+  const interest = norm<Interest>(input.interest, ["campus", "online", "info"]);
+  const first = input.firstName ? esc(input.firstName) : "";
+  const your = role === "student" ? "your" : role === "parent" ? "your child's" : "the student's";
+  const rather = role === "student" ? "you'd rather be in the room" : role === "parent" ? "your child would rather be in the room" : "the student would rather be in the room";
 
-    ${h2("Next steps")}
-    <p style="margin:0 0 4px;">Applying takes about 10 minutes — no transcripts, no recommendation letters. A parent or guardian confirms every registration.</p>
-    ${button(`${SITE_URL}/apply.html`, "Apply on aimsummer.com")}
-    <p style="margin:14px 0 0;font-size:15px;">Not sure yet? Start with our three free lessons: <a href="${SITE_URL}/learn-finance-basics.html" style="color:${C.skyD};">Finance basics</a> · <a href="${SITE_URL}/learn-stock-market-basics.html" style="color:${C.skyD};">Stock market basics</a> · <a href="${SITE_URL}/learn-start-investing-in-canada.html" style="color:${C.skyD};">How to start investing in Canada</a>.</p>
+  /* ---- subject ---- */
+  const subjects: Record<string, string> = {
+    "student|campus": "Your two weeks at McGill with AIM — the honest version",
+    "student|online": "Your two weeks with AIM, live online — how it really works",
+    "student|info": "AIM in 3 minutes — campus or online?",
+    "parent|campus": "AIM at McGill — the details parents ask for",
+    "parent|online": "AIM live online — the details parents ask for",
+    "parent|info": "AIM for parents — the program, the two formats, the cost",
+    "counselor|campus": "AIM at McGill — information for your students",
+    "counselor|online": "AIM live online — information for your students",
+    "counselor|info": "AIM — information for your students (campus and online)",
+    "other|campus": "AIM at McGill — dates, days and cost",
+    "other|online": "AIM live online — dates, hours and cost",
+    "other|info": "AIM in 3 minutes — the program, campus or online",
+  };
+  const subject = subjects[`${role || "other"}|${interest || "info"}`] || "Your AIM info pack — Finance & Investment Summer Program 2027";
 
-    ${h2("Questions?")}
-    <p style="margin:0;">Just reply to this email or write to <a href="mailto:${SENDER_EMAIL}" style="color:${C.skyD};">${SENDER_EMAIL}</a>${ORG_PHONE ? ` — or call <strong>${esc(ORG_PHONE)}</strong> (${esc(ORG_HOURS)})` : ""}. We're happy to talk to parents and students alike.</p>
-    <p style="margin:18px 0 0;">Looking forward to meeting ${youAre} this summer,<br><strong style="color:${C.deep};">Ilyas Zakiat &amp; Rami Jaouadi</strong><br><span style="color:${C.muted};font-size:14px;">AIM — Academy of Investment &amp; Management</span></p>`;
-  const html = shell({
-    title: subject, preheader, body,
-    footerNote: `You received this email because you asked for the AIM info pack on aimsummer.com (${esc(p.email)}). Prefer not to hear from us again? Reply with "unsubscribe" and we'll remove your address.`,
-  });
-  const text = `Hi ${p.firstName || "there"} — here is everything in one email.
+  /* ---- greeting + intro ---- */
+  const hi = role === "student" ? `Hi${first ? ` ${first}` : ""},` : `Hello${first ? ` ${first}` : ""},`;
+  const intros: Record<string, string> = {
+    "student|campus": `Thanks for asking about AIM. You picked the ${b("McGill campus class")}, so here is what your two weeks would actually look like — written for you, not for your parents (show it to them anyway: a parent or guardian confirms every registration).`,
+    "student|online": `Thanks for asking about AIM. You picked the ${b("live online class")}, so here is how it really works from your side of the screen — written for you (show it to a parent too: a parent or guardian confirms every registration).`,
+    "student|info": `Thanks for asking about AIM. You said you're ${b("just finding out more")}, so here is the short, honest version: what it is, what you'd actually do all day, and how to choose between the campus class and the online class.`,
+    "parent|campus": `Thank you for asking about AIM for your child. You asked about the ${b("McGill campus class")}, so here is what I would want to know as a parent: who teaches, how the days are organized and supervised, what it costs, and how registration works.`,
+    "parent|online": `Thank you for asking about AIM for your child. You asked about the ${b("live online class")}, so here is what matters most from a parent's point of view: who teaches, how a live online day works, what your child needs at home, what it costs, and how registration works.`,
+    "parent|info": `Thank you for your interest in AIM. You said you're ${b("just finding out more")}, so here is the short version for parents: what the program is, the two ways to attend, what it costs, and how to decide — with no commitment at this stage.`,
+    "counselor|campus": `Thank you for your interest in AIM on behalf of your students. Here is what you need to present the ${b("McGill campus class")}, and how we work with schools and counselors.`,
+    "counselor|online": `Thank you for your interest in AIM on behalf of your students. Here is what you need to present the ${b("live online class")}, and how we work with schools and counselors.`,
+    "counselor|info": `Thank you for your interest in AIM on behalf of your students. Here is the program in short — ${b("both formats")} — and how we work with schools and counselors.`,
+    "other|campus": `Thank you for asking about AIM. Here is everything about the ${b("McGill campus class")} in one email: what the program is, what a day looks like, what it costs, and how to join.`,
+    "other|online": `Thank you for asking about AIM. Here is everything about the ${b("live online class")} in one email: what the program is, how the live sessions work, what it costs, and how to join.`,
+    "other|info": `Thank you for asking about AIM. Here is everything in one email: what the program is, the two ways to attend, what it costs, and how to join.`,
+  };
+  const intro = intros[`${role || "other"}|${interest || "info"}`];
 
-THE PROGRAM IN 30 SECONDS
-Finance & Investment Summer Program: two weeks for students aged 13 to 18, on the McGill University downtown campus in Montréal or live online. Every lesson is taught live by Ilyas Zakiat, CEO and founder of BIASafe AI and finance lecturer at McGill. Students manage a simulated $1,000,000 portfolio and leave with a certificate of completion. All classes in English.
+  /* ---- the program, in one paragraph (voice adapts to the reader) ---- */
+  const program = role === "student"
+    ? `${b("The program in one paragraph.")} AIM's Finance &amp; Investment Summer Program is two weeks, Monday to Friday, for students aged 13 to 18. Every lesson is taught live by ${b("Ilyas Zakiat")} — CEO and founder of BIASafe AI, and finance lecturer at McGill University. You'll learn how money, companies and markets really work, you'll manage a simulated ${b("$1,000,000 portfolio")} on a virtual exchange, you'll defend your strategy on pitch day, and you'll leave with a ${b("certificate of completion")}. There are three levels; everyone starts with the Beginner class. Classes are in English.`
+    : `${b("The program in one paragraph.")} AIM's Finance &amp; Investment Summer Program is two weeks, Monday to Friday, for students aged 13 to 18. Every lesson is taught live by ${b("Ilyas Zakiat")} — CEO and founder of BIASafe AI, and finance lecturer at McGill University. Students learn how money, companies and markets really work, manage a simulated ${b("$1,000,000 portfolio")} on a virtual exchange, defend their strategy on pitch day, and leave with a ${b("certificate of completion")}. There are three levels; everyone starts with the Beginner class. Classes are in English${role === "parent" || role === "counselor" ? " (our team is bilingual, so you're welcome to write to us in French)" : ""}.`;
 
-THREE CLASSES — YOU JOIN ONE
-Class 1 · Beginner — Introduction to Finance & Investment (no background needed)
-Class 2 · Intermediate (requires Class 1 with AIM)
-Class 3 · Advanced (requires Classes 1 and 2 with AIM)
+  /* ---- the format blocks ---- */
+  const campusDay = `${b("A typical day on the McGill campus (9 am – 3 pm).")} 9 to 12: the lesson with Ilyas. 12 to 1: supervised lunch break. 1 to 3: practice — exercises, the virtual exchange, ${your} portfolio. Ten days, 60 hours on campus, ${b("32 students maximum")}, on McGill University's downtown Montréal campus; the exact building and room are emailed before the session starts.${role === "parent" ? " Students are with the instructor and the AIM team from 9 to 3, including the lunch break." : ""}`;
+  const campusBring = `${b("What to bring.")} A laptop (or a tablet with a keyboard) and its charger, a notebook and a pen, a packed lunch and a water bottle. All the software we use is free — nothing to buy.`;
+  const campusCost = `${b("Dates and cost.")} Summer 2027: Session 1 late June to early July, Session 2 in July before the construction holiday, Session 3 in August (waitlist). The campus class is ${b("$1,895 plus taxes")}. Exact dates and registration open in ${b("December 2026")} on aimsummer.com, and payment options are confirmed at registration. If getting downtown every day is a problem, the same class runs live online (1 – 3 pm) at $1,495 plus taxes.`;
 
-ON CAMPUS OR ONLINE
-Campus: 10 days, Mon–Fri, 9 am – 3 pm (lesson 9–12 with Ilyas, supervised lunch 12–1, practice 1–3). 60 hours, max. 32 students.
-Online: same dates, Mon–Fri 1 – 3 pm (Montréal time), fully taught live by Ilyas Zakiat, recordings in the student portal. 20 hours, same certificate.
+  const onlineDay = `${b("How the live online class works (1 – 3 pm, Montréal time).")} Monday to Friday, two hours a day live with Ilyas — the same lessons, the same $1,000,000 portfolio and the same pitch day as the campus class. Recordings are posted in the student portal the same day, so a missed afternoon isn't lost. Twenty hours over two weeks, same certificate.${role === "parent" ? " It works from anywhere — a cottage, a trip, another province — as long as there is a quiet two-hour window." : ""}`;
+  const onlineNeed = `${b(role === "student" ? "What you need." : "What the student needs at home.")} A laptop or desktop with a camera and a microphone, a stable internet connection, and a quiet spot for two hours. All the software we use is free.`;
+  const onlineCost = `${b("Dates and cost.")} Summer 2027: Session 1 late June to early July, Session 2 in July before the construction holiday, Session 3 in August (waitlist). The online class is ${b("$1,495 plus taxes")}. Exact dates and registration open in ${b("December 2026")} on aimsummer.com, and payment options are confirmed at registration. If ${rather}, the same class runs on the McGill campus (9 am – 3 pm) at $1,895 plus taxes.`;
 
-SUMMER 2027 — DATES AND PRICES
-Session 1: late June – early July 2027 · Session 2: July 2027, before the construction holiday · Session 3: August 2027 (waitlist)
-Campus $1,895 + taxes · Online $1,495 + taxes (CAD). Exact dates and registration open in December 2026 on aimsummer.com; payment options are confirmed at registration.
+  const infoFormats = `${b("Two ways to attend.")} On the ${b("McGill campus")} in downtown Montréal, Monday to Friday 9 am – 3 pm (lesson in the morning, supervised lunch, practice in the afternoon), 32 students maximum, $1,895 plus taxes. Or ${b("live online")}, Monday to Friday 1 – 3 pm Montréal time, with recordings in the student portal, $1,495 plus taxes. Same instructor, same lessons, same certificate.`;
+  const infoChoose = role === "student"
+    ? `${b("How to choose.")} Pick the campus if you can get downtown every day and want the full-day experience — and a real taste of university life. Pick online if you're outside Montréal, away in July, or want to keep your mornings free.`
+    : `${b("How to choose.")} The campus suits a student who can get downtown every day and wants the full-day experience (and a taste of university life). Online suits a family outside Montréal, travelling in July, or a student who wants the mornings free. Many parents decide once the exact dates are out in December.`;
+  const infoDates = `${b("Dates.")} Summer 2027: Session 1 late June to early July, Session 2 in July before the construction holiday, Session 3 in August (waitlist). Exact dates and registration open in ${b("December 2026")} on aimsummer.com; payment options are confirmed at registration.`;
 
-INCLUDED / TO BRING
-Included: all lessons and practice, the virtual stock exchange, the student portal, materials, the capstone and the certificate. All software is free.
-To bring: a laptop (or tablet with keyboard) and charger, a notebook and pen, and on campus a packed lunch and a water bottle.
+  const formatBlocks = interest === "campus" ? [campusDay, campusBring, campusCost]
+    : interest === "online" ? [onlineDay, onlineNeed, onlineCost]
+    : [infoFormats, infoChoose, infoDates];
 
-NEXT STEPS
-Apply: ${SITE_URL}/apply.html (about 10 minutes; a parent or guardian confirms every registration)
-Free lessons: ${SITE_URL}/learn-finance-basics.html · ${SITE_URL}/learn-stock-market-basics.html · ${SITE_URL}/learn-start-investing-in-canada.html
+  /* ---- next steps, by reader ---- */
+  const nextByRole: Record<string, string> = {
+    student: `${b("What to do now.")}` + ul([
+      `Try a free lesson today — ${a(L.lesson, "Finance basics")} takes about 12 minutes, no account needed.`,
+      `Show this email to a parent. Registration opens in December 2026, and a parent or guardian confirms it.`,
+      `Questions? Just reply — a real person answers within two business days.`,
+    ]),
+    parent: `${b("Next steps.")} Registration for Summer 2027 opens in ${b("December 2026")} on aimsummer.com — you'll receive the exact dates by email first. Applying takes about 10 minutes, with no transcripts or recommendation letters, and nothing is due until you register. In the meantime, the full program page is here: ${a(L.program, "aimsummer.com/program")}, and your child can try a free lesson today: ${a(L.lesson, "Finance basics")}. Any question — about the content, the schedule or the payment options — just reply to this email. We answer within two business days, in English or in French.`,
+    counselor: `${b("Working with your school.")} If several of your students are interested, reply with a rough number and the name of your school: we'll set up a short call, send you a one-page summary you can share, and we're glad to present the program to your students. Registration opens in December 2026; a parent or guardian confirms each student's registration. The full details are on ${a(L.program, "aimsummer.com/program")}, and the three free lessons (${a(L.lesson, "starting with Finance basics")}) are a good first taste for a class.`,
+    other: `${b("Next steps.")} The full program page is here: ${a(L.program, "aimsummer.com/program")}. Registration for Summer 2027 opens in December 2026 on aimsummer.com, and ${a(L.apply, "applying")} takes about 10 minutes. Questions? Reply to this email — we answer within two business days.`,
+  };
+  const next = nextByRole[role || "other"];
 
-QUESTIONS?
-Reply to this email or write to ${SENDER_EMAIL}${ORG_PHONE ? ` — or call ${ORG_PHONE} (${ORG_HOURS})` : ""}.
+  /* ---- assemble ---- */
+  const blocks = [hi, intro, program, ...formatBlocks, next].map(p).join("");
+  const closing = role === "student" ? "Talk soon," : "Warm regards,";
+  const signerRole = role === "student" ? SIGNER_ROLE.replace(", instructor", ", your instructor") : SIGNER_ROLE;
+  const signoff = `<p style="margin:22px 0 0;">${closing}<br>${b(SIGNER)}<br><span style="color:${C.muted};">${esc(signerRole)}</span><br><span style="color:${C.muted};">${SENDER_EMAIL}${ORG_PHONE ? ` · ${esc(ORG_PHONE)} (${esc(ORG_HOURS)})` : ""}</span></p>`;
+  const footer = `<p style="margin:26px 0 0;font-size:12px;line-height:1.5;color:${C.muted};">${ORG_NAME} · ${esc(ORG_ADDRESS)}. AIM is an independent program and is not affiliated with McGill University. You received this email because you asked for the AIM info pack on aimsummer.com (${esc(input.email)}). If that wasn't you, just reply and we'll delete your address.</p>`;
 
-Ilyas Zakiat & Rami Jaouadi — ${ORG_NAME}
-${ORG_ADDRESS} · ${SENDER_EMAIL}
-You received this email because you asked for the AIM info pack on aimsummer.com (${p.email}). Reply "unsubscribe" to be removed.
-AIM is an independent program and is not affiliated with McGill University.`;
-  return { subject, html, text, params: { FIRST_NAME: p.firstName || "", EMAIL: p.email, ROLE: p.role || "", INTEREST: p.interest || "" } };
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(subject)}</title></head>
+<body style="margin:0;padding:0;background:#FFFFFF;">
+<div style="max-width:640px;margin:0;padding:18px 16px;font-family:Arial,Helvetica,sans-serif;font-size:15.5px;line-height:1.6;color:${C.ink};">
+${blocks}${signoff}${footer}
+</div>
+</body></html>`;
+  const text = toText(blocks + signoff + footer);
+  return { subject, html, text, variant: `${role || "other"}|${interest || "info"}`, params: { FIRST_NAME: input.firstName || "", EMAIL: input.email, ROLE: role, INTEREST: interest } };
 }
 
 /* ============================================================ 3. the alert to hello@ */

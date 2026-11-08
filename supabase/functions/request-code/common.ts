@@ -225,6 +225,7 @@ export async function logEvent(sb: SupabaseClient, leadId: string | null, email:
 
 export type Mail = {
   to: { email: string; name?: string }[];
+  fromName?: string;            // defaults to SENDER_NAME
   subject: string;
   html: string;
   text: string;
@@ -244,7 +245,7 @@ export async function sendMail(mail: Mail): Promise<string> {
   if (!apiKey) throw new Error("BREVO_API_KEY is not set (Supabase → Edge Functions → Secrets)");
 
   const payload: Record<string, unknown> = {
-    sender: { name: SENDER_NAME, email: SENDER_EMAIL },
+    sender: { name: mail.fromName || SENDER_NAME, email: SENDER_EMAIL },
     to: mail.to,
     replyTo: mail.replyTo || { email: SENDER_EMAIL, name: "AIM" },
     tags: mail.tags || [],

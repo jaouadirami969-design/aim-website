@@ -3,7 +3,10 @@
 import { makeDb } from './fakedb.mjs';
 const db = makeDb();
 globalThis.__createClient = () => db.client;
-const env = { SUPABASE_URL: 'x', SUPABASE_SERVICE_ROLE_KEY: 'service-key', BREVO_API_KEY: process.env.NO_BREVO ? undefined : 'test-key' };
+const env = { SUPABASE_URL: 'x', SUPABASE_SERVICE_ROLE_KEY: 'service-key', BREVO_API_KEY: process.env.NO_BREVO ? undefined : 'test-key', GMAIL_APP_PASSWORD: 'abcd efgh ijkl mnop' };
+// Gmail SMTP stub (denomailer): records sends; set gmail.fail = true to simulate an outage.
+const gmail = { sent: [], fail: false };
+globalThis.__SMTPClient = class { constructor(cfg) { this.cfg = cfg; } async send(m) { if (gmail.fail) throw new Error('535 auth failed'); gmail.sent.push({ ...m, cfg: this.cfg }); } async close() {} };
 globalThis.Deno = { env: { get: (k) => env[k] }, serve: (h) => { globalThis.__handlers.push(h); }, resolveDns: async () => { throw Object.assign(new Error('x'), { name: 'NotFound' }); } };
 globalThis.__handlers = [];
 const sent = [];
@@ -47,10 +50,11 @@ r = await call(verifyCode, { email: 'Sophie.Tremblay@gmail.com', code: code.slic
 expect('verify ok', r.status === 200 && r.body.ok && r.body.first_name === 'Sophie' && r.body.info_pack_sent === true, r);
 const lead = db.tables.leads[0];
 expect('lead verified', lead.status === 'verified' && lead.verified_at && lead.info_pack_sent_at && lead.notified_at && lead.brevo_contact_synced_at, lead);
-expect('3 more sends', sent.length === 4, sent.map(s => s.subject || 'contact'));
-expect('info pack', sent[1].to[0].email === 'sophie.tremblay@gmail.com' && sent[1].subject.startsWith('Your AIM info pack') && sent[1].htmlContent.includes('Hi Sophie') && sent[1].htmlContent.includes('your child'), sent[1].subject);
-expect('notify', sent[2].to[0].email === 'hello@aimsummer.com' && sent[2].replyTo.email === 'sophie.tremblay@gmail.com' && sent[2].subject.includes('Sophie') && sent[2].subject.includes('Parent'), sent[2].subject);
-expect('brevo contact', sent[3].contact && sent[3].contact.email === 'sophie.tremblay@gmail.com' && sent[3].contact.attributes.FIRSTNAME === 'Sophie', sent[3]);
+expect('info pack via Gmail', gmail.sent.length === 1 && gmail.sent[0].to.includes('sophie.tremblay@gmail.com') && gmail.sent[0].from.includes('hello@aimsummer.com') && gmail.sent[0].subject === 'AIM at McGill — the details parents ask for' && gmail.sent[0].cfg.connection.hostname === 'smtp.gmail.com' && gmail.sent[0].cfg.connection.auth.password === 'abcdefghijklmnop', gmail.sent[0] && gmail.sent[0].subject);
+expect('parent/campus wording', gmail.sent[0].html.includes('your child') && gmail.sent[0].html.includes('32 students maximum') && !gmail.sent[0].html.includes('<img') && (gmail.sent[0].html.match(/<a /g) || []).length <= 3, (gmail.sent[0].html.match(/<a /g) || []).length);
+expect('2 more Brevo sends', sent.length === 3, sent.map(s => s.subject || 'contact'));
+expect('notify', sent[1].to[0].email === 'hello@aimsummer.com' && sent[1].replyTo.email === 'sophie.tremblay@gmail.com' && sent[1].subject.includes('Sophie') && sent[1].subject.includes('Parent'), sent[1].subject);
+expect('brevo contact', sent[2].contact && sent[2].contact.email === 'sophie.tremblay@gmail.com' && sent[2].contact.attributes.FIRSTNAME === 'Sophie', sent[2]);
 r = await call(verifyCode, { email: 'sophie.tremblay@gmail.com', code }); expect('code single-use', r.body.error === 'no_code', r);
 // second request for same email after cooldown: simulate by backdating the previous code
 db.tables.email_codes[0].created_at = new Date(Date.now() - 120000).toISOString();
@@ -75,6 +79,16 @@ for (const c of db.tables.email_codes) c.created_at = new Date(Date.now() - 1800
 r = await call(requestCode, { email: 'sophie.tremblay@gmail.com', consent_info: true }); expect('5 per hour cap', r.status === 429 && r.body.error === 'too_many_requests', { r, n: db.tables.email_codes.length });
 // brevo failure on code email → 502 and code retired
 r = await call(requestCode, { email: 'bounce@gmail.com', consent_info: true }); expect('brevo failure', r.status === 502 && r.body.error === 'email_failed' && db.tables.email_codes.filter(c => c.email === 'bounce@gmail.com' && !c.consumed_at).length === 0, r);
+// Gmail down → the info pack falls back to Brevo (student / online variant)
+gmail.fail = true;
+r = await call(requestCode, { email: 'leo@videotron.ca', first_name: 'Léo', role: 'student', interest: 'online', consent_info: true });
+expect('leo code', r.status === 200, r);
+const leoCode = sent[sent.length - 1].subject.slice(-6);
+r = await call(verifyCode, { email: 'leo@videotron.ca', code: leoCode });
+const leoPack = sent.find(s => s.subject === 'Your two weeks with AIM, live online — how it really works');
+expect('fallback to Brevo with student/online variant', r.body.ok && r.body.info_pack_sent === true && leoPack && leoPack.to[0].email === 'leo@videotron.ca' && leoPack.sender.name === 'Rami Jaouadi (AIM)' && leoPack.htmlContent.includes('Hi Léo') && leoPack.htmlContent.includes('1 – 3 pm'), { r, subjects: sent.map(s => s.subject) });
+expect('fallback logged', db.tables.lead_events.some(e => e.type === 'info_pack_sent' && e.detail.transport === 'brevo' && e.detail.gmail_error), db.tables.lead_events.filter(e => e.type === 'info_pack_sent').map(e => e.detail));
+gmail.fail = false;
 // honeypot: logged, never blocking (browser autofill fills hidden fields for real people)
 r = await call(requestCode, { email: 'trap-test@gmail.com', consent_info: true, website: 'http://spam' }); expect('honeypot logged, not blocking', r.status === 200 && r.body.ok === true && db.tables.lead_events.some(e => e.type === 'honeypot'), r);
 // OPTIONS preflight

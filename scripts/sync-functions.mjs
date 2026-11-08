@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FN = path.join(ROOT, 'supabase', 'functions');
-for (const f of ['common.ts', 'emails.ts']) {
+for (const f of ['common.ts', 'emails.ts', 'gmail.ts']) {
   await fs.copyFile(path.join(FN, 'request-code', f), path.join(FN, 'verify-code', f));
   console.log(`✔ ${f} → verify-code/`);
 }

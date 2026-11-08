@@ -10,7 +10,8 @@ import {
   MAX_ATTEMPTS_PER_CODE, admin, brevoConfigured, clientIp, corsHeaders, fail, hashCode, hashIp, json,
   logEvent, normalizeEmail, readJson, sendMail, str, timingSafeEqual, upsertBrevoContact,
 } from "./common.ts";
-import { infoPackEmail, notifyEmail } from "./emails.ts";
+import { INFO_SENDER_NAME, infoPackEmail, notifyEmail } from "./emails.ts";
+import { gmailConfigured, sendViaGmail } from "./gmail.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(req) });
@@ -66,16 +67,31 @@ Deno.serve(async (req) => {
   let infoPackSent = false;
 
   if (brevoConfigured()) {
-    // 1. The info pack, to the visitor.
-    try {
-      const m = infoPackEmail({ firstName, email, role: lead.role as string | null, interest: lead.interest as string | null });
-      const id = await sendMail({ to: [{ email, name: firstName || undefined }], subject: m.subject, html: m.html, text: m.text, tags: ["aim-info-pack"] });
-      infoPackSent = true;
-      await sb.from("leads").update({ info_pack_sent_at: nowIso }).eq("id", lead.id);
-      await logEvent(sb, lead.id, email, "info_pack_sent", { message_id: id });
-    } catch (err) {
-      console.error("[verify-code] info pack failed:", err);
-      await logEvent(sb, lead.id, email, "email_failed", { stage: "info_pack", error: String(err).slice(0, 300) });
+    // 1. The info pack, to the visitor — through the hello@ Gmail mailbox when configured (lands in "Primary"),
+    //    otherwise (or if Gmail fails) through Brevo.
+    const m = infoPackEmail({ firstName, email, role: lead.role as string | null, interest: lead.interest as string | null });
+    let gmailError: string | null = null;
+    if (gmailConfigured()) {
+      try {
+        await sendViaGmail({ to: { email, name: firstName || undefined }, fromName: INFO_SENDER_NAME, subject: m.subject, html: m.html, text: m.text });
+        infoPackSent = true;
+        await sb.from("leads").update({ info_pack_sent_at: nowIso }).eq("id", lead.id);
+        await logEvent(sb, lead.id, email, "info_pack_sent", { transport: "gmail", variant: m.variant });
+      } catch (err) {
+        gmailError = String(err).slice(0, 300);
+        console.error("[verify-code] Gmail send failed, falling back to Brevo:", err);
+      }
+    }
+    if (!infoPackSent) {
+      try {
+        const id = await sendMail({ to: [{ email, name: firstName || undefined }], fromName: INFO_SENDER_NAME, subject: m.subject, html: m.html, text: m.text, tags: ["aim-info-pack"] });
+        infoPackSent = true;
+        await sb.from("leads").update({ info_pack_sent_at: nowIso }).eq("id", lead.id);
+        await logEvent(sb, lead.id, email, "info_pack_sent", { transport: "brevo", variant: m.variant, message_id: id, gmail_error: gmailError });
+      } catch (err) {
+        console.error("[verify-code] info pack failed:", err);
+        await logEvent(sb, lead.id, email, "email_failed", { stage: "info_pack", error: String(err).slice(0, 300), gmail_error: gmailError });
+      }
     }
 
     // 2. The alert, to hello@aimsummer.com — "reply" in Gmail answers the visitor directly.
