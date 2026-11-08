@@ -96,3 +96,19 @@ The consent wording, its timestamp and the two boxes are stored with each lead (
 `consent_info`, `consent_newsletter`). IP addresses are only stored hashed (`ip_hash`). Codes are hashed and expire after
 10 minutes; rows older than 30 days are purged by `request-code`. Leads are kept up to 24 months — delete a person on
 request with `delete from public.leads where email = '…'` (cascades to codes and detaches events).
+
+## Mission 05 — the application ("Apply now")
+
+| Function | What it does |
+|---|---|
+| `request-code` / `verify-code` | Same as Learn more, with `purpose: "apply"`: the code email says "continue your application", no info pack is sent, and `verify-code` returns a signed `token` (valid 2 h) plus any `draft` saved for that address. |
+| `save-draft` | Saves the answers of an application in progress (table `application_drafts`, one row per verified email) so a family can finish on another device. |
+| `submit-application` | Validates every answer (age 13–18 on 2027-06-28, parent email ≠ student email, English box, consents…), stores the application (`AIM-27-####`), emails the applicant, the parent (one-click confirmation link), a copy to the student, and the alert to hello@. |
+| `confirm-application` | The parent's one click (`application-confirmed.html?ref=…&t=…`). |
+| `remind-drafts` | Called every hour by `pg_cron` (job `aim-remind-drafts`): one reminder 48 h after an unfinished application, deletion after 60 days. |
+
+Tables: `applications`, `application_drafts` (RLS on, no policies — service role only). A database trigger deletes the draft when the application is submitted.
+Optional secrets: `PROGRAM_START` (2027-06-28), `DECISION_DAYS` (3), `DRAFT_REMIND_HOURS` (48), `DRAFT_PURGE_DAYS` (60), `CRON_SECRET` (if set, add the header `x-cron-secret` to the cron job).
+To change an application's status today: Supabase → Table editor → `applications` → column `status`.
+
+Tests: `npm run test:functions` (71 checks, all faked locally) and `node tests/e2e/apply.e2e.mjs` (Playwright, mocked API, 56 checks, desktop + phone).

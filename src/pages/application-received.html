@@ -1,0 +1,67 @@
+<!--page
+{
+  "slug": "application-received.html",
+  "nav": "apply",
+  "title": "Application received — thank you",
+  "description": "Your AIM application has been received. Here is what happens next.",
+  "noindex": true,
+  "apply": true
+}
+-->
+<section class="page-hero page-hero--thanks" data-app-received data-email="{{ site.email }}" data-decision-days="{{ site.apply.decisionDays }}">
+  <div class="container">
+    <span class="ty__badge" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span>
+    <span class="kicker">Application received</span>
+    <h1 data-ty-name>Thank you!</h1>
+    <p class="lead">Your application to AIM's summer program is in. We'll email our decision<span data-ty-has-email> to <strong data-ty-email>your inbox</strong></span> within <strong>{{ site.apply.decisionDays }} business days</strong> — Ilyas or Rami reads every application personally.</p>
+    <p class="ref" data-ty-ref hidden><small>Reference</small> <span data-ty-ref-value></span></p>
+    <p class="muted" style="margin:1rem 0 0;font-size:var(--fs-1)" data-ty-copies>A copy of your answers is on its way to your inbox. If you don't see it within a few minutes, look in <strong>Spam</strong> or <strong>Promotions</strong> — and add <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a> to your contacts so our decision lands in your inbox.</p>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="ar-next">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="ar-next">What happens next</h2>
+      <p>Three steps between now and the first day of class.</p>
+    </div>
+    <ol class="steps">
+      <li class="step"><h3>Our decision</h3><p>Within {{ site.apply.decisionDays }} business days, by email. If anything in the application needs a second look, we write to you first — nobody is turned down without a conversation.</p></li>
+      <li class="step"><h3>Reserve the seat</h3><p>Accepted students receive a link to reserve their seat. Registration opens in December 2026 and the seat is held for you until then — nothing is due before you register.</p></li>
+      <li class="step"><h3>Get ready</h3><p>Before the session: the parents' guide, the student portal access and a short checklist. In the meantime, the three free lessons are the best possible warm-up.</p></li>
+    </ol>
+    <div class="callout callout--sky" data-ty-parent hidden>
+      <h3>Parent or guardian</h3>
+      <p data-ty-parent-text>We've also emailed the parent or guardian a copy of this application with a one-click confirmation link.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band band--tint" aria-labelledby="ar-more">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="ar-more">While you wait</h2>
+      <p>Three things worth doing this week.</p>
+    </div>
+    <ul class="tycards">
+      <li class="tycard">
+        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
+        <h3>Take the first free lesson</h3>
+        <p>Finance basics in a 3-minute video and a 9-minute read — the same ideas the Beginner class opens with.</p>
+        <a class="btn btn--sky" href="learn-finance-basics.html">Lesson 1 · Finance basics</a>
+      </li>
+      <li class="tycard">
+        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg></span>
+        <h3>Know what to expect</h3>
+        <p>A typical day on campus or online, the eight lessons, the $1,000,000 portfolio and pitch day.</p>
+        <a class="btn btn--sky" href="program.html">The summer program</a>
+      </li>
+      <li class="tycard">
+        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg></span>
+        <h3>Questions? Just reply</h3>
+        <p>Reply to the confirmation email, or write to us — a real person answers within two business days, in English or in French.</p>
+        <a class="btn btn--primary" href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a>
+      </li>
+    </ul>
+  </div>
+</section>

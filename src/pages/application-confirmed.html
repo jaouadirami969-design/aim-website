@@ -1,0 +1,36 @@
+<!--page
+{
+  "slug": "application-confirmed.html",
+  "nav": "apply",
+  "title": "Confirm an application",
+  "description": "A parent or guardian confirms an AIM application with one click.",
+  "noindex": true,
+  "apply": true
+}
+-->
+<section class="page-hero" data-app-confirm data-api="{{ site.api.functions }}" data-email="{{ site.email }}">
+  <div class="container">
+    <div class="confirm" data-state="loading">
+      <span class="ty__badge ty__badge--wait" aria-hidden="true" data-badge><span class="spin"></span></span>
+      <span class="kicker" data-kicker>Parent or guardian confirmation</span>
+      <h1 data-title>One moment…</h1>
+      <p class="lead" data-text>We're checking the link from your email.</p>
+      <p class="ref" data-ref hidden><small>Reference</small> <span data-ref-value></span></p>
+      <p data-retry-wrap hidden><button type="button" class="btn btn--primary" data-retry>Try again</button></p>
+      <p class="muted" style="margin:1.25rem 0 0;font-size:var(--fs-1)">Questions? Write to <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a> — we answer within two business days, in English or in French.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="ac-next">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="ac-next">What happens next</h2>
+    </div>
+    <ol class="steps">
+      <li class="step"><h3>Our decision</h3><p>Within {{ site.apply.decisionDays }} business days, by email — to the address that applied and to you.</p></li>
+      <li class="step"><h3>Reserve the seat</h3><p>If accepted, you receive a link to reserve the seat. Registration opens in December 2026 — nothing is due before that.</p></li>
+      <li class="step"><h3>Get ready</h3><p>The parents' guide, the student portal and a short checklist arrive before the session starts.</p></li>
+    </ol>
+  </div>
+</section>

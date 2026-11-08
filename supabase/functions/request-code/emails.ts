@@ -74,25 +74,28 @@ function card(inner: string, bg = C.skyT): string {
 
 /* ============================================================ 1. the code */
 
-export function codeEmail(p: { code: string; firstName?: string | null }) {
+export function codeEmail(p: { code: string; firstName?: string | null; purpose?: "info" | "apply" }) {
   const name = p.firstName ? `Hi ${esc(p.firstName)},` : "Hi,";
+  const apply = p.purpose === "apply";
   const subject = `Your AIM verification code: ${p.code}`;
-  const preheader = `Enter this code on aimsummer.com to receive your info pack. It expires in 10 minutes.`;
+  const preheader = apply
+    ? `Enter this code on aimsummer.com to continue your application. It expires in 10 minutes.`
+    : `Enter this code on aimsummer.com to receive your info pack. It expires in 10 minutes.`;
   const body = `
     <p style="margin:0 0 14px;">${name}</p>
-    <p style="margin:0 0 18px;">Here is your single-use code to confirm your email address and receive the AIM info pack:</p>
+    <p style="margin:0 0 18px;">${apply ? "Here is your single-use code to confirm your email address and continue your AIM application:" : "Here is your single-use code to confirm your email address and receive the AIM info pack:"}</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
       <td align="center" style="background:${C.skyT};border:2px dashed ${C.sky};border-radius:14px;padding:22px 10px;">
         <div style="font-family:'Courier New',Courier,monospace;font-size:40px;letter-spacing:12px;font-weight:bold;color:${C.deep};line-height:1;">${p.code}</div>
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:${C.muted};margin-top:10px;">Valid for 10 minutes</div>
       </td></tr></table>
-    <p style="margin:18px 0 0;">Go back to the page you just left and type the code — your info pack arrives right after.</p>
+    <p style="margin:18px 0 0;">${apply ? "Go back to the page you just left and type the code — your application continues right where you were." : "Go back to the page you just left and type the code — your info pack arrives right after."}</p>
     <p style="margin:14px 0 0;font-size:14px;color:${C.muted};">Didn't ask for this? Someone may have typed your address by mistake. You can safely ignore this email — nothing happens without the code.</p>`;
   const html = shell({ title: subject, preheader, body, footerNote: "You received this email because this address was entered on aimsummer.com a moment ago." });
   const text = `${p.firstName ? `Hi ${p.firstName},` : "Hi,"}
 
 Your AIM verification code: ${p.code}
-It is valid for 10 minutes. Go back to aimsummer.com and type it to receive your info pack.
+It is valid for 10 minutes. Go back to aimsummer.com and type it to ${apply ? "continue your application" : "receive your info pack"}.
 
 Didn't ask for this? Ignore this email — nothing happens without the code.
 

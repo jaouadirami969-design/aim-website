@@ -5,7 +5,8 @@
 // {
 //   email, first_name?, role?: "student"|"parent"|"counselor"|"other", interest?: "campus"|"online"|"info",
 //   consent_info: true, consent_newsletter?: boolean, consent_text?: string, accept_domain?: boolean,
-//   source_page?, referrer?, utm_source?, utm_medium?, utm_campaign?, website?: ""   // ← honeypot, must stay empty
+//   purpose?: "info" | "apply",            // "apply" = the code unlocks the application form (no info pack)
+//   source_page?, referrer?, utm_source?, utm_medium?, utm_campaign?, website?: ""   // ← honeypot, logged only
 // }
 // 200 { ok:true, email, masked, expires_in, resend_in }
 // 4xx/5xx { ok:false, error, message, ...extra }
@@ -34,16 +35,23 @@ Deno.serve(async (req) => {
   const trapped = Boolean(str(body.website));
   if (trapped) await logEvent(sb, null, null, "honeypot", { ip_hash: await hashIp(ip) });
 
+  // "info" = the Learn-more flow (info pack after the code); "apply" = the application (the code unlocks the form).
+  const purpose: "info" | "apply" = body.purpose === "apply" ? "apply" : "info";
+
   // 2. The consent box is the whole point of the page (Law 25 / CASL): no box, no email.
   if (body.consent_info !== true) {
-    return fail(req, 400, "consent_required", "Please tick the box so we're allowed to email you the info pack.");
+    return fail(req, 400, "consent_required", purpose === "apply"
+      ? "Please tick the box so we're allowed to email you about your application."
+      : "Please tick the box so we're allowed to email you the info pack.");
   }
 
   // 3. The address itself: format, disposable domains, obvious typos, then "does this domain receive mail?"
   const email = normalizeEmail(body.email);
   if (!email) return fail(req, 400, "invalid_email", "That doesn't look like a valid email address. Check it and try again.");
   if (isDisposable(email)) {
-    return fail(req, 400, "disposable_email", "Temporary or disposable addresses can't receive the info pack. Please use your usual email address.");
+    return fail(req, 400, "disposable_email", purpose === "apply"
+      ? "Temporary or disposable addresses can't be used for an application — we'll need to reach you later. Please use your usual email address."
+      : "Temporary or disposable addresses can't receive the info pack. Please use your usual email address.");
   }
   const suggestion = suggestDomainFix(email);
   if (suggestion && body.accept_domain !== true) {
@@ -134,12 +142,12 @@ Deno.serve(async (req) => {
     return fail(req, 503, "email_not_configured", "Our email service isn't connected yet. Please write to hello@aimsummer.com and we'll send you the info pack by hand.");
   }
   try {
-    const mail = codeEmail({ code, firstName });
+    const mail = codeEmail({ code, firstName, purpose });
     const messageId = await sendMail({
       to: [{ email, name: firstName || undefined }],
       subject: mail.subject, html: mail.html, text: mail.text, tags: ["aim-code"],
     });
-    await logEvent(sb, leadId, email, "code_sent", { message_id: messageId, mx, role, interest, newsletter: consentNewsletter });
+    await logEvent(sb, leadId, email, "code_sent", { message_id: messageId, mx, role, interest, newsletter: consentNewsletter, purpose });
   } catch (err) {
     console.error("[request-code] Brevo error:", err);
     await sb.from("email_codes").update({ consumed_at: nowIso }).eq("id", codeRow.id);

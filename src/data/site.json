@@ -55,10 +55,71 @@
   },
 
   "sessions": [
-    { "name": "Session 1", "when": "Late June – early July 2027", "where": "McGill campus · Online", "open": true, "label": "Registration opens soon" },
-    { "name": "Session 2", "when": "July 2027, before the construction holiday", "where": "McGill campus · Online", "open": true, "label": "Registration opens soon" },
+    { "name": "Session 1", "when": "Late June – early July 2027", "where": "McGill campus · Online", "open": true, "label": "Applications open" },
+    { "name": "Session 2", "when": "July 2027, before the construction holiday", "where": "McGill campus · Online", "open": true, "label": "Applications open" },
     { "name": "Session 3", "when": "August 2027", "where": "McGill campus · Online", "open": false, "label": "Join the waitlist" }
   ],
+
+  "_comment_apply": "The guided application (apply.html). Everything below is shown as options in the form; flip a session to \"waitlist\" when it is full, set a level's \"from\" year to open it. Values (ids) must match the Edge Function submit-application.",
+  "apply": {
+    "programStart": "2027-06-28",
+    "minutes": "10",
+    "decisionDays": "3",
+    "programs": [
+      { "id": "finance-investment", "name": "Finance & Investment Summer Program", "tag": "Summer 2027 · 3 levels", "blurb": "Two weeks with Ilyas Zakiat: how money, companies and markets really work — and a simulated $1,000,000 portfolio you manage and defend on pitch day.", "open": true, "featured": true },
+      { "id": "fintech-digital-investing", "name": "FinTech & Digital Investing", "tag": "New for 2027 · Beginner", "blurb": "Payments, digital assets, robo-advisors and AI in finance — the technology changing how people invest. Full details coming soon; applying now puts you first in line.", "open": true, "featured": false }
+    ],
+    "levels": [
+      { "id": "beginner", "name": "Beginner", "who": "No experience needed — everyone starts here in 2027.", "from": 2027 },
+      { "id": "intermediate", "name": "Intermediate", "who": "For graduates of the AIM Beginner class.", "from": 2028 },
+      { "id": "advanced", "name": "Advanced", "who": "For graduates of the AIM Intermediate class.", "from": 2029 }
+    ],
+    "formats": [
+      { "id": "campus", "name": "McGill campus", "detail": "Monday to Friday, 9 am – 3 pm · 60 hours · 32 students", "price": "$1,895 + tax" },
+      { "id": "online", "name": "Live online", "detail": "Monday to Friday, 1 – 3 pm Montréal time · recordings in the portal", "price": "$1,495 + tax" },
+      { "id": "either", "name": "No preference", "detail": "Campus or online — suggest what works best for us", "price": "" }
+    ],
+    "sessions": [
+      { "id": "s1", "name": "Session 1", "when": "Late June – early July 2027", "status": "open", "open": true, "label": "Open" },
+      { "id": "s2", "name": "Session 2", "when": "July 2027, before the construction holiday", "status": "open", "open": true, "label": "Open" },
+      { "id": "s3", "name": "Session 3", "when": "August 2027", "status": "waitlist", "open": false, "label": "Waitlist" },
+      { "id": "flexible", "name": "Flexible", "when": "Any session works for us", "status": "open", "open": true, "label": "Open" }
+    ],
+    "relationships": [
+      { "id": "mother", "name": "Mother" },
+      { "id": "father", "name": "Father" },
+      { "id": "guardian", "name": "Legal guardian" },
+      { "id": "other", "name": "Other" }
+    ],
+    "schoolLevels": [
+      { "id": "sec1", "name": "Secondary 1 (Quebec)" },
+      { "id": "sec2", "name": "Secondary 2 (Quebec)" },
+      { "id": "sec3", "name": "Secondary 3 (Quebec)" },
+      { "id": "sec4", "name": "Secondary 4 (Quebec)" },
+      { "id": "sec5", "name": "Secondary 5 (Quebec)" },
+      { "id": "cegep1", "name": "CEGEP — 1st year" },
+      { "id": "grade7", "name": "Grade 7" },
+      { "id": "grade8", "name": "Grade 8" },
+      { "id": "grade9", "name": "Grade 9" },
+      { "id": "grade10", "name": "Grade 10" },
+      { "id": "grade11", "name": "Grade 11" },
+      { "id": "grade12", "name": "Grade 12" },
+      { "id": "other", "name": "Other" }
+    ],
+    "heard": [
+      "My school, a teacher or a counselor",
+      "A friend or a family member",
+      "Instagram",
+      "Facebook",
+      "TikTok or YouTube",
+      "Google search",
+      "An event, a fair or a flyer",
+      "Other"
+    ],
+    "provincesCA": [
+      "Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Northwest Territories", "Nova Scotia", "Nunavut", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Yukon"
+    ]
+  },
 
   "lessons": [
     {

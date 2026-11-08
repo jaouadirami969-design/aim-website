@@ -2,13 +2,13 @@
 // verified, send the info pack, alert hello@aimsummer.com and (if they ticked the box) add the
 // contact to the Brevo newsletter list.
 //
-// POST /functions/v1/verify-code   { email, code, website?: "" /* honeypot */ }
-// 200 { ok:true, email, first_name, info_pack_sent }
+// POST /functions/v1/verify-code   { email, code, purpose?: "info" | "apply", website?: "" /* honeypot */ }
+// 200 { ok:true, email, first_name, info_pack_sent, token, draft? }   token = signed proof of the verified email (2 h); draft = answers saved server-side (purpose apply)
 // 4xx { ok:false, error: no_code | code_expired | wrong_code | too_many_attempts | invalid_email | invalid_code, message, attempts_left? }
 
 import {
   MAX_ATTEMPTS_PER_CODE, admin, brevoConfigured, clientIp, corsHeaders, fail, hashCode, hashIp, json,
-  logEvent, normalizeEmail, readJson, sendMail, str, timingSafeEqual, upsertBrevoContact,
+  logEvent, normalizeEmail, readJson, sendMail, signToken, str, timingSafeEqual, upsertBrevoContact,
 } from "./common.ts";
 import { INFO_SENDER_NAME, infoPackEmail, notifyEmail } from "./emails.ts";
 import { gmailConfigured, sendViaGmail } from "./gmail.ts";
@@ -27,6 +27,7 @@ Deno.serve(async (req) => {
   if (!email) return fail(req, 400, "invalid_email", "That doesn't look like a valid email address.");
   const code = String(body.code ?? "").replace(/\D/g, "");
   if (code.length !== 6) return fail(req, 400, "invalid_code", "The code is 6 digits — check the email we sent you.");
+  const purpose: "info" | "apply" = body.purpose === "apply" ? "apply" : "info";
 
   // The lead and its live code.
   const { data: lead } = await sb.from("leads").select("*").eq("email", email).maybeSingle();
@@ -61,10 +62,23 @@ Deno.serve(async (req) => {
   // Correct code: consume it, mark the address verified.
   await sb.from("email_codes").update({ consumed_at: nowIso }).eq("id", row.id);
   await sb.from("leads").update({ status: "verified", verified_at: nowIso }).eq("id", lead.id);
-  await logEvent(sb, lead.id, email, "verified", {});
+  await logEvent(sb, lead.id, email, "verified", { purpose });
 
   const firstName = (lead.first_name as string | null) || null;
   let infoPackSent = false;
+  // Proof of the verified address for the next step (the application form). Nothing stored server-side.
+  const token = await signToken({ e: email, p: purpose }, 2 * 60 * 60);
+
+  if (purpose === "apply") {
+    // The application flow: no info pack and no alert yet — both come with the submitted application.
+    // If this address already started an application (on any device), hand the saved answers back.
+    let draft: Record<string, unknown> | null = null;
+    const { data: saved } = await sb.from("application_drafts").select("step, data, saved_at").eq("email", email).maybeSingle();
+    if (saved && saved.data && typeof saved.data === "object") {
+      draft = { step: saved.step, data: saved.data, savedAt: new Date(saved.saved_at as string).getTime() };
+    }
+    return json(req, 200, { ok: true, email, first_name: firstName || "", info_pack_sent: false, token, draft });
+  }
 
   if (brevoConfigured()) {
     // 1. The info pack, to the visitor — through the hello@ Gmail mailbox when configured (lands in "Primary"),
@@ -127,5 +141,5 @@ Deno.serve(async (req) => {
     await logEvent(sb, lead.id, email, "email_not_configured", { stage: "verify" });
   }
 
-  return json(req, 200, { ok: true, email, first_name: firstName || "", info_pack_sent: infoPackSent });
+  return json(req, 200, { ok: true, email, first_name: firstName || "", info_pack_sent: infoPackSent, token });
 });

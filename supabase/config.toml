@@ -6,3 +6,15 @@ verify_jwt = false
 
 [functions.verify-code]
 verify_jwt = false
+
+[functions.submit-application]
+verify_jwt = false
+
+[functions.confirm-application]
+verify_jwt = false
+
+[functions.save-draft]
+verify_jwt = false
+
+[functions.remind-drafts]
+verify_jwt = false

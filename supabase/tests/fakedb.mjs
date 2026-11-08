@@ -1,6 +1,6 @@
 // Minimal in-memory imitation of the supabase-js query builder, for the subset the functions use.
 export function makeDb() {
-  const tables = { leads: [], email_codes: [], lead_events: [] };
+  const tables = { leads: [], email_codes: [], lead_events: [], applications: [], application_drafts: [] };
   let seq = 1;
   const uuid = () => 'id-' + (seq++);
   const matches = (row, filters) => filters.every(([op, col, val]) => {
@@ -16,6 +16,7 @@ export function makeDb() {
     select(cols, opts) { if (this.op === 'select') { this.head = !!(opts && opts.head); this.count = !!(opts && opts.count); } this.wantRows = true; return this; }
     insert(p) { this.op = 'insert'; this.payload = p; return this; }
     update(p) { this.op = 'update'; this.payload = p; return this; }
+    upsert(p, opts) { this.op = 'upsert'; this.payload = p; this.conflict = (opts && opts.onConflict) || 'id'; return this; }
     delete() { this.op = 'delete'; return this; }
     lt(c, v) { this.filters.push(['lt', c, v]); return this; }
     eq(c, v) { this.filters.push(['eq', c, v]); return this; }
@@ -31,7 +32,17 @@ export function makeDb() {
       if (this.op === 'insert') {
         const now = new Date().toISOString();
         const r = { id: this.t === 'lead_events' ? seq++ : uuid(), created_at: now, updated_at: now, attempts: 0, consumed_at: null, status: 'pending', request_count: 1, ...this.payload };
+        if (this.t === 'applications' && !r.reference) r.reference = 'AIM-27-' + (1001 + rows.length);
         if (this.t === 'leads' && rows.some(x => x.email.toLowerCase() === r.email.toLowerCase())) return { data: null, error: { message: 'duplicate key value violates unique constraint' } };
+        rows.push(r);
+        return { data: this.mode ? r : [r], error: null };
+      }
+      if (this.op === 'upsert') {
+        const now = new Date().toISOString();
+        const key = this.conflict;
+        const existing = rows.find(r => String(r[key]).toLowerCase() === String(this.payload[key]).toLowerCase());
+        if (existing) { Object.assign(existing, this.payload, { updated_at: now }); return { data: this.mode ? existing : [existing], error: null }; }
+        const r = { created_at: now, updated_at: now, reminded_at: null, ...this.payload };
         rows.push(r);
         return { data: this.mode ? r : [r], error: null };
       }

@@ -2,51 +2,551 @@
 {
   "slug": "apply.html",
   "nav": "apply",
-  "title": "Apply — or find out more",
-  "description": "Apply to the Finance & Investment Summer Program, or simply ask us a question. Students, parents and counselors welcome. We reply within two business days.",
-  "learnMore": true
+  "title": "Apply — Summer 2027",
+  "description": "Apply to AIM's summer program in about 10 minutes: six short steps, no application fee, no transcripts, no recommendation letters. Your answers are saved as you go, and we email our decision within 3 business days.",
+  "apply": true
 }
 -->
-<section class="page-hero">
+<section class="page-hero page-hero--apply">
   <div class="container">
-    <span class="kicker">Apply — or find out more</span>
-    <h1>Three steps. No commitment yet.</h1>
-    <p class="lead">Start by getting the info pack — it tells us you're interested and gives you everything you need to decide. A real person — Rami or Ilyas — then answers your questions within two business days.</p>
+    <span class="kicker">Apply · Summer 2027</span>
+    <h1>Your application, in about {{ site.apply.minutes }} minutes.</h1>
+    <p class="lead">Six short steps, written for students and parents alike. No application fee, no transcripts, no recommendation letters — just tell us who you are and why AIM. Your answers are saved as you go, and we email our decision within {{ site.apply.decisionDays }} business days.</p>
+    <ul class="facts" aria-label="Good to know">
+      <li><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg> No fee, no transcripts, no letters</li>
+      <li><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg> Saved automatically — finish later</li>
+      <li><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg> Decision by email in {{ site.apply.decisionDays }} business days</li>
+      <li><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg> Nothing to pay until you reserve a seat</li>
+    </ul>
   </div>
 </section>
 
-<section class="band" aria-label="How it works">
+<section class="band band--apply" aria-label="The application">
   <div class="container">
-    <ol class="steps">
-      <li class="step"><h3>Get the info pack</h3><p>Enter your email below and confirm it with a 6-digit code. The full info pack arrives within a minute.</p></li>
-      <li class="step"><h3>Ask your questions</h3><p>Reply to the email — Rami or Ilyas answers within two business days, in English or in French.</p></li>
-      <li class="step"><h3>Reserve a seat</h3><p>Registration for Summer 2027 opens in December 2026 and you'll be the first to know. Seats are limited to 32 students per campus session.</p></li>
-    </ol>
-    {{> learn-more-form }}
+    <div class="ap" id="apply"
+         data-api="{{ site.api.functions }}"
+         data-thanks="application-received.html"
+         data-email="{{ site.email }}"
+         data-program-start="{{ site.apply.programStart }}"
+         data-decision-days="{{ site.apply.decisionDays }}">
+
+      <div class="ap__head">
+        <div>
+          <span class="ap__kicker">AIM application · Summer 2027</span>
+          <h2 class="ap__title" id="ap-title">Let's get you a seat.</h2>
+        </div>
+        <p class="ap__saved" data-saved aria-live="polite"></p>
+      </div>
+
+      <!-- progress: 6 steps + the review -->
+      <ol class="ap__progress" aria-label="Steps of the application" data-progress>
+        <li data-for="email"><button type="button" class="ap__pip" data-go="email"><span>1</span><em>Your email</em></button></li>
+        <li data-for="student"><button type="button" class="ap__pip" data-go="student"><span>2</span><em>The student</em></button></li>
+        <li data-for="parent"><button type="button" class="ap__pip" data-go="parent"><span>3</span><em>Parent / guardian</em></button></li>
+        <li data-for="program"><button type="button" class="ap__pip" data-go="program"><span>4</span><em>Your program</em></button></li>
+        <li data-for="school"><button type="button" class="ap__pip" data-go="school"><span>5</span><em>Your school</em></button></li>
+        <li data-for="why"><button type="button" class="ap__pip" data-go="why"><span>6</span><em>Why AIM?</em></button></li>
+        <li data-for="review"><button type="button" class="ap__pip" data-go="review"><span><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg></span><em>Review &amp; send</em></button></li>
+      </ol>
+      <p class="ap__mobileprog" data-mobile-progress aria-hidden="true"></p>
+
+      <!-- resume banner (shown when a saved application exists on this device) -->
+      <div class="ap__resume" data-resume hidden>
+        <div>
+          <strong>Welcome back.</strong> <span data-resume-text>Your answers are saved on this device.</span>
+        </div>
+        <div class="ap__resume-actions">
+          <button type="button" class="btn btn--primary" data-resume-continue>Continue where I left off</button>
+          <button type="button" class="btn btn--ghost" data-resume-reset>Start a new application</button>
+        </div>
+      </div>
+
+      <!-- ======================================================= step 0 · how to apply -->
+      <form class="ap__step" data-step="start" novalidate>
+        <h3 class="ap__h" tabindex="-1">How to apply</h3>
+        <div class="ap__cols">
+          <div>
+            <p class="ap__intro">The whole thing takes about {{ site.apply.minutes }} minutes and you can stop at any time — your answers stay saved on this device. A student can fill it in alone, or a parent can do it for them.</p>
+            <ul class="checks">
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> <span><strong>You'll need:</strong> the student's date of birth, a parent or guardian's email and phone number, and the name of the school.</span></li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> <span><strong>You won't need:</strong> grades, transcripts, recommendation letters, a résumé, or any payment.</span></li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> <span><strong>Then:</strong> we email our decision within {{ site.apply.decisionDays }} business days. Accepted students reserve their seat from December 2026 — nothing is due before that.</span></li>
+            </ul>
+          </div>
+          <div class="ap__aside">
+            <h4>Who is AIM for?</h4>
+            <p>Students who will be <strong>13 to 18</strong> in summer 2027, comfortable following a class in <strong>English</strong>. No finance background needed — the Beginner class starts from zero.</p>
+            <p class="ap__aside-note">Not sure yet? <a href="learn-more.html">Get the info pack first</a> — it takes a minute and commits you to nothing.</p>
+          </div>
+        </div>
+
+        <fieldset class="fset" data-field="filled_by">
+          <legend class="fset__legend">Who is filling in this application?</legend>
+          <div class="choices choices--2">
+            <label class="choice">
+              <input type="radio" name="filled_by" value="student" required>
+              <span class="choice__body"><span class="choice__t">I'm the student</span><span class="choice__d">I'll give my own details, then my parent or guardian's. They'll receive a copy and confirm with one click.</span></span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="filled_by" value="parent" required>
+              <span class="choice__body"><span class="choice__t">I'm a parent or guardian</span><span class="choice__d">I'm applying for my child. I'll give their details, then mine.</span></span>
+            </label>
+          </div>
+          <p class="fld__err" hidden></p>
+        </fieldset>
+
+        <div class="ap__actions">
+          <button class="btn btn--primary btn--lg" type="submit">Start the application <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <p class="ap__note">Step 1 confirms your email with a 6-digit code — so we're sure we can reach you.</p>
+        </div>
+      </form>
+
+      <!-- ======================================================= step 1 · verify your email -->
+      <section class="ap__step" data-step="email" hidden>
+        <h3 class="ap__h" tabindex="-1"><span class="ap__n">Step 1 of 6</span>Your email</h3>
+
+        <form id="ap-email" novalidate>
+          <p class="ap__intro">We'll send a 6-digit code to this address to make sure it's yours. Every email about this application — the confirmation, our decision — goes there.</p>
+          <div class="fld fld--stack fld--max" data-field="applicant_email">
+            <label class="fld__lab" for="f-applicant-email"><span data-voice="student">Your email</span><span data-voice="parent" hidden>Your email (the parent or guardian's)</span></label>
+            <input class="fld__inp" id="f-applicant-email" name="applicant_email" type="email" autocomplete="email" inputmode="email" spellcheck="false" required placeholder="you@example.com">
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="ap__suggest" data-suggest hidden>
+            <p>Did you mean <strong data-suggestion></strong>?</p>
+            <div class="ap__suggest-actions">
+              <button type="button" class="btn btn--sky" data-use-suggestion>Yes, use that address</button>
+              <button type="button" class="btn btn--ghost" data-keep-address>No, keep mine</button>
+            </div>
+          </div>
+          <label class="consent consent--main" data-field="consent_info">
+            <input type="checkbox" name="consent_info" value="yes" required>
+            <span><strong>Yes — AIM may email me about this application</strong>: the verification code, a copy of my answers and your decision. <span data-voice="student">I'm 14 or older, and my parent or guardian knows I'm applying.</span><span data-voice="parent" hidden>I'm the student's parent or guardian.</span> <a href="privacy.html">Privacy &amp; consent (Law&nbsp;25)</a></span>
+          </label>
+          <p class="fld__err" data-err-for="consent_info" hidden></p>
+          <div class="ap__actions">
+            <button type="button" class="btn btn--ghost" data-back>Back</button>
+            <button class="btn btn--primary btn--lg" type="submit">Send me the code <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </form>
+
+        <form id="ap-code" hidden novalidate>
+          <div class="ap__check">
+            <span class="ap__mailicon"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg></span>
+            <div>
+              <h4>Check your email</h4>
+              <p>We just sent a 6-digit code to <strong data-masked>your address</strong>. Type it below — it's valid for 10 minutes.</p>
+            </div>
+          </div>
+          <label class="ap__codelab" for="ap-code-input">Your 6-digit code</label>
+          <input class="lm__code" id="ap-code-input" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="······" required>
+          <div class="ap__actions">
+            <button class="btn btn--primary btn--lg" type="submit">Confirm my email <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+          <p class="form-status" role="status" aria-live="polite"></p>
+          <p class="ap__help">Nothing after a minute? Look in <strong>Spam</strong> or <strong>Promotions</strong>, or
+            <button type="button" class="linkbtn" data-resend disabled>resend the code<span data-countdown></span></button> ·
+            <button type="button" class="linkbtn" data-change-email>use another email</button></p>
+        </form>
+
+        <div class="ap__verified" data-verified hidden>
+          <span class="ap__vbadge"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span>
+          <div>
+            <h4>Email confirmed</h4>
+            <p>We'll write to <strong data-verified-email></strong>. <button type="button" class="linkbtn" data-change-email>Use another email</button></p>
+          </div>
+          <div class="ap__actions ap__actions--inline">
+            <button type="button" class="btn btn--primary btn--lg" data-next>Continue <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================= step 2 · the student -->
+      <form class="ap__step" data-step="student" hidden novalidate autocomplete="on">
+        <h3 class="ap__h" tabindex="-1"><span class="ap__n">Step 2 of 6</span>The student</h3>
+        <p class="ap__intro"><span data-voice="student">Tell us about you — exactly as it appears on an official document, so your certificate is right.</span><span data-voice="parent" hidden>Tell us about your child — the names exactly as they appear on an official document, so the certificate is right.</span></p>
+
+        <div class="ap__fields">
+          <div class="fld fld--stack" data-field="student_first_name">
+            <label class="fld__lab" for="f-student-first">First name</label>
+            <input class="fld__inp" id="f-student-first" name="student_first_name" autocomplete="section-student given-name" maxlength="60" required>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="student_last_name">
+            <label class="fld__lab" for="f-student-last">Last name</label>
+            <input class="fld__inp" id="f-student-last" name="student_last_name" autocomplete="section-student family-name" maxlength="60" required>
+            <p class="fld__err" hidden></p>
+          </div>
+        </div>
+
+        <fieldset class="fset fset--dob" data-field="student_dob">
+          <legend class="fset__legend">Date of birth</legend>
+          <div class="dob">
+            <label class="vh" for="f-dob-m">Month</label>
+            <select class="fld__inp" id="f-dob-m" name="student_dob_m" autocomplete="section-student bday-month" required>
+              <option value="">Month</option>
+              <option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>
+            </select>
+            <label class="vh" for="f-dob-d">Day</label>
+            <select class="fld__inp" id="f-dob-d" name="student_dob_d" autocomplete="section-student bday-day" required data-days>
+              <option value="">Day</option>
+            </select>
+            <label class="vh" for="f-dob-y">Year</label>
+            <select class="fld__inp" id="f-dob-y" name="student_dob_y" autocomplete="section-student bday-year" required data-years>
+              <option value="">Year</option>
+            </select>
+          </div>
+          <p class="fld__hint" data-age-note>AIM is for students aged 13 to 18 during the program (summer 2027).</p>
+          <p class="fld__err" hidden></p>
+        </fieldset>
+
+        <div class="ap__fields">
+          <div class="fld fld--stack" data-field="country">
+            <label class="fld__lab" for="f-country">Country</label>
+            <select class="fld__inp" id="f-country" name="country" autocomplete="section-student country-name" required>
+              <option value="Canada" selected>Canada</option>
+              <option value="United States">United States</option>
+              <option value="Other">Other country</option>
+            </select>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="province">
+            <label class="fld__lab" for="f-province"><span data-province-label>Province or territory</span></label>
+            <select class="fld__inp" id="f-province" name="province" autocomplete="section-student address-level1" required data-province-select>
+              <option value="">Choose…</option>
+              {{#each site.apply.provincesCA}}<option value="{{ this }}">{{ this }}</option>{{/each}}
+            </select>
+            <input class="fld__inp" id="f-province-text" name="province_text" autocomplete="section-student address-level1" maxlength="60" placeholder="Province, state or region" hidden data-province-text>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="city">
+            <label class="fld__lab" for="f-city">City</label>
+            <input class="fld__inp" id="f-city" name="city" autocomplete="section-student address-level2" maxlength="80" required>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="postal_code">
+            <label class="fld__lab" for="f-postal"><span data-postal-label>Postal code</span></label>
+            <input class="fld__inp" id="f-postal" name="postal_code" autocomplete="section-student postal-code" maxlength="16" required placeholder="H3A 0G4">
+            <p class="fld__err" hidden></p>
+          </div>
+        </div>
+
+        <div class="ap__fields">
+          <div class="fld fld--stack" data-field="student_email">
+            <label class="fld__lab" for="f-student-email">Student's email <small>(optional)</small></label>
+            <input class="fld__inp" id="f-student-email" name="student_email" type="email" autocomplete="section-student email" inputmode="email" spellcheck="false" maxlength="254">
+            <p class="fld__hint" data-voice="parent" hidden>If your child has their own address, they'll receive a copy of the application and, later, their portal access.</p>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="student_phone">
+            <label class="fld__lab" for="f-student-phone">Student's cell phone <small>(optional)</small></label>
+            <input class="fld__inp" id="f-student-phone" name="student_phone" type="tel" autocomplete="section-student tel" inputmode="tel" maxlength="40" placeholder="514-555-0123">
+            <p class="fld__err" hidden></p>
+          </div>
+        </div>
+
+        <label class="consent" data-newsletter hidden>
+          <input type="checkbox" name="consent_newsletter" value="yes">
+          <span><span data-voice="student">Send me AIM news and free lessons</span><span data-voice="parent" hidden>Send me AIM news and free lessons for my child</span> — a few emails a year, unsubscribe in one click.</span>
+        </label>
+
+        <div class="ap__actions">
+          <button type="button" class="btn btn--ghost" data-back>Back</button>
+          <button class="btn btn--primary btn--lg" type="submit">Continue <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <!-- ======================================================= step 3 · parent or guardian -->
+      <form class="ap__step" data-step="parent" hidden novalidate>
+        <h3 class="ap__h" tabindex="-1"><span class="ap__n">Step 3 of 6</span>Parent or guardian</h3>
+        <p class="ap__intro"><span data-voice="student">A parent or guardian confirms every application and signs the registration later. They'll receive a copy of your answers and a one-click confirmation link.</span><span data-voice="parent" hidden>Your own details. You'll receive a copy of the application and, if your child is accepted, the registration link.</span></p>
+        <p class="callout callout--sky ap__law25" data-law25 hidden>Because <strong data-student-first>the student</strong> is under 14, Quebec's privacy law (Law&nbsp;25) asks for a parent or guardian's consent. <strong data-parent-first>The parent</strong> will receive a one-click confirmation email right after you submit.</p>
+
+        <div class="ap__fields">
+          <div class="fld fld--stack" data-field="parent_first_name">
+            <label class="fld__lab" for="f-parent-first">First name</label>
+            <input class="fld__inp" id="f-parent-first" name="parent_first_name" autocomplete="section-parent given-name" maxlength="60" required>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="parent_last_name">
+            <label class="fld__lab" for="f-parent-last">Last name</label>
+            <input class="fld__inp" id="f-parent-last" name="parent_last_name" autocomplete="section-parent family-name" maxlength="60" required>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="parent_email">
+            <label class="fld__lab" for="f-parent-email">Email</label>
+            <input class="fld__inp" id="f-parent-email" name="parent_email" type="email" autocomplete="section-parent email" inputmode="email" spellcheck="false" maxlength="254" required>
+            <p class="fld__hint" data-voice="student">Must be different from your own email.</p>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="parent_phone">
+            <label class="fld__lab" for="f-parent-phone">Cell phone</label>
+            <input class="fld__inp" id="f-parent-phone" name="parent_phone" type="tel" autocomplete="section-parent tel" inputmode="tel" maxlength="40" required placeholder="514-555-0123">
+            <p class="fld__hint">Used only if we need to reach a parent quickly during a session.</p>
+            <p class="fld__err" hidden></p>
+          </div>
+        </div>
+
+        <fieldset class="fset" data-field="parent_relationship">
+          <legend class="fset__legend">Relationship to the student</legend>
+          <div class="opts opts--pills">
+            {{#each site.apply.relationships}}
+            <label class="pill"><input type="radio" name="parent_relationship" value="{{ this.id }}" required><span>{{ this.name }}</span></label>
+            {{/each}}
+          </div>
+          <p class="fld__err" hidden></p>
+        </fieldset>
+
+        <div class="ap__actions">
+          <button type="button" class="btn btn--ghost" data-back>Back</button>
+          <button class="btn btn--primary btn--lg" type="submit">Continue <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <!-- ======================================================= step 4 · your program -->
+      <form class="ap__step" data-step="program" hidden novalidate>
+        <h3 class="ap__h" tabindex="-1"><span class="ap__n">Step 4 of 6</span>Your program</h3>
+        <p class="ap__intro">Choose the program, the class, how you'd like to attend and when. Nothing here is final — if a session fills up or a format suits you better, we'll talk before you register.</p>
+
+        <fieldset class="fset" data-field="program">
+          <legend class="fset__legend">Program</legend>
+          <div class="choices choices--2">
+            {{#each site.apply.programs}}
+            <label class="choice{{#if this.featured}} choice--featured{{/if}}">
+              <input type="radio" name="program" value="{{ this.id }}" required{{#if this.featured}} data-default{{/if}}>
+              <span class="choice__body"><span class="choice__tag">{{ this.tag }}</span><span class="choice__t">{{ this.name }}</span><span class="choice__d">{{ this.blurb }}</span></span>
+            </label>
+            {{/each}}
+          </div>
+          <p class="fld__err" hidden></p>
+        </fieldset>
+
+        <fieldset class="fset" data-field="level">
+          <legend class="fset__legend">Class</legend>
+          <div class="choices choices--3">
+            {{#each site.apply.levels}}
+            <label class="choice choice--compact" data-level-from="{{ this.from }}">
+              <input type="radio" name="level" value="{{ this.id }}" required>
+              <span class="choice__body"><span class="choice__t">{{ this.name }}</span><span class="choice__d">{{ this.who }}</span><span class="choice__soon" hidden>Available from summer {{ this.from }}</span></span>
+            </label>
+            {{/each}}
+          </div>
+          <div class="fld fld--stack fld--max" data-field="previous_aim_year" data-prev-year hidden>
+            <label class="fld__lab" for="f-prev-year">Year the student finished the previous AIM class</label>
+            <input class="fld__inp" id="f-prev-year" name="previous_aim_year" type="number" inputmode="numeric" min="2027" max="2035" placeholder="2027">
+            <p class="fld__err" hidden></p>
+          </div>
+          <p class="fld__err" hidden></p>
+        </fieldset>
+
+        <fieldset class="fset" data-field="format">
+          <legend class="fset__legend">Format</legend>
+          <div class="choices choices--3">
+            {{#each site.apply.formats}}
+            <label class="choice choice--compact">
+              <input type="radio" name="format" value="{{ this.id }}" required>
+              <span class="choice__body"><span class="choice__t">{{ this.name }}{{#if this.price}} <span class="choice__price">{{ this.price }}</span>{{/if}}</span><span class="choice__d">{{ this.detail }}</span></span>
+            </label>
+            {{/each}}
+          </div>
+          <p class="fld__err" hidden></p>
+        </fieldset>
+
+        <fieldset class="fset" data-field="session_first">
+          <legend class="fset__legend">First-choice session</legend>
+          <div class="choices choices--2">
+            {{#each site.apply.sessions}}
+            <label class="choice choice--compact" data-session-status="{{ this.status }}">
+              <input type="radio" name="session_first" value="{{ this.id }}" required>
+              <span class="choice__body"><span class="choice__t">{{ this.name }} <span class="tag{{#if this.open}} tag--sky{{/if}} choice__status" data-status="{{ this.status }}">{{ this.label }}</span></span><span class="choice__d">{{ this.when }}</span></span>
+            </label>
+            {{/each}}
+          </div>
+          <p class="fld__hint">Exact dates are confirmed in December 2026. A waitlisted session means we'll offer the seat if one opens — or suggest another session.</p>
+          <p class="fld__err" hidden></p>
+        </fieldset>
+
+        <div class="ap__fields">
+          <div class="fld fld--stack" data-field="session_second">
+            <label class="fld__lab" for="f-session-second">Second choice <small>(optional)</small></label>
+            <select class="fld__inp" id="f-session-second" name="session_second">
+              <option value="none" selected>No second choice</option>
+              {{#each site.apply.sessions}}<option value="{{ this.id }}">{{ this.name }} — {{ this.when }}</option>{{/each}}
+            </select>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="heard_about">
+            <label class="fld__lab" for="f-heard">How did you hear about AIM?</label>
+            <select class="fld__inp" id="f-heard" name="heard_about_choice" required>
+              <option value="">Choose…</option>
+              {{#each site.apply.heard}}<option value="{{ this }}">{{ this }}</option>{{/each}}
+            </select>
+            <input class="fld__inp" id="f-heard-other" name="heard_about_other" maxlength="120" placeholder="Tell us more (optional)" hidden data-heard-other>
+            <p class="fld__err" hidden></p>
+          </div>
+        </div>
+
+        <div class="ap__actions">
+          <button type="button" class="btn btn--ghost" data-back>Back</button>
+          <button class="btn btn--primary btn--lg" type="submit">Continue <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <!-- ======================================================= step 5 · your school -->
+      <form class="ap__step" data-step="school" hidden novalidate>
+        <h3 class="ap__h" tabindex="-1"><span class="ap__n">Step 5 of 6</span>Your school</h3>
+        <p class="ap__intro">Where the student goes to school in 2026–27. No transcript, no grades — this only helps us build balanced classes.</p>
+
+        <div class="ap__fields">
+          <div class="fld fld--stack fld--wide" data-field="school_name">
+            <label class="fld__lab" for="f-school">School</label>
+            <input class="fld__inp" id="f-school" name="school_name" autocomplete="section-school organization" maxlength="120" required placeholder="e.g. Collège Jean-de-Brébeuf">
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="school_level">
+            <label class="fld__lab" for="f-school-level">Level in 2026–27</label>
+            <select class="fld__inp" id="f-school-level" name="school_level" required>
+              <option value="">Choose…</option>
+              {{#each site.apply.schoolLevels}}<option value="{{ this.id }}">{{ this.name }}</option>{{/each}}
+            </select>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="school_city">
+            <label class="fld__lab" for="f-school-city">City</label>
+            <input class="fld__inp" id="f-school-city" name="school_city" autocomplete="section-school address-level2" maxlength="80" required>
+            <p class="fld__err" hidden></p>
+          </div>
+          <div class="fld fld--stack" data-field="school_province">
+            <label class="fld__lab" for="f-school-province">Province or state</label>
+            <input class="fld__inp" id="f-school-province" name="school_province" autocomplete="section-school address-level1" maxlength="60" required list="province-list">
+            <datalist id="province-list">
+              {{#each site.apply.provincesCA}}<option value="{{ this }}"></option>{{/each}}
+            </datalist>
+            <p class="fld__err" hidden></p>
+          </div>
+        </div>
+
+        <label class="consent consent--main" data-field="english_ok">
+          <input type="checkbox" name="english_ok" value="yes" required>
+          <span><strong><span data-voice="student">I'm comfortable following a class in English.</span><span data-voice="parent" hidden>My child is comfortable following a class in English.</span></strong> Lessons, exercises and the pitch day are all in English. Students can ask questions in French — Ilyas and Rami are bilingual.</span>
+        </label>
+        <p class="fld__err" data-err-for="english_ok" hidden></p>
+
+        <div class="ap__actions">
+          <button type="button" class="btn btn--ghost" data-back>Back</button>
+          <button class="btn btn--primary btn--lg" type="submit">Continue <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <!-- ======================================================= step 6 · why AIM -->
+      <form class="ap__step" data-step="why" hidden novalidate>
+        <h3 class="ap__h" tabindex="-1"><span class="ap__n">Step 6 of 6</span>Why AIM?</h3>
+        <p class="ap__intro"><span data-voice="student">This part is optional — but it's the one Ilyas reads first. A few honest sentences are worth more than a polished essay.</span><span data-voice="parent" hidden>This part is optional — but it's the one Ilyas reads first. If your child can write it (or dictate it to you), even better: a few honest sentences are worth more than a polished essay.</span></p>
+
+        <div class="fld fld--stack" data-field="motivation">
+          <label class="fld__lab" for="f-motivation"><span data-voice="student">Why do you want to join AIM?</span><span data-voice="parent" hidden>Why does the student want to join AIM?</span> <small>(optional, up to 1,000 characters)</small></label>
+          <textarea class="fld__inp" id="f-motivation" name="motivation" rows="6" maxlength="1000" placeholder="For example: what you'd like to understand about money or the markets, something you've already tried (a savings goal, a stock you follow, a business idea), or what you'd do with the $1,000,000 portfolio."></textarea>
+          <p class="fld__hint fld__count"><span data-count="motivation">0</span> / 1,000 characters</p>
+          <p class="fld__err" hidden></p>
+        </div>
+
+        <div class="fld fld--stack" data-field="notes">
+          <label class="fld__lab" for="f-notes">Anything else we should know? <small>(optional)</small></label>
+          <textarea class="fld__inp" id="f-notes" name="notes" rows="3" maxlength="1000" placeholder="A question, a date you can't make, something that would help us welcome the student well."></textarea>
+          <p class="fld__hint fld__count"><span data-count="notes">0</span> / 1,000 characters</p>
+          <p class="fld__err" hidden></p>
+        </div>
+
+        <div class="ap__consents">
+          <label class="consent consent--main" data-field="consent_accuracy">
+            <input type="checkbox" name="consent_accuracy" value="yes" required>
+            <span><strong>The information in this application is accurate</strong> and I'll let AIM know if anything changes.</span>
+          </label>
+          <p class="fld__err" data-err-for="consent_accuracy" hidden></p>
+          <label class="consent consent--main" data-field="consent_privacy">
+            <input type="checkbox" name="consent_privacy" value="yes" required>
+            <span><strong>I've read how AIM handles personal information</strong> — <a href="privacy.html" target="_blank" rel="noopener">Privacy &amp; consent (Law&nbsp;25)</a>. The answers above are used only to review this application and to organize the program.</span>
+          </label>
+          <p class="fld__err" data-err-for="consent_privacy" hidden></p>
+          <label class="consent consent--main" data-field="consent_parent">
+            <input type="checkbox" name="consent_parent" value="yes" required>
+            <span><span data-voice="student"><strong>My parent or guardian knows I'm applying</strong> and agrees to receive a copy of this application and to confirm it.</span><span data-voice="parent" hidden><strong>I am the student's parent or legal guardian</strong> and I consent to this application on their behalf.</span></span>
+          </label>
+          <p class="fld__err" data-err-for="consent_parent" hidden></p>
+        </div>
+
+        <div class="ap__actions">
+          <button type="button" class="btn btn--ghost" data-back>Back</button>
+          <button class="btn btn--primary btn--lg" type="submit">Review my answers <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <!-- ======================================================= review & send -->
+      <form class="ap__step" data-step="review" hidden novalidate>
+        <h3 class="ap__h" tabindex="-1"><span class="ap__n">Last look</span>Review &amp; send</h3>
+        <p class="ap__intro">Everything you told us, on one screen. Fix anything with <em>Edit</em>, then send — you'll get a copy by email within a minute.</p>
+        <div class="review" data-review></div>
+
+        <!-- anti-bot trap: humans never see it, browsers must never autofill it -->
+        <input type="checkbox" name="aim_hp" value="1" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <div class="ap__actions ap__actions--submit">
+          <button type="button" class="btn btn--ghost" data-back>Back</button>
+          <button class="btn btn--primary btn--lg" type="submit">Submit my application <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <p class="ap__note">By sending, you agree to the three statements of step 6. We reply within {{ site.apply.decisionDays }} business days.</p>
+        </div>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <noscript><p class="ap__noscript">The application needs JavaScript to run. Please enable it, or write to <a href="mailto:{{ site.email }}">{{ site.email }}</a> and we'll send you the questions by email.</p></noscript>
+    </div>
   </div>
 </section>
 
 <section class="band band--tint" aria-labelledby="apply-faq">
   <div class="container">
     <div class="section-head">
-      <h2 id="apply-faq">Good to know</h2>
+      <span class="kicker">Questions families ask</span>
+      <h2 id="apply-faq">Good to know before you send</h2>
     </div>
     <div class="faq">
       <details>
-        <summary>I'm 13. Can I fill in the form myself?</summary>
-        <div class="faq__a"><p>Please ask a parent or guardian to do it for you (and tick "Parent or guardian"). Quebec's privacy law (Law 25) asks for a parent's consent before we collect personal information from anyone 13 or under.</p></div>
+        <summary>What happens after I submit?</summary>
+        <div class="faq__a"><p>You receive a copy of your answers by email right away (the parent or guardian too). Ilyas or Rami reads every application personally and we email our decision within {{ site.apply.decisionDays }} business days. Accepted students then receive a link to reserve their seat — registration opens in December 2026, and nothing is due before that.</p></div>
       </details>
       <details>
-        <summary>What happens with my information?</summary>
-        <div class="faq__a"><p>We use it to send you the info pack and to answer you — and to send occasional news only if you ticked the second box. We never sell or share it. You can ask us to delete it at any time by writing to <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a>. See our <a href="privacy.html">privacy and consent page</a>.</p></div>
+        <summary>Is it first come, first served?</summary>
+        <div class="faq__a"><p>Seats are limited — 32 students per campus session — so earlier applications have more choice of session and format. We read every application, though: we're looking for curiosity and the right age range, not a finance background or top grades.</p></div>
       </details>
       <details>
-        <summary>Can a school or a counselor register several students?</summary>
-        <div class="faq__a"><p>Yes. Tick "Counselor or teacher", get the info pack, then reply to it with roughly how many students — we'll set up a group conversation.</p></div>
+        <summary>I'm 13. Can I fill in the application myself?</summary>
+        <div class="faq__a"><p>You can start it, but under Quebec's privacy law (Law&nbsp;25) we need a parent or guardian's consent before we collect information from anyone under 14. The simplest is to fill it in together — or to let your parent do it and tick "I'm a parent or guardian". Either way, the parent receives a one-click confirmation email.</p></div>
       </details>
       <details>
-        <summary>I'd rather talk to someone.</summary>
-        <div class="faq__a"><p>Write to <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a> and suggest a time — we're happy to call parents back.</p></div>
+        <summary>Can I stop and finish later?</summary>
+        <div class="faq__a"><p>Yes. Your answers are saved on this device as you type. Come back to this page and press <em>Continue where I left off</em>. If more than two hours have passed we'll ask you to confirm your email again — a new code, ten seconds.</p></div>
+      </details>
+      <details>
+        <summary>Which class should we choose?</summary>
+        <div class="faq__a"><p>In summer 2027, everyone starts with the <strong>Beginner</strong> class — it assumes nothing and goes far. Intermediate and Advanced open in the following summers for students who completed the previous level with AIM. The <a href="program.html#levels">program page</a> describes all three.</p></div>
+      </details>
+      <details>
+        <summary>Campus or online?</summary>
+        <div class="faq__a"><p>Same instructor, same lessons, same certificate. The <strong>McGill campus</strong> class (9 am – 3 pm) is the full-day experience with the afternoon Investment Lab in person. <strong>Live online</strong> (1 – 3 pm) works from anywhere and keeps the mornings free. Not sure? Pick <em>No preference</em> and we'll suggest the best fit.</p></div>
+      </details>
+      <details>
+        <summary>What happens with our information?</summary>
+        <div class="faq__a"><p>It's used only to review the application and to organize the program. It's stored on access-controlled servers in Canada and never sold or shared with advertisers. You can ask us to correct or delete it at any time at <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a>. See our <a href="privacy.html">privacy and consent page</a>.</p></div>
+      </details>
+      <details>
+        <summary>I'd rather talk to someone first.</summary>
+        <div class="faq__a"><p>Write to <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a> and suggest a time — we're happy to call parents back, in English or in French. Or <a href="learn-more.html">get the info pack</a> first.</p></div>
       </details>
     </div>
   </div>

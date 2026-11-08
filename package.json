@@ -10,7 +10,8 @@
     "check": "node scripts/check.mjs",
     "test": "npm run build && npm run check",
     "functions:sync": "node scripts/sync-functions.mjs",
-    "test:functions": "node supabase/tests/build.cjs && node supabase/tests/run.mjs"
+    "test:functions": "node supabase/tests/build.cjs && node supabase/tests/run.mjs",
+    "test:e2e": "node tests/e2e/apply.e2e.mjs"
   },
   "engines": {
     "node": ">=18"

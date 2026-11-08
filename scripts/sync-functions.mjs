@@ -1,12 +1,21 @@
 #!/usr/bin/env node
-// The two Edge Functions share common.ts and emails.ts. The source of truth lives in request-code/;
-// this copies them into verify-code/ so both deployments stay identical.
+// The Edge Functions share common.ts (and some share emails.ts / gmail.ts). The source of truth lives in
+// request-code/; this copies the shared files into the other functions so every deployment stays identical.
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FN = path.join(ROOT, 'supabase', 'functions');
-for (const f of ['common.ts', 'emails.ts', 'gmail.ts']) {
-  await fs.copyFile(path.join(FN, 'request-code', f), path.join(FN, 'verify-code', f));
-  console.log(`✔ ${f} → verify-code/`);
+const TARGETS = {
+  'verify-code': ['common.ts', 'emails.ts', 'gmail.ts'],
+  'submit-application': ['common.ts', 'gmail.ts'],
+  'confirm-application': ['common.ts'],
+  'save-draft': ['common.ts'],
+  'remind-drafts': ['common.ts'],
+};
+for (const [fn, files] of Object.entries(TARGETS)) {
+  for (const f of files) {
+    await fs.copyFile(path.join(FN, 'request-code', f), path.join(FN, fn, f));
+    console.log(`✔ ${f} → ${fn}/`);
+  }
 }

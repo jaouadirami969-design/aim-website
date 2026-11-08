@@ -199,6 +199,51 @@ export function timingSafeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
+/* ---------------- short-lived signed tokens (the application continues after the code) ---------------- */
+
+function b64url(bytes: Uint8Array): string {
+  let s = "";
+  for (const b of bytes) s += String.fromCharCode(b);
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function b64urlDecode(s: string): Uint8Array {
+  const str = atob(s.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - (s.length % 4)) % 4));
+  return Uint8Array.from(str, (c) => c.charCodeAt(0));
+}
+
+/** Signs a small payload (plus an expiry) with the project secret. Nothing is stored server-side. */
+export async function signToken(payload: Record<string, unknown>, ttlSeconds: number): Promise<string> {
+  const body = b64url(enc.encode(JSON.stringify({ ...payload, x: Math.floor(Date.now() / 1000) + ttlSeconds })));
+  const sig = await hmacHex(secretKey(), `tok:${body}`);
+  return `${body}.${sig}`;
+}
+
+/** Returns the payload if the signature is valid and the token has not expired, else null. */
+export async function verifyToken(token: unknown): Promise<Record<string, unknown> | null> {
+  if (typeof token !== "string" || token.length > 2000) return null;
+  const [body, sig] = token.split(".");
+  if (!body || !sig) return null;
+  const expected = await hmacHex(secretKey(), `tok:${body}`);
+  if (!timingSafeEqual(expected, sig)) return null;
+  try {
+    const json = JSON.parse(new TextDecoder().decode(b64urlDecode(body)));
+    if (!json || typeof json.x !== "number" || json.x * 1000 < Date.now()) return null;
+    return json;
+  } catch {
+    return null;
+  }
+}
+
+/** Random URL-safe token (for one-click links) and its stored hash. */
+export function randomToken(bytes = 24): string {
+  const b = new Uint8Array(bytes);
+  crypto.getRandomValues(b);
+  return b64url(b);
+}
+export function hashToken(t: string): Promise<string> {
+  return hmacHex(secretKey(), `ptok:${t}`);
+}
+
 export function maskEmail(email: string): string {
   const [local, domain] = email.split("@");
   const shown = local.length <= 2 ? local[0] : local.slice(0, 2);

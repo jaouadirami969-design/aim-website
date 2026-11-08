@@ -10,3 +10,5 @@ Thumbs.db
 *.log
 .vscode/
 .idea/
+
+tests/e2e/shots/
