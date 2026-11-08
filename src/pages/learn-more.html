@@ -1,0 +1,67 @@
+<!--page
+{
+  "slug": "learn-more.html",
+  "nav": "learn-more",
+  "title": "Learn more — get the info pack",
+  "description": "Get the AIM info pack by email: Summer 2027 dates and prices, the three classes, a typical day on the McGill campus or online, what's included and how to apply.",
+  "learnMore": true
+}
+-->
+<section class="page-hero">
+  <div class="container">
+    <span class="kicker">Learn more</span>
+    <h1>Everything about AIM — in one email.</h1>
+    <p class="lead">Tell us where to send the info pack. We confirm your address with a 6-digit code — so the email never goes to the wrong person — then the full info pack follows in under a minute.</p>
+  </div>
+</section>
+
+<section class="band" aria-label="Get the info pack">
+  <div class="container lm-layout">
+    {{> learn-more-form }}
+    <aside class="lm-aside" aria-labelledby="lm-aside-title">
+      <h2 id="lm-aside-title">What's in the info pack</h2>
+      <ul class="checks">
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> The program in 30 seconds — and who it's for (ages 13–18)</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> The three classes: Beginner, Intermediate, Advanced</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> A typical day on the McGill campus, and the live online option</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Summer 2027 sessions and prices</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> What's included and what to bring</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> How to apply — and three free lessons to start today</li>
+      </ul>
+      <div class="lm-aside__box">
+        <h3>Why a code?</h3>
+        <p>Typing an address wrong is easy. The code proves the inbox is really yours before we send anything else — and it keeps our list clean, so the families who ask for information actually receive it.</p>
+      </div>
+      <div class="lm-aside__box lm-aside__box--yel">
+        <h3>Prefer to talk to someone?</h3>
+        <p>Write to <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a> — Rami or Ilyas replies within two business days, in English or in French.</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="band band--tint" aria-labelledby="lm-faq">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="lm-faq">Good to know</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>I didn't receive the code.</summary>
+        <div class="faq__a"><p>Give it a minute, then look in <strong>Spam</strong>, <strong>Junk</strong> or <strong>Promotions</strong>. School and work mailboxes sometimes hold new senders for a few minutes. You can ask for a new code after 60 seconds — the previous one stops working. Still nothing? Write to <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a> and we'll send the info pack by hand.</p></div>
+      </details>
+      <details>
+        <summary>What do you do with my email address?</summary>
+        <div class="faq__a"><p>We send you the info pack and we answer your questions. That's it. We only send occasional news if you ticked the second box, and every email has an unsubscribe link. We never sell or share addresses. Details on our <a href="privacy.html">privacy and consent page</a>.</p></div>
+      </details>
+      <details>
+        <summary>I'm 13. Can I ask for the info pack myself?</summary>
+        <div class="faq__a"><p>Please ask a parent or guardian to do it for you. Quebec's privacy law (Law 25) asks for a parent's consent before we collect personal information from anyone 13 or under — and every registration is confirmed by a parent anyway.</p></div>
+      </details>
+      <details>
+        <summary>Is this the application?</summary>
+        <div class="faq__a"><p>No — this just sends you the information. Applying takes about 10 minutes on the <a href="apply.html">Apply page</a>, with no transcripts or recommendation letters. Registration for Summer 2027 opens in December 2026.</p></div>
+      </details>
+    </div>
+  </div>
+</section>

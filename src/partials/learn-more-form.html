@@ -1,0 +1,100 @@
+<div class="lm" id="learn-more" data-api="{{ site.api.functions }}" data-thanks="thank-you.html" data-email="{{ site.email }}">
+  <div class="lm__head">
+    <span class="lm__kicker">Learn more · free info pack</span>
+    <h2 class="lm__title">Get the AIM info pack by email.</h2>
+    <p class="lm__sub">Dates, prices, the three classes, a typical day, what's included and how to apply — everything in one email, in under a minute.</p>
+  </div>
+
+  <!-- Step 1 — the email address -->
+  <form class="lm__form" id="lm-step-email" novalidate>
+    <ol class="lm__progress" aria-label="Three steps">
+      <li class="is-current"><span>1</span>Your email</li>
+      <li><span>2</span>The code</li>
+      <li><span>3</span>Your info pack</li>
+    </ol>
+
+    <div class="lm__grid">
+      <label class="fld fld--stack">
+        <span class="fld__lab">First name <small>(optional)</small></span>
+        <input class="fld__inp" type="text" name="first_name" autocomplete="given-name" maxlength="60" placeholder="Sophie">
+      </label>
+      <label class="fld fld--stack">
+        <span class="fld__lab">Email</span>
+        <input class="fld__inp" type="email" name="email" autocomplete="email" inputmode="email" spellcheck="false" required placeholder="you@example.com">
+      </label>
+    </div>
+
+    <fieldset class="fset">
+      <legend class="fset__legend">I am a…</legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="role" value="student"><span>Student (13–18)</span></label>
+        <label class="opt"><input type="radio" name="role" value="parent"><span>Parent or guardian</span></label>
+        <label class="opt"><input type="radio" name="role" value="counselor"><span>Counselor or teacher</span></label>
+        <label class="opt"><input type="radio" name="role" value="other"><span>Other</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="fset">
+      <legend class="fset__legend">I'm interested in…</legend>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="interest" value="campus"><span>Beginner class — McGill campus</span></label>
+        <label class="opt"><input type="radio" name="interest" value="online"><span>Beginner class — online (live)</span></label>
+        <label class="opt"><input type="radio" name="interest" value="info"><span>Just finding out more</span></label>
+      </div>
+    </fieldset>
+
+    <label class="consent consent--main">
+      <input type="checkbox" name="consent_info" value="yes" required>
+      <span><strong>Yes — email me the AIM info pack.</strong> I'm 14 or older, or I'm the parent or guardian of the student. We use your address only to send the info pack and to answer your questions. <a href="privacy.html">Privacy &amp; consent (Law&nbsp;25)</a></span>
+    </label>
+    <label class="consent">
+      <input type="checkbox" name="consent_newsletter" value="yes">
+      <span>Also keep me posted about AIM — new sessions, free lessons, registration dates. A few emails a year; unsubscribe in one click.</span>
+    </label>
+
+    <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <div class="lm__actions">
+      <button class="btn btn--primary btn--lg" type="submit">Send me the code <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      <p class="lm__note">We first email you a 6-digit code to confirm your address, then the info pack. No spam, ever.</p>
+    </div>
+    <p class="form-status" role="status" aria-live="polite"></p>
+    <div class="lm__suggest" hidden>
+      <p>Did you mean <strong data-suggestion></strong>?</p>
+      <div class="lm__suggest-actions">
+        <button type="button" class="btn btn--sky" data-use-suggestion>Yes, use that address</button>
+        <button type="button" class="btn btn--ghost" data-keep-address>No, keep mine</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Step 2 — the 6-digit code -->
+  <form class="lm__form" id="lm-step-code" hidden novalidate>
+    <ol class="lm__progress" aria-label="Three steps">
+      <li class="is-done"><span><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg></span>Your email</li>
+      <li class="is-current"><span>2</span>The code</li>
+      <li><span>3</span>Your info pack</li>
+    </ol>
+
+    <div class="lm__check">
+      <span class="lm__mailicon"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg></span>
+      <div>
+        <h3>Check your email</h3>
+        <p>We just sent a 6-digit code to <strong data-masked>your address</strong>. Type it below — it's valid for 10 minutes.</p>
+      </div>
+    </div>
+
+    <label class="lm__codelab" for="lm-code">Your 6-digit code</label>
+    <input class="lm__code" id="lm-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" placeholder="······" required>
+
+    <div class="lm__actions">
+      <button class="btn btn--primary btn--lg" type="submit">Confirm and send my info pack</button>
+    </div>
+    <p class="form-status" role="status" aria-live="polite"></p>
+    <p class="lm__help">
+      Nothing after a minute? Look in <strong>Spam</strong> or <strong>Promotions</strong>, or
+      <button type="button" class="linkbtn" data-resend disabled>resend the code<span data-countdown></span></button> ·
+      <button type="button" class="linkbtn" data-change-email>use another email</button>
+    </p>
+  </form>
+</div>

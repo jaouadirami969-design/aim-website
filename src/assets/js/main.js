@@ -1,7 +1,7 @@
 /* AIM website — shared behaviour (no dependencies).
    1. mobile menu + "Learn for free" dropdown
    2. video modal (YouTube embed, or a "coming soon" message when no video ID is set yet)
-   3. sign-up form: posts to the endpoint in site.json, or opens the visitor's email app as a fallback
+   3. email links: a small chooser (Gmail, Outlook.com, Yahoo, the default mail app, or copy) — remembered per device
 */
 (() => {
   'use strict';
@@ -67,56 +67,131 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
   }
 
-  /* ---------- 3. sign-up form ---------- */
-  const form = document.getElementById('signup-form');
-  if (form) {
-    const status = form.querySelector('.form-status');
-    const endpoint = form.dataset.endpoint;
-    const email = form.dataset.email;
-    const say = (msg, kind) => { status.textContent = msg; status.className = `form-status is-${kind}`; };
+  /* ---------- 3. email links: open Gmail, Outlook, the default mail app — or copy the address ---------- */
+  const PREF_KEY = 'aim.mailClient';
+  const SUBJECT = 'Question about the AIM summer program';
+  const getPref = () => { try { return localStorage.getItem(PREF_KEY); } catch { return null; } };
+  const setPref = (v) => { try { if (v) localStorage.setItem(PREF_KEY, v); else localStorage.removeItem(PREF_KEY); } catch { /* private mode */ } };
+  const enc = encodeURIComponent;
+  const compose = {
+    gmail: (to) => `https://mail.google.com/mail/?view=cm&fs=1&to=${enc(to)}&su=${enc(SUBJECT)}`,
+    outlook: (to) => `https://outlook.live.com/mail/0/deeplink/compose?to=${enc(to)}&subject=${enc(SUBJECT)}`,
+    yahoo: (to) => `https://compose.mail.yahoo.com/?to=${enc(to)}&subject=${enc(SUBJECT)}`,
+    app: (to) => `mailto:${to}?subject=${enc(SUBJECT)}`,
+  };
+  const CLIENTS = [
+    ['gmail', 'Open in Gmail', 'opens mail.google.com in a new tab'],
+    ['outlook', 'Open in Outlook.com', 'opens outlook.live.com in a new tab'],
+    ['yahoo', 'Open in Yahoo Mail', 'opens mail.yahoo.com in a new tab'],
+    ['app', 'My mail app', 'Apple Mail, Outlook desktop, the phone\u2019s mail app\u2026'],
+    ['copy', 'Copy the address', ''],
+  ];
+  let pop = null;
+  let popLink = null;
+  let toastTimer = null;
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      form.classList.add('is-validated');
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        say('Please fill in the fields marked as required (first name, last name, email, your category and the consent box).', 'error');
-        return;
+  const toast = (msg, onChange) => {
+    let el = document.getElementById('aim-toast');
+    if (!el) { el = document.createElement('div'); el.id = 'aim-toast'; el.className = 'toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+    el.innerHTML = '';
+    el.append(msg);
+    if (onChange) {
+      el.append(' ');
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'linkbtn'; b.textContent = 'Change';
+      b.addEventListener('click', () => { setPref(null); hideToast(); onChange(); });
+      el.append(b);
+    }
+    el.classList.add('is-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, 7000);
+  };
+  const hideToast = () => { const el = document.getElementById('aim-toast'); if (el) el.classList.remove('is-on'); };
+
+  const openWith = async (client, to) => {
+    if (client === 'copy') {
+      try { await navigator.clipboard.writeText(to); toast(`${to} copied — paste it into your email.`); }
+      catch { window.prompt('Copy the address:', to); }
+      return;
+    }
+    const url = compose[client](to);
+    if (client === 'app') { window.location.href = url; return; }
+    const w = window.open(url, '_blank', 'noopener');
+    if (!w) window.location.href = url; // pop-up blocked → same tab
+  };
+
+  const closePop = () => { if (pop) { pop.hidden = true; if (popLink) popLink.setAttribute('aria-expanded', 'false'); } };
+
+  const buildPop = () => {
+    pop = document.createElement('div');
+    pop.className = 'mailpop';
+    pop.hidden = true;
+    pop.setAttribute('role', 'dialog');
+    pop.setAttribute('aria-label', 'How would you like to write to us?');
+    pop.innerHTML = `
+      <div class="mailpop__head"><strong>Write to <span data-to></span></strong><button type="button" class="mailpop__close" aria-label="Close">\u00d7</button></div>
+      <div class="mailpop__list"></div>
+      <label class="mailpop__remember"><input type="checkbox" checked> Remember my choice on this device</label>`;
+    const list = pop.querySelector('.mailpop__list');
+    for (const [id, label, hint] of CLIENTS) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'mailpop__opt'; b.dataset.client = id;
+      b.innerHTML = `<span>${label}</span>${hint ? `<small>${hint}</small>` : ''}`;
+      list.appendChild(b);
+    }
+    pop.addEventListener('click', (e) => {
+      const b = e.target.closest('.mailpop__opt');
+      if (b) {
+        const to = pop.dataset.to;
+        const remember = pop.querySelector('.mailpop__remember input').checked;
+        if (remember && b.dataset.client !== 'copy') setPref(b.dataset.client);
+        closePop();
+        openWith(b.dataset.client, to);
       }
-      if (form.querySelector('.hp').value) return; // honeypot — ignore bots silently
-
-      const data = new FormData(form);
-      const button = form.querySelector('button[type="submit"]');
-      const first = data.get('first_name');
-
-      if (endpoint) {
-        button.disabled = true;
-        say('Sending…', 'ok');
-        try {
-          const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          form.reset();
-          say(`Thanks, ${first}! We received your request and will reply within two business days.`, 'ok');
-        } catch (err) {
-          say(`We couldn't send the form (${err.message}). Please email us directly at ${email} — or try again in a minute.`, 'error');
-        } finally {
-          button.disabled = false;
-        }
-        return;
-      }
-
-      // No endpoint configured yet: open the visitor's email app with everything pre-filled.
-      const lines = [];
-      for (const [key, value] of data.entries()) {
-        if (key.startsWith('_') || key === 'consent' || !String(value).trim()) continue;
-        lines.push(`${key.replace(/_/g, ' ')}: ${value}`);
-      }
-      const subject = encodeURIComponent(data.get('_subject') || 'New sign-up');
-      const body = encodeURIComponent(lines.join('\n'));
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-      say(`Thanks, ${first}! Your email app is opening with your request — just press Send. If nothing opens, email us at ${email}.`, 'ok');
+      if (e.target.closest('.mailpop__close')) closePop();
     });
-  }
+    document.body.appendChild(pop);
+    document.addEventListener('click', (e) => { if (pop && !pop.hidden && !pop.contains(e.target) && e.target !== popLink && !popLink.contains(e.target)) closePop(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
+  };
+
+  const showPop = (link, to) => {
+    if (!pop) buildPop();
+    popLink = link;
+    pop.dataset.to = to;
+    pop.querySelector('[data-to]').textContent = to;
+    pop.hidden = false;
+    link.setAttribute('aria-expanded', 'true');
+    const r = link.getBoundingClientRect();
+    const sheet = window.innerWidth < 600;
+    pop.classList.toggle('mailpop--sheet', sheet);
+    if (!sheet) {
+      const w = pop.offsetWidth;
+      const left = Math.max(8, Math.min(r.left + window.scrollX, window.scrollX + window.innerWidth - w - 8));
+      const below = r.bottom + window.scrollY + 8;
+      const spaceBelow = window.innerHeight - r.bottom;
+      pop.style.left = `${left}px`;
+      pop.style.top = spaceBelow < pop.offsetHeight + 16 ? `${r.top + window.scrollY - pop.offsetHeight - 8}px` : `${below}px`;
+    } else {
+      pop.style.left = ''; pop.style.top = '';
+    }
+    pop.querySelector('.mailpop__opt').focus();
+  };
+
+  document.querySelectorAll('a[href^="mailto:"]').forEach((link) => {
+    link.setAttribute('aria-haspopup', 'dialog');
+    link.setAttribute('aria-expanded', 'false');
+    link.addEventListener('click', (e) => {
+      const to = link.getAttribute('href').replace(/^mailto:/, '').split('?')[0];
+      e.preventDefault();
+      const pref = getPref();
+      if (pref && compose[pref]) {
+        openWith(pref, to);
+        toast(`Opening ${pref === 'app' ? 'your mail app' : pref === 'gmail' ? 'Gmail' : pref === 'outlook' ? 'Outlook.com' : 'Yahoo Mail'}\u2026`, () => showPop(link, to));
+        return;
+      }
+      showPop(link, to);
+    });
+  });
 
   /* ---------- 4. hero counter (one orchestrated moment) ---------- */
   const counter = document.querySelector('[data-count]');

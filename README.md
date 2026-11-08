@@ -15,12 +15,13 @@ Static site, zero dependencies, three brand colours (sky blue `#3FA9F5`, white, 
 
 ```
 src/
-  data/site.json      ← ONE place for facts: name, prices, sessions, lessons, levels, video IDs, form endpoint
+  data/site.json      ← ONE place for facts: name, prices, sessions, lessons, levels, video IDs, API URL
   layouts/base.html   ← the <html> skeleton every page is wrapped in (meta tags, fonts, scripts)
-  partials/*.html     ← reusable blocks: header, footer, signup-form, glance, why-course, logo, illustrations
+  partials/*.html     ← reusable blocks: header, footer, learn-more-form, glance, why-course, logo, illustrations
   pages/*.html        ← one file per page; starts with a <!--page { … } --> block (title, description, nav)
   assets/css/main.css ← design tokens + components (only brand colours allowed — the checker enforces it)
-  assets/js/main.js   ← menu, video modal, sign-up form, hero counter
+  assets/js/main.js   ← menu, video modal, email-link chooser (Gmail / Outlook / mail app), hero counter
+  assets/js/learn-more.js ← the "Learn more" flow: email → 6-digit code → thank-you page (talks to Supabase)
   assets/js/quiz.js   ← the mini-quiz on the free lessons
   assets/fonts/       ← Lora + Poppins, self-hosted (SIL Open Font License)
   assets/logo/        ← badge, lockups, favicon, Open Graph image
@@ -28,6 +29,11 @@ src/
 scripts/
   build.mjs           ← src → dist (tiny template engine: {{ site.x }}, {{> partial }}, {{#each}}, {{#if}})
   dev.mjs             ← local preview with auto-rebuild (npm run dev)
+supabase/
+  functions/          ← request-code + verify-code (Deno Edge Functions: checks, codes, the 3 emails via Brevo)
+  migrations/         ← the leads / email_codes / lead_events tables
+  tests/              ← local end-to-end tests of the two functions (npm run test:functions)
+  README.md           ← how the Learn-more flow works, secrets to set, how to test
   check.mjs           ← quality gate: broken links, missing titles/descriptions, off-brand colours
 dist/                 ← the generated site (never edited by hand, ignored by git)
 ```
@@ -47,13 +53,15 @@ No `npm install` is needed: the build uses Node.js only.
 
 | URL | Purpose |
 | --- | --- |
-| `index.html` | Home: hero + intro video, free lessons, why AIM, program at a glance, instructor, why take the course, sessions & prices, sign-up |
+| `index.html` | Home: hero + intro video, free lessons, why AIM, program at a glance, instructor, why take the course, sessions & prices, learn more |
 | `learn-finance-basics.html` | Free lesson 1 — video, written guide, key terms, quiz |
 | `learn-stock-market-basics.html` | Free lesson 2 |
 | `learn-start-investing-in-canada.html` | Free lesson 3 |
-| `program.html` | The summer program: glance, class description, 3 levels, typical day, sessions & prices, why take the course, FAQ, sign-up |
+| `program.html` | The summer program: glance, class description, 3 levels, typical day, sessions & prices, why take the course, FAQ, learn more |
 | `why-aim.html` | Why AIM: top-ranked university, topics, instructor (band + profile), our story + intro video, testimonials |
-| `apply.html` | Sign up — or find out more (the form) |
+| `apply.html` | Apply — three steps, starting with the info pack |
+| `learn-more.html` | Learn more: email → 6-digit code → info pack (the main lead-capture page) |
+| `thank-you.html` | Shown after the code is confirmed (noindex) |
 | `portal.html` | Student portal (login placeholder until the first session) |
 | `privacy.html` | Privacy & consent (Quebec Law 25, students 13 and under) |
 | `404.html` | Not found |
@@ -63,9 +71,9 @@ No `npm install` is needed: the build uses Node.js only.
 | Key | What to put |
 | --- | --- |
 | `url`, `domain` | The real domain once bought (also update `src/static/CNAME` and `robots.txt`) |
-| `email` | The address that receives sign-ups (e.g. `hello@aimsummer.com`) |
+| `email` | The public address — shown in the footer and the pages; email links open a small chooser (Gmail, Outlook.com, Yahoo, mail app, copy) |
 | `social.*` | Facebook, Instagram and YouTube page links |
-| `formEndpoint` | A [Formspree](https://formspree.io) form URL (`https://formspree.io/f/xxxxxx`). Free plan = 50 sign-ups/month, sent to your inbox. Leave empty and the form opens the visitor's email app instead. |
+| `api.functions` | The Supabase Edge Functions URL that powers "Learn more" (`https://<project>.supabase.co/functions/v1`). See `supabase/README.md`. |
 | `videos.intro`, `videos.lesson1…3` | YouTube video IDs (the part after `v=`). Empty = "this video is being filmed" message. |
 | `sessions` | Dates and status of each session (`open: true/false`) |
 | `facts`, `levels`, `lessons`, `reasons` | Everything shown in "Program at a glance", the 3 levels, the lesson cards and "Why take the course?" |

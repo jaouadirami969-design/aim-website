@@ -4,7 +4,8 @@
   "nav": "program",
   "title": "The summer program",
   "description": "Finance & Investment Summer Program: two weeks, eight lessons, a simulated $1,000,000 portfolio, three levels (Beginner, Intermediate, Advanced), on the McGill University campus or live online. Sessions, schedule, prices and FAQ.",
-  "head": "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"Course\",\"name\":\"Finance & Investment Summer Program — Beginner\",\"description\":\"A two-week finance and investment program for ages 13 to 18: eight lessons, a simulated $1,000,000 portfolio and a certificate of completion.\",\"provider\":{\"@type\":\"EducationalOrganization\",\"name\":\"AIM — Academy of Investment & Management\",\"url\":\"https://aimsummer.com\"},\"educationalLevel\":\"Beginner\",\"audience\":{\"@type\":\"EducationalAudience\",\"audienceType\":\"High school students aged 13 to 18\"},\"inLanguage\":\"en\"}</script>"
+  "head": "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"Course\",\"name\":\"Finance & Investment Summer Program — Beginner\",\"description\":\"A two-week finance and investment program for ages 13 to 18: eight lessons, a simulated $1,000,000 portfolio and a certificate of completion.\",\"provider\":{\"@type\":\"EducationalOrganization\",\"name\":\"AIM — Academy of Investment & Management\",\"url\":\"https://aimsummer.com\"},\"educationalLevel\":\"Beginner\",\"audience\":{\"@type\":\"EducationalAudience\",\"audienceType\":\"High school students aged 13 to 18\"},\"inLanguage\":\"en\"}</script>",
+  "learnMore": true
 }
 -->
 <section class="page-hero">
@@ -101,7 +102,7 @@
     </div>
     <div class="sched">
       <div class="sched__col">
-        <div class="sched__h">A typical day — 8 am to 2 pm</div>
+        <div class="sched__h">A typical day — 9 am to 3 pm</div>
         <div class="slot"><span class="slot__t">8:00</span><span><b>Market Morning</b> — today's financial news, explained simply</span></div>
         <div class="slot"><span class="slot__t">8:30</span><span><b>Main lesson</b> — the key idea of the day, with Ilyas</span></div>
         <div class="slot slot--pz"><span class="slot__t">10:00</span><span>Break</span></div>
@@ -156,7 +157,7 @@
         <span class="price__k">On the McGill campus</span>
         <span class="price__v">{{ site.facts.priceCampus }} <small>{{ site.facts.tax }}</small></span>
         <ul>
-          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> 2 weeks, Monday to Friday, 8 am – 2 pm (60 hours)</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> 2 weeks, Monday to Friday, 9 am – 3 pm (60 hours)</li>
           <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Small class of 32 students, taught in person by Ilyas Zakiat</li>
           <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Investment Lab every afternoon on the $1,000,000 portfolio</li>
           <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Online certificate of completion</li>
@@ -222,14 +223,14 @@
       </details>
       <details>
         <summary>How do we register and pay?</summary>
-        <div class="faq__a"><p>Start with the form below — it only tells us you're interested. We reply within two business days with the next steps. Registration and secure online payment open before each session; the full details are sent to parents by email.</p></div>
+        <div class="faq__a"><p>Start with the info pack below — it only tells us you're interested. We reply to your questions within two business days. Registration and secure online payment open before each session; the full details are sent to parents by email.</p></div>
       </details>
     </div>
   </div>
 </section>
 
-<section class="band" aria-label="Sign up">
+<section class="band" aria-label="Learn more" id="learn-more-section">
   <div class="container">
-    {{> signup-form }}
+    {{> learn-more-form }}
   </div>
 </section>

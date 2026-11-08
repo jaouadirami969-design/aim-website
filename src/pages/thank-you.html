@@ -1,0 +1,61 @@
+<!--page
+{
+  "slug": "thank-you.html",
+  "nav": "learn-more",
+  "title": "Thank you — your info pack is on its way",
+  "description": "Your AIM info pack has been sent. Here is what happens next.",
+  "noindex": true,
+  "learnMore": true
+}
+-->
+<section class="page-hero page-hero--thanks" data-thank-you>
+  <div class="container">
+    <span class="ty__badge" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span>
+    <span class="kicker">Email verified</span>
+    <h1 data-ty-name>Thank you!</h1>
+    <p class="lead">Your AIM info pack is on its way<span data-ty-needs-state> to <strong data-ty-email>your inbox</strong></span>. It usually arrives within a minute. If you don't see it, look in <strong>Spam</strong> or <strong>Promotions</strong> — and add <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a> to your contacts so our next emails land in your inbox.</p>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="ty-next">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="ty-next">What happens next</h2>
+    </div>
+    <ol class="steps">
+      <li class="step"><h3>Read the info pack</h3><p>Dates, prices, the three classes, a typical day, what's included — it's all in the email, written for parents and students alike.</p></li>
+      <li class="step"><h3>Ask us anything</h3><p>Just reply to the email. A real person — Rami or Ilyas — answers within two business days, in English or in French.</p></li>
+      <li class="step"><h3>Apply when you're ready</h3><p>About 10 minutes, no transcripts, no recommendation letters. Registration for Summer 2027 opens in December 2026 — you'll be the first to know.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="band band--tint" aria-labelledby="ty-more">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="ty-more">While you wait</h2>
+      <p>Three things you can do right now.</p>
+    </div>
+    <ul class="tycards">
+      <li class="tycard">
+        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
+        <h3>Take a free lesson</h3>
+        <p>Finance basics in a 3-minute video and a 9-minute read — no account needed.</p>
+        <a class="btn btn--sky" href="learn-finance-basics.html">Lesson 1 · Finance basics</a>
+      </li>
+      <li class="tycard">
+        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg></span>
+        <h3>See the program</h3>
+        <p>The eight lessons, the three levels, a day on campus, sessions and prices.</p>
+        <a class="btn btn--sky" href="program.html">The summer program</a>
+      </li>
+      <li class="tycard">
+        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+        <h3>Apply</h3>
+        <p>Tell us about you in three short steps. No commitment yet.</p>
+        <a class="btn btn--primary" href="apply.html">Start the application</a>
+      </li>
+    </ul>
+    <p class="muted" style="margin:1.75rem 0 0;font-size:var(--fs-1)">Didn't get the email after a few minutes? <a href="learn-more.html">Request it again</a> or write to <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a>.</p>
+  </div>
+</section>

@@ -17,8 +17,10 @@
     "youtube": "https://www.youtube.com/"
   },
 
-  "_comment_form": "Paste a Formspree endpoint (https://formspree.io/f/xxxx) to receive sign-ups by email. Empty = the form opens the visitor's email app instead.",
-  "formEndpoint": "",
+  "_comment_api": "The 'Learn more' flow (email → 6-digit code → info pack) runs on Supabase Edge Functions; the emails leave from hello@aimsummer.com through Brevo. See supabase/README.md.",
+  "api": {
+    "functions": "https://eflwuetywanrlboiifda.supabase.co/functions/v1"
+  },
 
   "_comment_videos": "YouTube video IDs (the part after v= in the URL). Empty = a 'coming soon' message is shown.",
   "videos": {
@@ -34,7 +36,7 @@
     "levels": "3 levels: Beginner, Intermediate, Advanced",
     "length": "2 weeks, Monday – Friday",
     "hours": "60 hours",
-    "schedule": "8 am – 2 pm, 6 hours a day",
+    "schedule": "9 am – 3 pm, 6 hours a day",
     "sessions": "Summer",
     "sessionsDetail": "June to August",
     "location": "McGill University",

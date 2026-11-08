@@ -1,0 +1,8 @@
+# Supabase CLI configuration (only what matters for this repo).
+project_id = "eflwuetywanrlboiifda"
+
+[functions.request-code]
+verify_jwt = false
+
+[functions.verify-code]
+verify_jwt = false

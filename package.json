@@ -8,11 +8,16 @@
     "build": "node scripts/build.mjs",
     "dev": "node scripts/dev.mjs",
     "check": "node scripts/check.mjs",
-    "test": "npm run build && npm run check"
+    "test": "npm run build && npm run check",
+    "functions:sync": "node scripts/sync-functions.mjs",
+    "test:functions": "node supabase/tests/build.cjs && node supabase/tests/run.mjs"
   },
   "engines": {
     "node": ">=18"
   },
   "author": "Rami Jaouadi",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
 }
