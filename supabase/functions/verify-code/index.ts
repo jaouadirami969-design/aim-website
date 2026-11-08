@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
 
   if (str(body.website)) {
     await logEvent(sb, null, null, "honeypot", { stage: "verify", ip_hash: await hashIp(clientIp(req)) });
-    return json(req, 200, { ok: true, email: "", first_name: "", info_pack_sent: false });
+    return fail(req, 400, "spam_suspected", "Something went wrong on our side. Please reload the page and try again — or write to hello@aimsummer.com.");
   }
 
   const email = normalizeEmail(body.email);

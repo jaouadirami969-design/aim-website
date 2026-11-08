@@ -29,10 +29,11 @@ Deno.serve(async (req) => {
   const ip = clientIp(req);
   const sb = admin();
 
-  // 1. Honeypot — bots fill every field. Pretend it worked, do nothing.
+  // 1. Honeypot — bots fill every field. Nothing is stored or sent; a real person who trips it (browser autofill)
+  //    gets a clear message instead of a silent fake success.
   if (str(body.website)) {
     await logEvent(sb, null, null, "honeypot", { ip_hash: await hashIp(ip) });
-    return json(req, 200, { ok: true, email: "", masked: "", expires_in: CODE_TTL_SECONDS, resend_in: RESEND_COOLDOWN_SECONDS });
+    return fail(req, 400, "spam_suspected", "Something went wrong on our side. Please reload the page and try again — or write to hello@aimsummer.com.");
   }
 
   // 2. The consent box is the whole point of the page (Law 25 / CASL): no box, no email.

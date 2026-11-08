@@ -33,7 +33,7 @@ r = await call(requestCode, { email: 'x@mailinator.com', consent_info: true }); 
 r = await call(requestCode, { email: 'sophie@gmail.co', consent_info: true }); expect('typo suggestion', r.body.error === 'typo_suspected' && r.body.suggestion === 'sophie@gmail.com', r);
 r = await call(requestCode, { email: 'a@nxdomain-zzz.com', consent_info: true }); expect('nxdomain', r.body.error === 'domain_no_mail', r);
 r = await call(requestCode, { email: 'a@nomx.org', consent_info: true }); expect('no mx no A', r.body.error === 'domain_no_mail', r);
-r = await call(requestCode, { email: 'bot@gmail.com', consent_info: true, website: 'http://spam' }); expect('honeypot fake ok', r.status === 200 && r.body.ok === true && db.tables.leads.length === 0, r);
+r = await call(requestCode, { email: 'bot@gmail.com', consent_info: true, website: 'http://spam' }); expect('honeypot blocked, nothing stored', r.status === 400 && r.body.error === 'spam_suspected' && db.tables.leads.length === 0, r);
 r = await call(requestCode, { email: ' Sophie.Tremblay@Gmail.com ', first_name: 'Sophie', role: 'parent', interest: 'campus', consent_info: true, consent_newsletter: true, consent_text: 'I agree', source_page: 'https://aimsummer.com/learn-more.html' });
 expect('request ok', r.status === 200 && r.body.ok && r.body.email === 'sophie.tremblay@gmail.com' && r.body.masked.startsWith('so') && r.body.resend_in === 60, r);
 expect('cors echo', r.cors === 'https://aimsummer.com', r);
