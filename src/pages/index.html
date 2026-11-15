@@ -14,15 +14,19 @@
     <div>
       <span class="hero__kicker"><span class="dot"></span> {{ site.program }} · Ages 13 to 18</span>
       <h1 id="hero-title">Learn to invest like a CEO.</h1>
-      <p class="hero__lead">Two weeks at McGill University — or live online. Eight lessons, one simulated $1,000,000 portfolio to manage, and a CEO who teaches finance at McGill as your instructor.</p>
+      <p class="hero__lead">Find out how money, companies and the stock market really work. Then put it to the test with a simulated $1,000,000 portfolio. Two weeks at McGill University or live online, with a CEO who teaches finance at McGill.</p>
       <div class="hero__actions">
         <a class="btn btn--primary btn--lg" href="apply.html">Apply now</a>
+        {{#if site.videos.intro}}
         <button class="btn btn--ghost btn--lg" type="button" data-video="{{ site.videos.intro }}" data-video-title="Meet Rami and Ilyas — why we started AIM">
           <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> Watch the intro
         </button>
+        {{else}}
+        <a class="btn btn--ghost btn--lg" href="#programs">See the programs</a>
+        {{/if}}
       </div>
       <ul class="hero__proof">
-        <li><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 2 weeks · 60 hours</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 2 weeks · Monday to Friday</li>
         <li><svg class="icon" aria-hidden="true"><use href="#i-award"/></svg> Certificate of completion</li>
         <li><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg> 3 free lessons to start today</li>
       </ul>
@@ -47,23 +51,26 @@
 <section class="band photo-band" aria-labelledby="campus-title">
   <div class="container photo-band__grid">
     <figure class="photo-band__fig">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Arts_Building%2C_McGill_University%2C_Aug_31_2022.jpg/1280px-Arts_Building%2C_McGill_University%2C_Aug_31_2022.jpg" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Arts_Building%2C_McGill_University%2C_Aug_31_2022.jpg/800px-Arts_Building%2C_McGill_University%2C_Aug_31_2022.jpg 800w, https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Arts_Building%2C_McGill_University%2C_Aug_31_2022.jpg/1280px-Arts_Building%2C_McGill_University%2C_Aug_31_2022.jpg 1280w, https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Arts_Building%2C_McGill_University%2C_Aug_31_2022.jpg/1920px-Arts_Building%2C_McGill_University%2C_Aug_31_2022.jpg 1920w" sizes="(max-width: 900px) 100vw, 60vw" width="1280" height="853" alt="Students walking in front of the Arts Building on McGill University's downtown campus on a sunny day" loading="lazy" decoding="async">
-      <figcaption>McGill University, downtown Montréal — the Arts Building and the lower campus, late August.</figcaption>
+      <img src="assets/img/campus-mcgill-1120.webp" srcset="assets/img/campus-mcgill-800.webp 800w, assets/img/campus-mcgill-1120.webp 1120w" sizes="(max-width: 900px) 100vw, 60vw" width="1120" height="747" alt="The main avenue of McGill University's downtown campus in autumn: students walk under yellow trees and red McGill banners, with Mount Royal behind" loading="lazy" decoding="async">
+      <figcaption>McGill University's downtown campus, October 2026. Photo: <a href="https://commons.wikimedia.org/wiki/File:2026-10-24_McGill-University_Jakwaka-Jack-Walker_01.jpg" rel="noopener">Jakwaka</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener license">CC BY-SA 4.0</a>, cropped.</figcaption>
     </figure>
     <div class="photo-band__text">
       <span class="kicker">Two weeks at McGill</span>
       <h2 id="campus-title">University life, while you're still in high school.</h2>
-      <p>Every summer, AIM students spend ten days on McGill University's downtown campus: a real lecture room in the morning, the Investment Lab in the afternoon, lunch on the lower field with new friends who like the same things you do.</p>
-      <ul class="checks">
-        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> <span><strong>32 students</strong> per class, taught in person by Ilyas Zakiat</span></li>
-        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> <span><strong>9 am – 3 pm</strong>, Monday to Friday, with a supervised lunch break</span></li>
-        <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> <span><strong>Live online</strong> option for families outside Montréal — same lessons, same certificate</span></li>
-      </ul>
+      <p>Two weeks on McGill's downtown campus, Monday to Friday. Every morning, Ilyas Zakiat teaches the class himself, in a real lecture room. Every afternoon, you put the lesson to work in small groups, with a finance instructor trained by Ilyas. At lunch, you eat with your group and the AIM team — and you leave with new friends who like the same things you do.</p>
       <div class="photo-band__actions">
         <a class="btn btn--primary" href="apply.html?format=campus">Apply for the campus class</a>
         <a class="btn btn--ghost" href="program.html">See the program</a>
       </div>
     </div>
+  </div>
+  <div class="container">
+    <dl class="factrow" aria-label="The program in four facts">
+      <div class="factrow__i"><dt><span class="factrow__ic"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg></span>Location</dt><dd>{{ site.facts.locationShort }}</dd></div>
+      <div class="factrow__i"><dt><span class="factrow__ic"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg></span>Ages</dt><dd>{{ site.facts.ages }}</dd></div>
+      <div class="factrow__i"><dt><span class="factrow__ic"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg></span>Program length</dt><dd>{{ site.facts.length }}</dd></div>
+      <div class="factrow__i"><dt><span class="factrow__ic"><svg class="icon" aria-hidden="true"><use href="#i-coins"/></svg></span>Payment</dt><dd>{{ site.facts.paymentShort }}</dd></div>
+    </dl>
   </div>
 </section>
 
@@ -72,12 +79,12 @@
     <div class="section-head">
       <span class="kicker">Learn for free</span>
       <h2 id="learn-title">Start today — three short lessons, no sign-up needed.</h2>
-      <p>Each lesson is a 2-to-4-minute video by Rami, a written guide you can read in ten minutes, and a mini-quiz to check what stuck.</p>
+      <p>Each lesson is a guide by Rami you can read in ten minutes, with a mini-quiz to check what stuck. Short videos are on their way.</p>
     </div>
     <ul class="lessons">
       <li>
         <a class="lcard" href="learn-finance-basics.html">
-          <div class="lcard__cover">{{> cover-1 }}<span class="lcard__n">1</span><span class="lcard__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 3 min</span></div>
+          <div class="lcard__cover">{{> cover-1 }}<span class="lcard__n">1</span>{{#if site.videos.lesson1}}<span class="lcard__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 3 min</span>{{/if}}</div>
           <div class="lcard__body">
             <span class="lcard__kicker">Lesson 1 · Finance</span>
             <h3 class="lcard__t">Finance basics</h3>
@@ -88,7 +95,7 @@
       </li>
       <li>
         <a class="lcard" href="learn-stock-market-basics.html">
-          <div class="lcard__cover">{{> cover-2 }}<span class="lcard__n">2</span><span class="lcard__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 4 min</span></div>
+          <div class="lcard__cover">{{> cover-2 }}<span class="lcard__n">2</span>{{#if site.videos.lesson2}}<span class="lcard__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 4 min</span>{{/if}}</div>
           <div class="lcard__body">
             <span class="lcard__kicker">Lesson 2 · The stock market</span>
             <h3 class="lcard__t">Stock market basics</h3>
@@ -99,7 +106,7 @@
       </li>
       <li>
         <a class="lcard" href="learn-start-investing-in-canada.html">
-          <div class="lcard__cover">{{> cover-3 }}<span class="lcard__n">3</span><span class="lcard__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 4 min</span></div>
+          <div class="lcard__cover">{{> cover-3 }}<span class="lcard__n">3</span>{{#if site.videos.lesson3}}<span class="lcard__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 4 min</span>{{/if}}</div>
           <div class="lcard__body">
             <span class="lcard__kicker">Lesson 3 · Getting started</span>
             <h3 class="lcard__t">How to start investing in Canada</h3>
@@ -116,7 +123,7 @@
   <div class="container">
     <div class="section-head">
       <h2 id="pillars-title">Why AIM?</h2>
-      <p>Three things you won't find together in any other finance program for teens in Montreal.</p>
+      <p>Three things you get at AIM.</p>
     </div>
     <ul class="pillars">
       <li class="pillar">
@@ -127,7 +134,7 @@
       <li class="pillar">
         <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-campus"/></svg></span>
         <h3>A real university campus</h3>
-        <p>Spend two weeks on the McGill University campus in downtown Montreal, 9 am to 3 pm, Monday to Friday — or follow the same class live online from anywhere.</p>
+        <p>Spend two weeks on the McGill University campus in downtown Montréal, 9 am to 3 pm, Monday to Friday — or follow the same class live online from anywhere.</p>
       </li>
       <li class="pillar">
         <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-trend"/></svg></span>
@@ -138,18 +145,55 @@
   </div>
 </section>
 
-<section class="band" aria-labelledby="glance-title">
+<section class="band" aria-labelledby="programs-title" id="programs">
   <div class="container">
     <div class="section-head">
-      <span class="kicker">The summer program</span>
-      <h2>Two weeks. Eight lessons. One portfolio to defend.</h2>
-      <p>Everything a student — and a parent — needs to know, on one card. The full lesson-by-lesson program is on the program page.</p>
+      <span class="kicker">Our programs</span>
+      <h2 id="programs-title">Two programs about how money works.</h2>
+      <p>The finance program is open for summer 2027. The FinTech program has a waitlist for 2028.</p>
     </div>
-    {{> glance }}
-    <p style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap">
-      <a class="btn btn--sky" href="program.html">See the full program</a>
-      <a class="btn btn--ghost" href="program.html#levels">The 3 levels</a>
-    </p>
+    <article class="catalog">
+      <header class="catalog__head">
+        <img class="catalog__img" src="assets/img/programs-finance.svg" alt="" width="640" height="400" loading="lazy" decoding="async">
+        <div class="catalog__headtext">
+          <h3 class="catalog__t">AIM programs</h3>
+          <p class="catalog__s">2 programs · for ages 13 to 18</p>
+        </div>
+        <a class="btn btn--primary catalog__cta" href="apply.html">Apply now</a>
+      </header>
+      <ul class="catalog__list">
+        <li class="course">
+          <img class="course__img" src="assets/img/program-investment.svg" alt="" width="320" height="320" loading="lazy" decoding="async">
+          <div class="course__body">
+            <h4 class="course__t">Finance &amp; Investment Summer Program <span class="tag tag--sky">Beginner · Open</span></h4>
+            <p class="course__price">On campus <b>{{ site.facts.priceCampus }}</b> <span aria-hidden="true">·</span> Online <b>{{ site.facts.priceOnline }}</b> <small>{{ site.facts.tax }}</small></p>
+            <ul class="chips" aria-label="Sessions, summer 2027">
+              {{#each site.sessions}}<li class="chip{{#unless this.open}} chip--wait{{/unless}}"><svg class="icon icon--sm" aria-hidden="true"><use href="#i-calendar"/></svg> {{ this.chip }}{{#unless this.open}} · waitlist{{/unless}}</li>{{/each}}
+            </ul>
+            <p class="course__d">Why does a stock jump one day and drop the next? Find out in eight lessons with Ilyas Zakiat. You see how money grows, and you learn to read a company's financial statements. Then you build a portfolio with $1,000,000 in simulated money. The market data is real. On pitch day, you defend your strategy. No experience needed.</p>
+            <details class="more">
+              <summary><span class="more__open">Read more</span><span class="more__close">Read less</span></summary>
+              <ul class="more__list">
+                <li><b>Week 1.</b> You learn the tools: compound interest, the stock market, financial statements.</li>
+                <li><b>Week 2.</b> You build your portfolio: index investing, value, growth, momentum, diversification.</li>
+                <li><b>Last day.</b> Pitch day. You present to the class, then you get your certificate.</li>
+              </ul>
+            </details>
+            <a class="course__more" href="program.html">See the full program <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </div>
+        </li>
+        <li class="course">
+          <img class="course__img" src="assets/img/program-fintech.svg" alt="" width="320" height="320" loading="lazy" decoding="async">
+          <div class="course__body">
+            <h4 class="course__t">FinTech &amp; Digital Investing <span class="tag">2028 waitlist</span></h4>
+            <p class="course__price">Not in summer 2027 · waitlist for 2028</p>
+            <p class="course__d">You tap your phone and the money moves. How? The topics we have in mind: digital payments, robo-advisors, digital assets and AI in finance. To join the list, send us an email. When dates are set, we write to the list first.</p>
+            <a class="course__more" href="mailto:{{ site.email }}?subject=FinTech%202028%20waitlist">Join the 2028 waitlist <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </div>
+        </li>
+      </ul>
+    </article>
+    <p class="catalog__foot muted">Education only — not personal advice. All investing in the program is done with simulated money.</p>
   </div>
 </section>
 
@@ -176,6 +220,8 @@
     {{> why-course }}
   </div>
 </section>
+
+{{> testimonials }}
 
 <section class="band band--tint" aria-labelledby="sessions-title" id="sessions">
   <div class="container">
@@ -204,21 +250,23 @@
           <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Investment Lab every afternoon on the $1,000,000 portfolio</li>
           <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Online certificate of completion</li>
         </ul>
+        <p class="price__note">Not included: lunch and a laptop. Bring your own.</p>
         <a class="btn btn--primary" href="apply.html?format=campus">Apply for the campus class</a>
       </div>
       <div class="price">
         <span class="price__k">Online, live</span>
         <span class="price__v">{{ site.facts.priceOnline }} <small>{{ site.facts.tax }}</small></span>
         <ul>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> 2 weeks, Monday to Friday, 1 – 4 pm Montréal time ({{ site.facts.onlineHours }})</li>
           <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> The same 8 lessons and the same instructor, live from anywhere</li>
-          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Recordings, exercises and your portfolio in the student portal</li>
-          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Online schedule confirmed before registration opens</li>
+          <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Recordings, exercises and your portfolio in your AIM classroom</li>
           <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Online certificate of completion</li>
         </ul>
+        <p class="price__note">You need a computer with a camera and a microphone.</p>
         <a class="btn btn--ghost" href="apply.html?format=online">Apply for the online class</a>
       </div>
     </div>
-    <p class="muted" style="margin:1.25rem 0 0;font-size:var(--fs-1)">Prices are in Canadian dollars, before taxes. Students 13 and under need a parent or guardian to register.</p>
+    <p class="muted" style="margin:1.25rem 0 0;font-size:var(--fs-1)">Reserve your seat now. Pay nothing until the first day of class. Prices are in Canadian dollars, before taxes. Students 13 and under need a parent or guardian to register.</p>
   </div>
 </section>
 

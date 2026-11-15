@@ -37,19 +37,18 @@
       <ul>
         <li><a href="apply.html">Apply — Summer 2027</a></li>
         <li><a href="learn-more.html">Request info — get the info pack</a></li>
-        <li><a href="portal.html">Student portal</a></li>
         <li><a href="privacy.html">Privacy &amp; consent (Law 25)</a></li>
         <li><a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a></li>
       </ul>
       <ul class="social" aria-label="Social media">
-        <li><a href="{{ site.social.facebook }}" aria-label="Facebook"><svg class="icon" aria-hidden="true"><use href="#i-facebook"/></svg></a></li>
-        <li><a href="{{ site.social.instagram }}" aria-label="Instagram"><svg class="icon" aria-hidden="true"><use href="#i-instagram"/></svg></a></li>
-        <li><a href="{{ site.social.youtube }}" aria-label="YouTube"><svg class="icon" aria-hidden="true"><use href="#i-youtube"/></svg></a></li>
+        {{#if site.social.facebook}}<li><a href="{{ site.social.facebook }}" target="_blank" rel="noopener" aria-label="AIM on Facebook (opens in a new tab)"><svg class="icon" aria-hidden="true"><use href="#i-facebook"/></svg></a></li>{{/if}}
+        {{#if site.social.instagram}}<li><a href="{{ site.social.instagram }}" target="_blank" rel="noopener" aria-label="AIM on Instagram (opens in a new tab)"><svg class="icon" aria-hidden="true"><use href="#i-instagram"/></svg></a></li>{{/if}}
+        {{#if site.social.youtube}}<li><a href="{{ site.social.youtube }}" target="_blank" rel="noopener" aria-label="AIM on YouTube (opens in a new tab)"><svg class="icon" aria-hidden="true"><use href="#i-youtube"/></svg></a></li>{{/if}}
       </ul>
     </nav>
   </div>
   <div class="container site-footer__legal">
-    <p>© {{ site.year }} {{ site.name }} — {{ site.fullName }}. All rights reserved. AIM is an independent program and is not affiliated with McGill University. Classes are taught in English.</p>
+    <p>© {{ site.year }} {{ site.name }} — {{ site.fullName }}. All rights reserved. AIM is an independent program and is not affiliated with McGill University. Classes are taught in English. Education only — not personal advice.</p>
   </div>
 </footer>
 

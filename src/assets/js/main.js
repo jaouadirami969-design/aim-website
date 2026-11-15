@@ -74,10 +74,14 @@
   const setPref = (v) => { try { if (v) localStorage.setItem(PREF_KEY, v); else localStorage.removeItem(PREF_KEY); } catch { /* private mode */ } };
   const enc = encodeURIComponent;
   const compose = {
-    gmail: (to) => `https://mail.google.com/mail/?view=cm&fs=1&to=${enc(to)}&su=${enc(SUBJECT)}`,
-    outlook: (to) => `https://outlook.live.com/mail/0/deeplink/compose?to=${enc(to)}&subject=${enc(SUBJECT)}`,
-    yahoo: (to) => `https://compose.mail.yahoo.com/?to=${enc(to)}&subject=${enc(SUBJECT)}`,
-    app: (to) => `mailto:${to}?subject=${enc(SUBJECT)}`,
+    gmail: (to, s) => `https://mail.google.com/mail/?view=cm&fs=1&to=${enc(to)}&su=${enc(s)}`,
+    outlook: (to, s) => `https://outlook.live.com/mail/0/deeplink/compose?to=${enc(to)}&subject=${enc(s)}`,
+    yahoo: (to, s) => `https://compose.mail.yahoo.com/?to=${enc(to)}&subject=${enc(s)}`,
+    app: (to, s) => `mailto:${to}?subject=${enc(s)}`,
+  };
+  /** A link can carry its own subject: mailto:hello@…?subject=FinTech%202028%20waitlist */
+  const subjectOf = (link) => {
+    try { return new URLSearchParams(link.getAttribute('href').split('?')[1] || '').get('subject') || SUBJECT; } catch { return SUBJECT; }
   };
   const CLIENTS = [
     ['gmail', 'Open in Gmail', 'opens mail.google.com in a new tab'],
@@ -107,13 +111,13 @@
   };
   const hideToast = () => { const el = document.getElementById('aim-toast'); if (el) el.classList.remove('is-on'); };
 
-  const openWith = async (client, to) => {
+  const openWith = async (client, to, subject) => {
     if (client === 'copy') {
       try { await navigator.clipboard.writeText(to); toast(`${to} copied — paste it into your email.`); }
       catch { window.prompt('Copy the address:', to); }
       return;
     }
-    const url = compose[client](to);
+    const url = compose[client](to, subject || SUBJECT);
     if (client === 'app') { window.location.href = url; return; }
     const w = window.open(url, '_blank', 'noopener');
     if (!w) window.location.href = url; // pop-up blocked → same tab
@@ -145,7 +149,7 @@
         const remember = pop.querySelector('.mailpop__remember input').checked;
         if (remember && b.dataset.client !== 'copy') setPref(b.dataset.client);
         closePop();
-        openWith(b.dataset.client, to);
+        openWith(b.dataset.client, to, pop.dataset.subject);
       }
       if (e.target.closest('.mailpop__close')) closePop();
     });
@@ -154,10 +158,11 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
   };
 
-  const showPop = (link, to) => {
+  const showPop = (link, to, subject) => {
     if (!pop) buildPop();
     popLink = link;
     pop.dataset.to = to;
+    pop.dataset.subject = subject || SUBJECT;
     pop.querySelector('[data-to]').textContent = to;
     pop.hidden = false;
     link.setAttribute('aria-expanded', 'true');
@@ -182,14 +187,15 @@
     link.setAttribute('aria-expanded', 'false');
     link.addEventListener('click', (e) => {
       const to = link.getAttribute('href').replace(/^mailto:/, '').split('?')[0];
+      const subject = subjectOf(link);
       e.preventDefault();
       const pref = getPref();
       if (pref && compose[pref]) {
-        openWith(pref, to);
-        toast(`Opening ${pref === 'app' ? 'your mail app' : pref === 'gmail' ? 'Gmail' : pref === 'outlook' ? 'Outlook.com' : 'Yahoo Mail'}\u2026`, () => showPop(link, to));
+        openWith(pref, to, subject);
+        toast(`Opening ${pref === 'app' ? 'your mail app' : pref === 'gmail' ? 'Gmail' : pref === 'outlook' ? 'Outlook.com' : 'Yahoo Mail'}\u2026`, () => showPop(link, to, subject));
         return;
       }
-      showPop(link, to);
+      showPop(link, to, subject);
     });
   });
 

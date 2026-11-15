@@ -3,7 +3,7 @@
   "slug": "learn-start-investing-in-canada.html",
   "nav": "learn",
   "title": "How to start investing in Canada — free lesson 3",
-  "description": "Free lesson 3: investing before 18, TFSA vs. RRSP vs. FHSA vs. RESP in plain English, how to choose a broker, buying your first ETF in five steps, beginner mistakes, and the scams to avoid. A 4-minute video, a 10-minute read and a mini-quiz.",
+  "description": "Free lesson 3: investing before 18, TFSA vs. RRSP vs. FHSA vs. RESP in plain English, how to choose a broker, buying your first ETF in five steps, beginner mistakes, and the scams to avoid. A 10-minute read and a mini-quiz.",
   "quiz": true
 }
 -->
@@ -15,16 +15,24 @@
       <h1>How to start investing in Canada</h1>
       <p class="lead">Lessons 1 and 2 explained <em>why</em>. This one is the <em>how</em>: which account to open, which app to use, exactly what to click to buy your first ETF — and the mistakes and scams that trip up beginners.</p>
       <ul class="lesson-meta">
-        <li><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 4-minute video</li>
+        {{#if site.videos.lesson3}}<li><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 4-minute video</li>{{/if}}
         <li><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg> 10-minute read</li>
         <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> 5-question quiz</li>
       </ul>
     </div>
+    {{#if site.videos.lesson3}}
     <button class="video" type="button" data-video="{{ site.videos.lesson3 }}" data-video-title="Lesson 3 — How to start investing in Canada (video by Rami)" aria-label="Play the lesson 3 video">
       <span class="video__poster">{{> cover-3 }}</span>
       <span class="video__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
       <span class="video__label"><span>Start investing in Canada, by Rami</span><small>4 min</small></span>
     </button>
+    {{else}}
+    <button class="video" type="button" data-video="" data-video-title="Lesson 3 — How to start investing in Canada (video by Rami)" aria-label="Lesson 3 video: being filmed">
+      <span class="video__poster">{{> cover-3 }}</span>
+      <span class="video__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
+      <span class="video__label"><span>Video by Rami</span><small>Being filmed</small></span>
+    </button>
+    {{/if}}
   </div>
 </section>
 

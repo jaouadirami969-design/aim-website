@@ -150,16 +150,16 @@ export function infoPackEmail(input: { firstName?: string | null; email: string;
 
   /* ---- subject ---- */
   const subjects: Record<string, string> = {
-    "student|campus": "Your two weeks at McGill with AIM — the honest version",
+    "student|campus": "Your two weeks on campus with AIM — the honest version",
     "student|online": "Your two weeks with AIM, live online — how it really works",
     "student|info": "AIM in 3 minutes — campus or online?",
-    "parent|campus": "AIM at McGill — the details parents ask for",
+    "parent|campus": "AIM on campus — the details parents ask for",
     "parent|online": "AIM live online — the details parents ask for",
     "parent|info": "AIM for parents — the program, the two formats, the cost",
-    "counselor|campus": "AIM at McGill — information for your students",
+    "counselor|campus": "AIM on campus — information for your students",
     "counselor|online": "AIM live online — information for your students",
     "counselor|info": "AIM — information for your students (campus and online)",
-    "other|campus": "AIM at McGill — dates, days and cost",
+    "other|campus": "AIM on campus — dates, days and cost",
     "other|online": "AIM live online — dates, hours and cost",
     "other|info": "AIM in 3 minutes — the program, campus or online",
   };
@@ -191,17 +191,17 @@ export function infoPackEmail(input: { firstName?: string | null; email: string;
   /* ---- the format blocks ---- */
   const campusDay = `${b("A typical day on the McGill campus (9 am – 3 pm).")} 9 to 12: the lesson with Ilyas. 12 to 1: supervised lunch break. 1 to 3: practice — exercises, the virtual exchange, ${your} portfolio. Ten days, 60 hours on campus, ${b("32 students maximum")}, on McGill University's downtown Montréal campus; the exact building and room are emailed before the session starts.${role === "parent" ? " Students are with the instructor and the AIM team from 9 to 3, including the lunch break." : ""}`;
   const campusBring = `${b("What to bring.")} A laptop (or a tablet with a keyboard) and its charger, a notebook and a pen, a packed lunch and a water bottle. All the software we use is free — nothing to buy.`;
-  const campusCost = `${b("Dates and cost.")} Summer 2027: Session 1 late June to early July, Session 2 in July before the construction holiday, Session 3 in August (waitlist). The campus class is ${b("$1,895 plus taxes")}. Exact dates and registration open in ${b("December 2026")} on aimsummer.com, and payment options are confirmed at registration. If getting downtown every day is a problem, the same class runs live online (1 – 3 pm) at $1,495 plus taxes.`;
+  const campusCost = `${b("Dates and cost.")} Summer 2027: Session 1 late June to early July, Session 2 in July before the construction holiday, Session 3 in August (waitlist). The campus class is ${b("$1,895 plus taxes")}. Exact dates and registration open in ${b("December 2026")} on aimsummer.com. Pay nothing until the first day of class. If getting downtown every day is a problem, the same class runs live online (1 – 4 pm) at $1,495 plus taxes.`;
 
-  const onlineDay = `${b("How the live online class works (1 – 3 pm, Montréal time).")} Monday to Friday, two hours a day live with Ilyas — the same lessons, the same $1,000,000 portfolio and the same pitch day as the campus class. Recordings are posted in the student portal the same day, so a missed afternoon isn't lost. Twenty hours over two weeks, same certificate.${role === "parent" ? " It works from anywhere — a cottage, a trip, another province — as long as there is a quiet two-hour window." : ""}`;
-  const onlineNeed = `${b(role === "student" ? "What you need." : "What the student needs at home.")} A laptop or desktop with a camera and a microphone, a stable internet connection, and a quiet spot for two hours. All the software we use is free.`;
-  const onlineCost = `${b("Dates and cost.")} Summer 2027: Session 1 late June to early July, Session 2 in July before the construction holiday, Session 3 in August (waitlist). The online class is ${b("$1,495 plus taxes")}. Exact dates and registration open in ${b("December 2026")} on aimsummer.com, and payment options are confirmed at registration. If ${rather}, the same class runs on the McGill campus (9 am – 3 pm) at $1,895 plus taxes.`;
+  const onlineDay = `${b("How the live online class works (1 – 4 pm, Montréal time).")} Monday to Friday, three hours a day live with Ilyas — the same lessons, the same $1,000,000 portfolio and the same pitch day as the campus class. Recordings are in the AIM classroom, so a missed afternoon isn't lost. Thirty hours over two weeks, same certificate.${role === "parent" ? " It works from anywhere — a cottage, a trip, another province — as long as there is a quiet three-hour window." : ""}`;
+  const onlineNeed = `${b(role === "student" ? "What you need." : "What the student needs at home.")} A laptop or desktop with a camera and a microphone, a stable internet connection, and a quiet spot for three hours. All the software we use is free.`;
+  const onlineCost = `${b("Dates and cost.")} Summer 2027: Session 1 late June to early July, Session 2 in July before the construction holiday, Session 3 in August (waitlist). The online class is ${b("$1,495 plus taxes")}. Exact dates and registration open in ${b("December 2026")} on aimsummer.com. Pay nothing until the first day of class. If ${rather}, the same class runs on the McGill campus (9 am – 3 pm) at $1,895 plus taxes.`;
 
-  const infoFormats = `${b("Two ways to attend.")} On the ${b("McGill campus")} in downtown Montréal, Monday to Friday 9 am – 3 pm (lesson in the morning, supervised lunch, practice in the afternoon), 32 students maximum, $1,895 plus taxes. Or ${b("live online")}, Monday to Friday 1 – 3 pm Montréal time, with recordings in the student portal, $1,495 plus taxes. Same instructor, same lessons, same certificate.`;
+  const infoFormats = `${b("Two ways to attend.")} On the ${b("McGill campus")} in downtown Montréal, Monday to Friday 9 am – 3 pm (lesson in the morning, supervised lunch, practice in the afternoon), 32 students maximum, $1,895 plus taxes. Or ${b("live online")}, Monday to Friday 1 – 4 pm Montréal time (30 hours), with recordings in the AIM classroom, $1,495 plus taxes. Same instructor, same lessons, same certificate.`;
   const infoChoose = role === "student"
     ? `${b("How to choose.")} Pick the campus if you can get downtown every day and want the full-day experience — and a real taste of university life. Pick online if you're outside Montréal, away in July, or want to keep your mornings free.`
-    : `${b("How to choose.")} The campus suits a student who can get downtown every day and wants the full-day experience (and a taste of university life). Online suits a family outside Montréal, travelling in July, or a student who wants the mornings free. Many parents decide once the exact dates are out in December.`;
-  const infoDates = `${b("Dates.")} Summer 2027: Session 1 late June to early July, Session 2 in July before the construction holiday, Session 3 in August (waitlist). Exact dates and registration open in ${b("December 2026")} on aimsummer.com; payment options are confirmed at registration.`;
+    : `${b("How to choose.")} The campus suits a student who can get downtown every day and wants the full-day experience (and a taste of university life). Online suits a family outside Montréal, travelling in July, or a student who wants the mornings free.`;
+  const infoDates = `${b("Dates.")} Summer 2027: Session 1 late June to early July, Session 2 in July before the construction holiday, Session 3 in August (waitlist). Exact dates and registration open in ${b("December 2026")} on aimsummer.com. Pay nothing until the first day of class.`;
 
   const formatBlocks = interest === "campus" ? [campusDay, campusBring, campusCost]
     : interest === "online" ? [onlineDay, onlineNeed, onlineCost]
@@ -214,25 +214,50 @@ export function infoPackEmail(input: { firstName?: string | null; email: string;
       `Show this email to a parent. Registration opens in December 2026, and a parent or guardian confirms it.`,
       `Questions? Just reply — a real person answers within two business days.`,
     ]),
-    parent: `${b("Next steps.")} Registration for Summer 2027 opens in ${b("December 2026")} on aimsummer.com — you'll receive the exact dates by email first. Applying takes about 10 minutes, with no transcripts or recommendation letters, and nothing is due until you register. In the meantime, the full program page is here: ${a(L.program, "aimsummer.com/program")}, and your child can try a free lesson today: ${a(L.lesson, "Finance basics")}. Any question — about the content, the schedule or the payment options — just reply to this email. We answer within two business days, in English or in French.`,
+    parent: `${b("Next steps.")} Registration for Summer 2027 opens in ${b("December 2026")} on aimsummer.com — you'll receive the exact dates by email first. Applying takes about 10 minutes, with no transcripts or recommendation letters. Pay nothing until the first day of class. In the meantime, the full program page is here: ${a(L.program, "aimsummer.com/program")}, and your child can try a free lesson today: ${a(L.lesson, "Finance basics")}. Any question — about the content, the schedule or the payment options — just reply to this email. We answer within two business days, in English or in French.`,
     counselor: `${b("Working with your school.")} If several of your students are interested, reply with a rough number and the name of your school: we'll set up a short call, send you a one-page summary you can share, and we're glad to present the program to your students. Registration opens in December 2026; a parent or guardian confirms each student's registration. The full details are on ${a(L.program, "aimsummer.com/program")}, and the three free lessons (${a(L.lesson, "starting with Finance basics")}) are a good first taste for a class.`,
     other: `${b("Next steps.")} The full program page is here: ${a(L.program, "aimsummer.com/program")}. Registration for Summer 2027 opens in December 2026 on aimsummer.com, and ${a(L.apply, "applying")} takes about 10 minutes. Questions? Reply to this email — we answer within two business days.`,
   };
   const next = nextByRole[role || "other"];
 
   /* ---- assemble ---- */
+  // Plain version (text/plain part): the same words, in order.
   const blocks = [hi, intro, program, ...formatBlocks, next].map(p).join("");
   const closing = role === "student" ? "Talk soon," : "Warm regards,";
   const signerRole = role === "student" ? SIGNER_ROLE.replace(", instructor", ", your instructor") : SIGNER_ROLE;
   const signoff = `<p style="margin:22px 0 0;">${closing}<br>${b(SIGNER)}<br><span style="color:${C.muted};">${esc(signerRole)}</span><br><span style="color:${C.muted};">${SENDER_EMAIL}${ORG_PHONE ? ` · ${esc(ORG_PHONE)} (${esc(ORG_HOURS)})` : ""}</span></p>`;
   const footer = `<p style="margin:26px 0 0;font-size:12px;line-height:1.5;color:${C.muted};">${ORG_NAME} · ${esc(ORG_ADDRESS)}. AIM is an independent program and is not affiliated with McGill University. You received this email because you asked for the AIM info pack on aimsummer.com (${esc(input.email)}). If that wasn't you, just reply and we'll delete your address.</p>`;
 
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(subject)}</title></head>
-<body style="margin:0;padding:0;background:#FFFFFF;">
-<div style="max-width:640px;margin:0;padding:18px 16px;font-family:Arial,Helvetica,sans-serif;font-size:15.5px;line-height:1.6;color:${C.ink};">
-${blocks}${signoff}${footer}
-</div>
-</body></html>`;
+  // Designed version (text/html part): the first AIM design — header band, serif titles, tinted cards, one button.
+  // Kept light on purpose so it reads as a personal message: one small image, one button, no columns, mostly text.
+  const section = (block: string, bg = C.skyT) => {
+    const m = block.match(/^<b style="[^"]*">(.*?)<\/b>\s*([\s\S]*)$/);
+    if (!m) return card(block, bg);
+    return h2(m[1].replace(/\.$/, "")) + (m[2].startsWith("<ul") ? m[2] : bg === C.white ? p(m[2]) : card(m[2], bg));
+  };
+  const headlines: Record<string, string> = {
+    campus: "here is the campus class, in one email.",
+    online: "here is the live online class, in one email.",
+    info: "here is everything in one email.",
+  };
+  const headline = `${role === "student" ? "Hi" : "Hello"}${first ? ` ${first}` : ""} — ${headlines[interest || "info"]}`;
+  const cta = role === "student" ? button(L.lesson, "Try the free lesson")
+    : role === "counselor" ? button(L.program, "See the full program")
+    : button(L.program, "See the full program");
+  const designed =
+    `<div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:${C.amber};font-weight:bold;">Your info pack</div>` +
+    `<h1 style="margin:8px 0 14px;font-family:Georgia,'Times New Roman',serif;font-size:27px;line-height:1.2;color:${C.deep};">${headline}</h1>` +
+    p(intro) +
+    section(program) +
+    formatBlocks.map((blk, i) => section(blk, i === 1 ? C.yelT : C.skyT)).join("") +
+    section(next, C.white) +
+    cta + signoff;
+  const html = shell({
+    title: subject,
+    preheader: toText(intro).slice(0, 140),
+    body: designed,
+    footerNote: `You received this email because you asked for the AIM info pack on aimsummer.com (${esc(input.email)}). If that wasn't you, just reply and we'll delete your address.`,
+  });
   const text = toText(blocks + signoff + footer);
   return { subject, html, text, variant: `${role || "other"}|${interest || "info"}`, params: { FIRST_NAME: input.firstName || "", EMAIL: input.email, ROLE: role, INTEREST: interest } };
 }

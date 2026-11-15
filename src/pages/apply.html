@@ -16,7 +16,7 @@
       <li><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg> No fee, no transcripts, no letters</li>
       <li><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg> Saved automatically — finish later</li>
       <li><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg> Decision by email in {{ site.apply.decisionDays }} business days</li>
-      <li><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg> Nothing to pay until you reserve a seat</li>
+      <li><svg class="icon icon--sm" aria-hidden="true"><use href="#i-check"/></svg> Pay nothing until the first day of class</li>
     </ul>
   </div>
 </section>
@@ -70,7 +70,7 @@
             <ul class="checks">
               <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> <span><strong>You'll need:</strong> the student's date of birth, a parent or guardian's email and phone number, and the name of the school.</span></li>
               <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> <span><strong>You won't need:</strong> grades, transcripts, recommendation letters, a résumé, or any payment.</span></li>
-              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> <span><strong>Then:</strong> we email our decision within {{ site.apply.decisionDays }} business days. Accepted students reserve their seat from December 2026 — nothing is due before that.</span></li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> <span><strong>Then:</strong> we email our decision within {{ site.apply.decisionDays }} business days. Accepted students reserve their seat from December 2026. Pay nothing until the first day of class.</span></li>
             </ul>
           </div>
           <div class="ap__aside">
@@ -236,7 +236,7 @@
           <div class="fld fld--stack" data-field="student_email">
             <label class="fld__lab" for="f-student-email">Student's email <small>(optional)</small></label>
             <input class="fld__inp" id="f-student-email" name="student_email" type="email" autocomplete="section-student email" inputmode="email" spellcheck="false" maxlength="254">
-            <p class="fld__hint" data-voice="parent" hidden>If your child has their own address, they'll receive a copy of the application and, later, their portal access.</p>
+            <p class="fld__hint" data-voice="parent" hidden>If your child has their own address, they'll receive a copy of the application and, later, their access to the AIM classroom.</p>
             <p class="fld__err" hidden></p>
           </div>
           <div class="fld fld--stack" data-field="student_phone">
@@ -309,7 +309,7 @@
       <!-- ======================================================= step 4 · your program -->
       <form class="ap__step" data-step="program" hidden novalidate>
         <h3 class="ap__h" tabindex="-1"><span class="ap__n">Step 4 of 6</span>Your program</h3>
-        <p class="ap__intro">Choose the program, the class, how you'd like to attend and when. Nothing here is final — if a session fills up or a format suits you better, we'll talk before you register.</p>
+        <p class="ap__intro">Choose the class, how you'd like to attend and when. Nothing here is final — if a session fills up or a format suits you better, we'll talk before you register.</p>
 
         <fieldset class="fset" data-field="program">
           <legend class="fset__legend">Program</legend>
@@ -446,23 +446,30 @@
       <!-- ======================================================= step 6 · why AIM -->
       <form class="ap__step" data-step="why" hidden novalidate>
         <h3 class="ap__h" tabindex="-1"><span class="ap__n">Step 6 of 6</span>Why AIM?</h3>
-        <p class="ap__intro"><span data-voice="student">This part is optional — but it's the one Ilyas reads first. A few honest sentences are worth more than a polished essay.</span><span data-voice="parent" hidden>This part is optional — but it's the one Ilyas reads first. If your child can write it (or dictate it to you), even better: a few honest sentences are worth more than a polished essay.</span></p>
+        <p class="ap__intro"><span data-voice="student">One question, and it's the one Ilyas reads first. There's no wrong answer — a few honest sentences are perfect.</span><span data-voice="parent" hidden>One question, and it's the one Ilyas reads first. If your child can answer it (or tell you what to write), even better — a few honest sentences are perfect.</span></p>
 
         <div class="fld fld--stack" data-field="motivation">
-          <label class="fld__lab" for="f-motivation"><span data-voice="student">Why do you want to join AIM?</span><span data-voice="parent" hidden>Why does the student want to join AIM?</span> <small>(optional, up to 1,000 characters)</small></label>
-          <textarea class="fld__inp" id="f-motivation" name="motivation" rows="6" maxlength="1000" placeholder="For example: what you'd like to understand about money or the markets, something you've already tried (a savings goal, a stock you follow, a business idea), or what you'd do with the $1,000,000 portfolio."></textarea>
+          <label class="fld__lab fld__lab--big" for="f-motivation"><span data-voice="student">What's one thing about money or investing you'd love to finally understand?</span><span data-voice="parent" hidden>What's one thing about money or investing your child would love to finally understand?</span> <small>(optional)</small></label>
+          <textarea class="fld__inp" id="f-motivation" name="motivation" rows="6" maxlength="1000" placeholder="A question you've always had, a company you follow, a goal you're saving for — anything goes."></textarea>
           <p class="fld__hint fld__count"><span data-count="motivation">0</span> / 1,000 characters</p>
           <p class="fld__err" hidden></p>
         </div>
 
-        <div class="fld fld--stack" data-field="notes">
-          <label class="fld__lab" for="f-notes">Anything else we should know? <small>(optional)</small></label>
-          <textarea class="fld__inp" id="f-notes" name="notes" rows="3" maxlength="1000" placeholder="A question, a date you can't make, something that would help us welcome the student well."></textarea>
-          <p class="fld__hint fld__count"><span data-count="notes">0</span> / 1,000 characters</p>
-          <p class="fld__err" hidden></p>
+        <div class="ap__actions">
+          <button type="button" class="btn btn--ghost" data-back>Back</button>
+          <button class="btn btn--primary btn--lg" type="submit">Review my answers <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
         </div>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <!-- ======================================================= review & send -->
+      <form class="ap__step" data-step="review" hidden novalidate>
+        <h3 class="ap__h" tabindex="-1"><span class="ap__n">Last look</span>Review &amp; send</h3>
+        <p class="ap__intro">Everything you told us, on one screen. Fix anything with <em>Edit</em>, tick the three boxes, then send — you'll get a copy by email within a minute.</p>
+        <div class="review" data-review></div>
 
         <div class="ap__consents">
+          <h4 class="ap__consents-h">Before you send</h4>
           <label class="consent consent--main" data-field="consent_accuracy">
             <input type="checkbox" name="consent_accuracy" value="yes" required>
             <span><strong>The information in this application is accurate</strong> and I'll let AIM know if anything changes.</span>
@@ -480,26 +487,13 @@
           <p class="fld__err" data-err-for="consent_parent" hidden></p>
         </div>
 
-        <div class="ap__actions">
-          <button type="button" class="btn btn--ghost" data-back>Back</button>
-          <button class="btn btn--primary btn--lg" type="submit">Review my answers <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
-        </div>
-        <p class="form-status" role="status" aria-live="polite"></p>
-      </form>
-
-      <!-- ======================================================= review & send -->
-      <form class="ap__step" data-step="review" hidden novalidate>
-        <h3 class="ap__h" tabindex="-1"><span class="ap__n">Last look</span>Review &amp; send</h3>
-        <p class="ap__intro">Everything you told us, on one screen. Fix anything with <em>Edit</em>, then send — you'll get a copy by email within a minute.</p>
-        <div class="review" data-review></div>
-
         <!-- anti-bot trap: humans never see it, browsers must never autofill it -->
         <input type="checkbox" name="aim_hp" value="1" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
 
         <div class="ap__actions ap__actions--submit">
           <button type="button" class="btn btn--ghost" data-back>Back</button>
           <button class="btn btn--primary btn--lg" type="submit">Submit my application <svg class="icon icon--sm" aria-hidden="true"><use href="#i-arrow"/></svg></button>
-          <p class="ap__note">By sending, you agree to the three statements of step 6. We reply within {{ site.apply.decisionDays }} business days.</p>
+          <p class="ap__note">Nothing to pay. We reply within {{ site.apply.decisionDays }} business days.</p>
         </div>
         <p class="form-status" role="status" aria-live="polite"></p>
       </form>
@@ -518,7 +512,7 @@
     <div class="faq">
       <details>
         <summary>What happens after I submit?</summary>
-        <div class="faq__a"><p>You receive a copy of your answers by email right away (the parent or guardian too). Ilyas or Rami reads every application personally and we email our decision within {{ site.apply.decisionDays }} business days. Accepted students then receive a link to reserve their seat — registration opens in December 2026, and nothing is due before that.</p></div>
+        <div class="faq__a"><p>You receive a copy of your answers by email right away (the parent or guardian too). Ilyas or Rami reads every application personally and we email our decision within {{ site.apply.decisionDays }} business days. Accepted students then receive a link to reserve their seat. Registration opens in December 2026. Pay nothing until the first day of class.</p></div>
       </details>
       <details>
         <summary>Is it first come, first served?</summary>
@@ -538,7 +532,7 @@
       </details>
       <details>
         <summary>Campus or online?</summary>
-        <div class="faq__a"><p>Same instructor, same lessons, same certificate. The <strong>McGill campus</strong> class (9 am – 3 pm) is the full-day experience with the afternoon Investment Lab in person. <strong>Live online</strong> (1 – 3 pm) works from anywhere and keeps the mornings free. Not sure? Pick <em>No preference</em> and we'll suggest the best fit.</p></div>
+        <div class="faq__a"><p>Same instructor, same lessons, same certificate. The <strong>McGill campus</strong> class (9 am – 3 pm) is the full-day experience with the afternoon Investment Lab in person. <strong>Live online</strong> (1 – 4 pm Montréal time, 30 hours) works from anywhere and keeps the mornings free. Not sure? Pick <em>No preference</em> and we'll suggest the best fit.</p></div>
       </details>
       <details>
         <summary>What happens with our information?</summary>

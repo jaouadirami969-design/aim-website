@@ -87,7 +87,10 @@ async function fillStudentFlow(page, { filledBy = 'student', dobYear = '2012', s
   await page.fill('#f-parent-first', 'Nadia');
   await page.fill('#f-parent-last', 'Tremblay');
   if (filledBy === 'student') await page.fill('#f-parent-email', 'nadia@example.org');
-  await page.fill('#f-parent-phone', '514 555 0123');
+  await page.fill('#f-parent-phone', '1 514 555 0123');
+  ok(await page.inputValue('#f-parent-phone') === '514-555-0123', 'phone number is formatted as you type (1 514 555 0123 → 514-555-0123)');
+  const [hEmail, hPhone] = await Promise.all(['#f-parent-email', '#f-parent-phone'].map((s) => page.$eval(s, (el) => Math.round(el.getBoundingClientRect().height))));
+  ok(hEmail === hPhone && hPhone < 60, `parent step: email and phone boxes have the same height (${hEmail}px / ${hPhone}px)`);
   await page.click('label.pill:has(input[value="mother"])');
   if (shots) await shot(page, `${tag}-3-parent`);
   await page.click('.ap__step[data-step="parent"] button[type="submit"]');
@@ -95,8 +98,12 @@ async function fillStudentFlow(page, { filledBy = 'student', dobYear = '2012', s
 
   // format came from the deep link; choose the session and how they heard about us
   await page.click('label.choice:has(input[name="session_first"][value="s1"])');
+  const secondOpts = await page.$$eval('#f-session-second option', (os) => os.map((o) => o.value));
+  ok(!secondOpts.includes('s1') && secondOpts.includes('s2'), `second choice hides the first choice (${secondOpts.join(', ')})`);
   await page.selectOption('#f-session-second', 's2');
   await page.selectOption('#f-heard', 'Instagram');
+  const [hSecond, hHeard] = await Promise.all(['#f-session-second', '#f-heard'].map((s) => page.$eval(s, (el) => Math.round(el.getBoundingClientRect().height))));
+  ok(hSecond === hHeard, `program step: "Second choice" and "How did you hear" boxes have the same height (${hSecond}px / ${hHeard}px)`);
   if (shots) await shot(page, `${tag}-4-program`);
   await page.click('.ap__step[data-step="program"] button[type="submit"]');
   await page.waitForSelector('.ap__step[data-step="school"]:visible');
@@ -110,12 +117,14 @@ async function fillStudentFlow(page, { filledBy = 'student', dobYear = '2012', s
   await page.waitForSelector('.ap__step[data-step="why"]:visible');
 
   await page.fill('#f-motivation', 'I follow the markets with my dad and I want to understand what actually moves a stock price.');
-  await page.check('input[name="consent_accuracy"]');
-  await page.check('input[name="consent_privacy"]');
-  await page.check('input[name="consent_parent"]');
+  ok(await page.$$eval('.ap__step[data-step="why"] textarea', (els) => els.length) === 1, 'step 6 asks one question only');
   if (shots) await shot(page, `${tag}-6-why`);
   await page.click('.ap__step[data-step="why"] button[type="submit"]');
   await page.waitForSelector('.ap__step[data-step="review"]:visible');
+  // the three statements now sit on the review step, right above the button
+  await page.check('.ap__step[data-step="review"] input[name="consent_accuracy"]');
+  await page.check('.ap__step[data-step="review"] input[name="consent_privacy"]');
+  await page.check('.ap__step[data-step="review"] input[name="consent_parent"]');
   if (shots) await shot(page, `${tag}-7-review`);
 }
 
@@ -192,9 +201,13 @@ async function main() {
     await page.waitForSelector('.ap__step[data-step="student"]:visible');
 
     await page.click('.ap__step[data-step="student"] button[type="submit"]');
-    const summary = await page.textContent('.ap__step[data-step="student"] .form-status');
+    const summary = await page.textContent('.ap__step[data-step="student"] [data-summary]');
     const nErr = await page.$$eval('.ap__step[data-step="student"] .fld__err:not([hidden])', (els) => els.length);
-    ok(/fix the \d+ fields/.test(summary) && nErr >= 5, `student step: error summary + ${nErr} field errors`);
+    const summaryOnTop = await page.$eval('.ap__step[data-step="student"]', (f) => {
+      const s = f.querySelector('[data-summary]'), b = f.querySelector('button[type="submit"]');
+      return Boolean(s && b && (s.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING));
+    });
+    ok(/\d+ things to fix/.test(summary) && summary.includes('First name') && nErr >= 5 && summaryOnTop, `student step: error summary on top, naming the fields + ${nErr} field errors`);
     await shot(page, 'desktop-errors-student');
 
     await page.fill('#f-student-first', 'Max');
@@ -375,6 +388,39 @@ async function main() {
     await page.waitForURL('**/application-received.html');
     await shot(page, 'mobile-8-received');
     ok(errors.length === 0, `no JS errors on mobile${errors.length ? `: ${errors.join(' | ')}` : ''}`);
+    await ctx.close();
+  }
+
+  /* ---- the four PDFs: the right edition on each end page ---- */
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const page = await ctx.newPage();
+    const errors = []; watchErrors(page, errors);
+    const shown = () => page.evaluate(() => {
+      const v = [...document.querySelectorAll('[data-guide] [data-edition]')].filter((el) => !el.hidden);
+      return v.length === 1 ? { edition: v[0].dataset.edition, href: v[0].querySelector('a.btn').getAttribute('href') } : { edition: `visible:${v.length}`, href: '' };
+    });
+    const cases = [
+      ['thank-you.html', 'aim.learnMore', { email: 'a@example.org', role: 'student', done: true }, 'family', 'guide/AIM-Catalog-2027-Families.pdf', 'Learn more, student (student edition not published yet)'],
+      ['thank-you.html', 'aim.learnMore', { email: 'a@example.org', role: 'parent', done: true }, 'family', 'guide/AIM-Catalog-2027-Families.pdf', 'Learn more, parent'],
+      ['thank-you.html', 'aim.learnMore', { email: 'a@example.org', role: 'counselor', done: true }, 'family', 'guide/AIM-Catalog-2027-Families.pdf', 'Learn more, counselor'],
+      ['thank-you.html', 'aim.learnMore', null, 'family', 'guide/AIM-Catalog-2027-Families.pdf', 'Learn more, page opened directly'],
+      ['application-received.html', 'aim.apply.result.v1', { reference: 'AIM-27-1001', filled_by: 'student' }, 'student', 'guide/AIM-Next-Steps-2027-Students.pdf', 'Apply, student'],
+      ['application-received.html', 'aim.apply.result.v1', { reference: 'AIM-27-1001', filled_by: 'parent' }, 'family', 'guide/AIM-Next-Steps-2027-Families.pdf', 'Apply, parent'],
+      ['application-received.html', 'aim.apply.result.v1', null, 'family', 'guide/AIM-Next-Steps-2027-Families.pdf', 'Apply, page opened directly'],
+    ];
+    for (const [url, key, state, edition, href, label] of cases) {
+      await page.goto(`${BASE}/${url}`);
+      await page.evaluate(([k, s]) => { sessionStorage.clear(); if (s) sessionStorage.setItem(k, JSON.stringify(s)); }, [key, state]);
+      await page.goto(`${BASE}/${url}`);
+      const got = await shown();
+      ok(got.edition === edition && got.href === href, `PDF — ${label}: ${edition} edition (${href})`);
+    }
+    for (const f of ['AIM-Catalog-2027-Families', 'AIM-Next-Steps-2027-Students', 'AIM-Next-Steps-2027-Families']) {
+      const res = await page.request.get(`${BASE}/guide/${f}.pdf`);
+      ok(res.status() === 200 && (await res.body()).subarray(0, 4).toString() === '%PDF', `PDF — ${f}.pdf is served`);
+    }
+    ok(errors.length === 0, `no JS errors on the end pages${errors.length ? `: ${errors.join(' | ')}` : ''}`);
     await ctx.close();
   }
 

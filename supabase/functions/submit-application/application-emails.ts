@@ -54,9 +54,9 @@ function footer(note: string): string {
 /* ---------------- labels ---------------- */
 
 export const LABELS = {
-  program: { "finance-investment": "Finance & Investment Summer Program", "fintech-digital-investing": "FinTech & Digital Investing (new for 2027)" } as Record<string, string>,
+  program: { "finance-investment": "Finance & Investment Summer Program", "fintech-digital-investing": "FinTech & Digital Investing (2028 waitlist)" } as Record<string, string>,
   level: { beginner: "Beginner", intermediate: "Intermediate", advanced: "Advanced" } as Record<string, string>,
-  format: { campus: "McGill campus (9 am – 3 pm)", online: "Live online (1 – 3 pm)", either: "Campus or online — no preference" } as Record<string, string>,
+  format: { campus: "McGill campus (9 am – 3 pm)", online: "Live online (1 – 4 pm)", either: "Campus or online — no preference" } as Record<string, string>,
   session: { s1: "Session 1 — late June to early July 2027", s2: "Session 2 — July 2027, before the construction holiday", s3: "Session 3 — August 2027 (waitlist)", flexible: "Flexible — any session", none: "No second choice" } as Record<string, string>,
   relationship: { mother: "Mother", father: "Father", guardian: "Legal guardian", other: "Other" } as Record<string, string>,
   level_school: { sec1: "Secondary 1", sec2: "Secondary 2", sec3: "Secondary 3", sec4: "Secondary 4", sec5: "Secondary 5", cegep1: "CEGEP — 1st year", grade7: "Grade 7", grade8: "Grade 8", grade9: "Grade 9", grade10: "Grade 10", grade11: "Grade 11", grade12: "Grade 12", other: "Other" } as Record<string, string>,
@@ -98,7 +98,7 @@ export function applicationReceivedEmail(app: AppRow, opts: { to: "applicant" | 
 
   const next = ul([
     `${b("We read it.")} Ilyas or Rami reads every application personally — no algorithm. You'll receive our answer by email within ${esc(DECISION_DAYS)} business days.`,
-    `${b("If it's a yes,")} the email explains how to reserve the seat. Registration and payment open in December 2026 — nothing is due before that, and the dates will be confirmed first.`,
+    `${b("If it's a yes,")} the email explains how to reserve the seat. Registration opens in December 2026, and the dates will be confirmed first. Pay nothing until the first day of class.`,
     `${b("Questions in the meantime?")} Just reply to this email (keep the reference in the subject). We answer in English or in French.`,
   ]);
   const parentLine = !applicantIsParent && opts.parentNotified
@@ -132,7 +132,7 @@ export function parentNoticeEmail(app: AppRow, confirmUrl: string) {
     lawLine +
     p(`${b("Confirm with one click:")} ${a(confirmUrl, "Yes, I confirm this application")}<br><span style="font-size:13px;color:${C.muted};">(or copy this link into your browser: ${esc(confirmUrl)})</span>`) +
     p(`${b(`What ${s} told us:`)}`) + ul(summaryItems(app)) +
-    p(`${b("What happens next.")} We read every application personally and reply within ${esc(DECISION_DAYS)} business days. If it's a yes, the email explains how to reserve the seat; registration and payment open in December 2026 — nothing is due before that. The campus class is $1,895 plus taxes, the online class $1,495 plus taxes.`) +
+    p(`${b("What happens next.")} We read every application personally and reply within ${esc(DECISION_DAYS)} business days. If it's a yes, the email explains how to reserve the seat; registration opens in December 2026. Pay nothing until the first day of class. The campus class is $1,895 plus taxes, the online class $1,495 plus taxes.`) +
     p(`Questions? Just reply to this email — we answer in English or in French. Didn't expect this email? Reply and we'll delete the application.`) +
     signoff() +
     footer(`You received this email because ${s} named you as parent or guardian in an application on aimsummer.com (reference ${esc(app.reference)}).`);

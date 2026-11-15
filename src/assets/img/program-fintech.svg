@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320">
+  <defs>
+    <linearGradient id="ft-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E3A5F"/>
+      <stop offset="1" stop-color="#0B2F5B"/>
+    </linearGradient>
+    <radialGradient id="ft-glow" cx="0.2" cy="0.85" r="0.9">
+      <stop offset="0" stop-color="#3FA9F5" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#3FA9F5" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ft-card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3FA9F5"/>
+      <stop offset="1" stop-color="#2B8FD8"/>
+    </linearGradient>
+    <linearGradient id="ft-screen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF6FE"/>
+    </linearGradient>
+    <filter id="ft-shadow" x="-40%" y="-30%" width="180%" height="170%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+
+  <rect width="320" height="320" fill="url(#ft-bg)"/>
+  <rect width="320" height="320" fill="url(#ft-glow)"/>
+
+  <!-- the network behind -->
+  <g stroke="#FFFFFF" stroke-opacity=".16" stroke-width="2">
+    <path d="M36 70L96 44M96 44L150 84M36 70L58 140M258 250L296 204M258 250L226 292"/>
+  </g>
+  <g fill="#FFFFFF" fill-opacity=".3">
+    <circle cx="36" cy="70" r="6"/><circle cx="150" cy="84" r="5"/><circle cx="58" cy="140" r="5"/><circle cx="296" cy="204" r="6"/><circle cx="226" cy="292" r="5"/>
+  </g>
+  <circle cx="96" cy="44" r="9" fill="#FFC72C"/>
+  <circle cx="258" cy="250" r="8" fill="#3FA9F5"/>
+
+  <!-- tap to pay -->
+  <g fill="none" stroke-linecap="round" stroke-width="7">
+    <path d="M236 92a34 34 0 0 1 0 50" stroke="#FFC72C"/>
+    <path d="M254 76a58 58 0 0 1 0 82" stroke="#FFC72C" stroke-opacity=".6"/>
+    <path d="M272 60a82 82 0 0 1 0 114" stroke="#FFC72C" stroke-opacity=".3"/>
+  </g>
+
+  <!-- the phone -->
+  <g transform="rotate(-9 150 172)">
+    <rect x="92" y="62" width="124" height="232" rx="26" fill="#0B2F5B" opacity=".55" filter="url(#ft-shadow)"/>
+    <rect x="86" y="50" width="124" height="232" rx="24" fill="#FFFFFF" fill-opacity=".14"/>
+    <rect x="90" y="54" width="116" height="224" rx="20" fill="#0B2F5B"/>
+    <rect x="96" y="60" width="104" height="212" rx="15" fill="url(#ft-screen)"/>
+    <rect x="132" y="66" width="32" height="7" rx="3.5" fill="#0B2F5B"/>
+    <!-- the card -->
+    <rect x="106" y="86" width="84" height="54" rx="10" fill="url(#ft-card)"/>
+    <rect x="116" y="98" width="18" height="13" rx="3" fill="#FFC72C"/>
+    <rect x="116" y="122" width="44" height="6" rx="3" fill="#FFFFFF" fill-opacity=".85"/>
+    <circle cx="176" cy="104" r="7" fill="#FFFFFF" fill-opacity=".35"/>
+    <!-- a small chart -->
+    <path d="M108 196l16-12 14 8 18-22 14 8 18-20" fill="none" stroke="#3FA9F5" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="188" cy="158" r="5" fill="#FFC72C" stroke="#FFFFFF" stroke-width="2"/>
+    <rect x="108" y="210" width="80" height="7" rx="3.5" fill="#D7ECFB"/>
+    <!-- the pay button -->
+    <rect x="108" y="230" width="80" height="28" rx="14" fill="#FFC72C"/>
+    <path d="M139 244l6 6 12-12" fill="none" stroke="#0B2F5B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- a coin -->
+  <g transform="translate(56 232)">
+    <circle r="26" fill="#F2AE0F"/>
+    <circle r="22" cy="-3" fill="#FFC72C"/>
+    <circle r="13" cy="-3" fill="none" stroke="#F2AE0F" stroke-width="3.5"/>
+  </g>
+</svg>

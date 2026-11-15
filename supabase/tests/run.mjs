@@ -54,8 +54,8 @@ r = await call(verifyCode, { email: 'Sophie.Tremblay@gmail.com', code: code.slic
 expect('verify ok', r.status === 200 && r.body.ok && r.body.first_name === 'Sophie' && r.body.info_pack_sent === true, r);
 const lead = db.tables.leads[0];
 expect('lead verified', lead.status === 'verified' && lead.verified_at && lead.info_pack_sent_at && lead.notified_at && lead.brevo_contact_synced_at, lead);
-expect('info pack via Gmail', gmail.sent.length === 1 && gmail.sent[0].to.includes('sophie.tremblay@gmail.com') && gmail.sent[0].from.includes('hello@aimsummer.com') && gmail.sent[0].subject === 'AIM at McGill — the details parents ask for' && gmail.sent[0].cfg.connection.hostname === 'smtp.gmail.com' && gmail.sent[0].cfg.connection.auth.password === 'abcdefghijklmnop', gmail.sent[0] && gmail.sent[0].subject);
-expect('parent/campus wording', gmail.sent[0].html.includes('your child') && gmail.sent[0].html.includes('32 students maximum') && !gmail.sent[0].html.includes('<img') && (gmail.sent[0].html.match(/<a /g) || []).length <= 3, (gmail.sent[0].html.match(/<a /g) || []).length);
+expect('info pack via Gmail', gmail.sent.length === 1 && gmail.sent[0].to.includes('sophie.tremblay@gmail.com') && gmail.sent[0].from.includes('hello@aimsummer.com') && gmail.sent[0].subject === 'AIM on campus — the details parents ask for' && gmail.sent[0].cfg.connection.hostname === 'smtp.gmail.com' && gmail.sent[0].cfg.connection.auth.password === 'abcdefghijklmnop', gmail.sent[0] && gmail.sent[0].subject);
+expect('parent/campus wording', gmail.sent[0].html.includes('your child') && gmail.sent[0].html.includes('32 students maximum') && (gmail.sent[0].html.match(/<img/g) || []).length === 1 && gmail.sent[0].html.includes('email-logo.png') && (gmail.sent[0].html.match(/<a /g) || []).length <= 8, (gmail.sent[0].html.match(/<a /g) || []).length);
 expect('2 more Brevo sends', sent.length === 3, sent.map(s => s.subject || 'contact'));
 expect('notify', sent[1].to[0].email === 'hello@aimsummer.com' && sent[1].replyTo.email === 'sophie.tremblay@gmail.com' && sent[1].subject.includes('Sophie') && sent[1].subject.includes('Parent'), sent[1].subject);
 expect('brevo contact', sent[2].contact && sent[2].contact.email === 'sophie.tremblay@gmail.com' && sent[2].contact.attributes.FIRSTNAME === 'Sophie', sent[2]);
@@ -90,7 +90,7 @@ expect('leo code', r.status === 200, r);
 const leoCode = sent[sent.length - 1].subject.slice(-6);
 r = await call(verifyCode, { email: 'leo@videotron.ca', code: leoCode });
 const leoPack = sent.find(s => s.subject === 'Your two weeks with AIM, live online — how it really works');
-expect('fallback to Brevo with student/online variant', r.body.ok && r.body.info_pack_sent === true && leoPack && leoPack.to[0].email === 'leo@videotron.ca' && leoPack.sender.name === 'Rami Jaouadi (AIM)' && leoPack.htmlContent.includes('Hi Léo') && leoPack.htmlContent.includes('1 – 3 pm'), { r, subjects: sent.map(s => s.subject) });
+expect('fallback to Brevo with student/online variant', r.body.ok && r.body.info_pack_sent === true && leoPack && leoPack.to[0].email === 'leo@videotron.ca' && leoPack.sender.name === 'Rami Jaouadi (AIM)' && leoPack.htmlContent.includes('Hi Léo') && leoPack.htmlContent.includes('1 – 4 pm'), { r, subjects: sent.map(s => s.subject) });
 expect('fallback logged', db.tables.lead_events.some(e => e.type === 'info_pack_sent' && e.detail.transport === 'brevo' && e.detail.gmail_error), db.tables.lead_events.filter(e => e.type === 'info_pack_sent').map(e => e.detail));
 gmail.fail = false;
 

@@ -11,10 +11,11 @@
   "city": "Montreal, Quebec",
   "language": "en",
 
+  "_comment_social": "The full address of each AIM page. Empty = the icon is hidden in the footer.",
   "social": {
-    "facebook": "https://www.facebook.com/",
-    "instagram": "https://www.instagram.com/",
-    "youtube": "https://www.youtube.com/"
+    "facebook": "",
+    "instagram": "https://www.instagram.com/aim.summer.mtl/",
+    "youtube": ""
   },
 
   "_comment_api": "The 'Learn more' flow (email → 6-digit code → info pack) runs on Supabase Edge Functions; the emails leave from hello@aimsummer.com through Brevo. See supabase/README.md.",
@@ -30,6 +31,21 @@
     "lesson3": ""
   },
 
+  "_comment_guide": "The four 2027 PDFs. The files live in src/static/guide/. 'learn' is offered on the page shown after the Learn more form, 'apply' on the page shown after the application. 'student' is shown to a student, 'family' to everyone else. An empty 'family' path hides the whole block; an empty 'student' path shows the family edition to everyone.",
+  "guide": {
+    "learn": {
+      "_student_when_ready": "guide/AIM-Catalog-2027-Students.pdf — put this path back in 'student' once Rami has rewritten the letter on page 2 in his own words.",
+      "student": "",
+      "family": "guide/AIM-Catalog-2027-Families.pdf",
+      "pages": "10 pages"
+    },
+    "apply": {
+      "student": "guide/AIM-Next-Steps-2027-Students.pdf",
+      "family": "guide/AIM-Next-Steps-2027-Families.pdf",
+      "pages": "8 pages"
+    }
+  },
+
   "facts": {
     "ages": "13 to 18 years old",
     "level": "Beginner-friendly",
@@ -37,10 +53,16 @@
     "length": "2 weeks, Monday – Friday",
     "hours": "60 hours",
     "schedule": "9 am – 3 pm, 6 hours a day",
+    "onlineHours": "30 hours",
+    "onlineSchedule": "1 – 4 pm Montréal time, 3 hours a day",
+    "payment": "Nothing before day one",
+    "paymentDetail": "Two instalments",
+    "paymentShort": "Pay in two instalments",
     "sessions": "Summer",
     "sessionsDetail": "June to August",
     "location": "McGill University",
     "locationDetail": "or Online (live)",
+    "locationShort": "On the McGill campus or online",
     "priceCampus": "$1,895",
     "priceOnline": "$1,495",
     "tax": "+ tax",
@@ -55,19 +77,41 @@
   },
 
   "sessions": [
-    { "name": "Session 1", "when": "Late June – early July 2027", "where": "McGill campus · Online", "open": true, "label": "Applications open" },
-    { "name": "Session 2", "when": "July 2027, before the construction holiday", "where": "McGill campus · Online", "open": true, "label": "Applications open" },
-    { "name": "Session 3", "when": "August 2027", "where": "McGill campus · Online", "open": false, "label": "Join the waitlist" }
+    { "name": "Session 1", "when": "Late June – early July 2027", "chip": "Late June – early July", "where": "McGill campus · Online", "open": true, "label": "Applications open" },
+    { "name": "Session 2", "when": "July 2027, before the construction holiday", "chip": "July", "where": "McGill campus · Online", "open": true, "label": "Applications open" },
+    { "name": "Session 3", "when": "August 2027", "chip": "August", "where": "McGill campus · Online", "open": false, "label": "Join the waitlist" }
   ],
 
-  "_comment_apply": "The guided application (apply.html). Everything below is shown as options in the form; flip a session to \"waitlist\" when it is full, set a level's \"from\" year to open it. Values (ids) must match the Edge Function submit-application.",
+  "_comment_rankings": "McGill's ranks, each with its source, its edition and a link to the ranking itself. Re-check every June, when QS publishes a new edition. The text may only repeat what the items say, and always names the source: '#1 in Canada' is true for QS, not for every ranking.",
+  "rankings": {
+    "checked": "November 2026",
+    "headline": "You study where university students study.",
+    "text": "In its 2027 edition, QS ranks McGill University #1 in Canada. In the world, it is #30. For finance research, the 2026 EduRank ranking places it #3 in Canada.",
+    "items": [
+      { "rank": "#1", "label": "in Canada", "source": "QS World University Rankings 2027", "url": "https://www.topuniversities.com/world-university-rankings?countries=ca" },
+      { "rank": "#30", "label": "in the world", "source": "QS World University Rankings 2027", "url": "https://www.topuniversities.com/universities/mcgill-university" },
+      { "rank": "#3", "label": "in Canada for finance research", "source": "EduRank 2026", "url": "https://edurank.org/economics/finance/ca/" }
+    ]
+  },
+
+  "_comment_testimonials": "Real answers from ONE former student of Ilyas's previous finance class (summer 2026, not an AIM class). Only typos are fixed; a cut is marked […]; never add a word, a name, a school or a photo. The student's written OK is kept in the private 'AIM — preuves' folder, not here.",
+  "testimonials": {
+    "source": "Student — took Ilyas's previous finance class, summer 2026",
+    "short": "[…] I was expecting a monotone class about finance and stocks. I was completely wrong, the class I took with Ilyas was the opposite of that and was anything but boring.",
+    "items": [
+      { "label": "The surprise", "quote": "Before my first day at McGill, I was expecting a monotone class about finance and stocks. I was completely wrong, the class I took with Ilyas was the opposite of that and was anything but boring." },
+      { "label": "The teacher", "quote": "During my classes under his guidance, Ilyas proved to me that he had our success at heart by constantly checking up on us and making sure we understood. He would often take extra time after class to discuss further with students and answer questions." },
+      { "label": "What stuck", "quote": "I can confidently say that the knowledge I gained with Ilyas is what leads me to understand the value of the market, know how to seize valuable opportunities and better manage my money." }
+    ]
+  },
+
+  "_comment_apply": "The guided application (apply.html). Everything below is shown as options in the form; flip a session to \"waitlist\" when it is full, set a level's \"from\" year to open it. Values (ids) must match the Edge Function submit-application. The FinTech program (id \"fintech-digital-investing\") is not in the form while it is only a 2028 waitlist: its card on the home page opens an email instead. Add it back here the day it has dates. A session gets its \"Save the date\" button the day it has confirmed \"start\" and \"end\" dates (format 2027-06-28).",
   "apply": {
     "programStart": "2027-06-28",
     "minutes": "10",
     "decisionDays": "3",
     "programs": [
-      { "id": "finance-investment", "name": "Finance & Investment Summer Program", "tag": "Summer 2027 · 3 levels", "blurb": "Two weeks with Ilyas Zakiat: how money, companies and markets really work — and a simulated $1,000,000 portfolio you manage and defend on pitch day.", "open": true, "featured": true },
-      { "id": "fintech-digital-investing", "name": "FinTech & Digital Investing", "tag": "New for 2027 · Beginner", "blurb": "Payments, digital assets, robo-advisors and AI in finance — the technology changing how people invest. Full details coming soon; applying now puts you first in line.", "open": true, "featured": false }
+      { "id": "finance-investment", "name": "Finance & Investment Summer Program", "tag": "Summer 2027 · 3 levels", "blurb": "Two weeks with Ilyas Zakiat: how money, companies and markets really work — and a simulated $1,000,000 portfolio you manage and defend on pitch day.", "open": true, "featured": true }
     ],
     "levels": [
       { "id": "beginner", "name": "Beginner", "who": "No experience needed — everyone starts here in 2027.", "from": 2027 },
@@ -76,7 +120,7 @@
     ],
     "formats": [
       { "id": "campus", "name": "McGill campus", "detail": "Monday to Friday, 9 am – 3 pm · 60 hours · 32 students", "price": "$1,895 + tax" },
-      { "id": "online", "name": "Live online", "detail": "Monday to Friday, 1 – 3 pm Montréal time · recordings in the portal", "price": "$1,495 + tax" },
+      { "id": "online", "name": "Live online", "detail": "Monday to Friday, 1 – 4 pm Montréal time · 30 hours · recordings in your AIM classroom", "price": "$1,495 + tax" },
       { "id": "either", "name": "No preference", "detail": "Campus or online — suggest what works best for us", "price": "" }
     ],
     "sessions": [

@@ -17,11 +17,17 @@
     const nameEl = ty.querySelector('[data-ty-name]');
     const emailEl = ty.querySelector('[data-ty-email]');
     if (s && s.email) {
-      if (nameEl) nameEl.textContent = s.first_name ? `Thank you, ${s.first_name}!` : 'Thank you!';
+      if (nameEl) nameEl.textContent = s.first_name ? `Welcome to AIM, ${s.first_name}!` : 'Welcome to AIM!';
       if (emailEl) emailEl.textContent = s.email;
     } else {
       ty.querySelectorAll('[data-ty-needs-state]').forEach((el) => { el.hidden = true; });
     }
+    // The catalog: the student edition for a student, the family edition for everyone else.
+    const edition = s && s.role === 'student' ? 'student' : 'family';
+    ty.querySelectorAll('[data-guide]').forEach((g) => {
+      if (!g.querySelector(`[data-edition="${edition}"]`)) return;
+      g.querySelectorAll('[data-edition]').forEach((v) => { v.hidden = v.dataset.edition !== edition; });
+    });
   }
 
   /* ---------- the form ---------- */

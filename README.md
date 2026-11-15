@@ -62,7 +62,6 @@ No `npm install` is needed: the build uses Node.js only.
 | `apply.html` | Apply — three steps, starting with the info pack |
 | `learn-more.html` | Learn more: email → 6-digit code → info pack (the main lead-capture page) |
 | `thank-you.html` | Shown after the code is confirmed (noindex) |
-| `portal.html` | Student portal (login placeholder until the first session) |
 | `privacy.html` | Privacy & consent (Quebec Law 25, students 13 and under) |
 | `404.html` | Not found |
 

@@ -43,7 +43,8 @@
     const nameEl = received.querySelector('[data-ty-name]');
     if (r && r.reference) {
       const first = r.student_first_name || '';
-      if (nameEl) nameEl.textContent = r.filled_by === 'parent' ? `Thank you${first ? ` — ${first}'s application is in` : ''}!` : `Thank you${first ? `, ${first}` : ''}!`;
+      if (nameEl) nameEl.textContent = r.filled_by === 'parent' ? (first ? `${first}'s application is in!` : 'The application is in!') : (first ? `${first}, your application is in!` : 'Your application is in!');
+      saveTheDate(r.session_first);
       const emailEl = received.querySelector('[data-ty-email]');
       if (emailEl) emailEl.textContent = r.applicant_email || 'your inbox';
       const refBox = received.querySelector('[data-ty-ref]');
@@ -63,6 +64,43 @@
     } else {
       received.querySelectorAll('[data-ty-has-email]').forEach((el) => { el.hidden = true; });
     }
+    // The applicant guide: the student edition when the student filled in the form, the family edition otherwise.
+    const edition = r && r.filled_by === 'student' ? 'student' : 'family';
+    received.querySelectorAll('[data-guide]').forEach((g) => {
+      if (!g.querySelector(`[data-edition="${edition}"]`)) return;
+      g.querySelectorAll('[data-edition]').forEach((v) => { v.hidden = v.dataset.edition !== edition; });
+    });
+  }
+
+  /* "Save the date": a calendar file (.ics) for the session chosen first — planned dates, confirmed in December. */
+  function saveTheDate(sessionId) {
+    const wrap = document.querySelector('[data-ty-save]');
+    const text = document.querySelector('[data-ty-save-text]');
+    let sessions = [];
+    try { sessions = JSON.parse((document.getElementById('aim-sessions') || {}).textContent || '[]'); } catch { sessions = []; }
+    const s = sessions.find((x) => x.id && x.id === sessionId);
+    if (!wrap || !text || !s) return;
+    const d = (iso) => new Date(`${iso}T12:00:00Z`);
+    const nice = (iso, withYear) => d(iso).toLocaleDateString('en-CA', { month: 'long', day: 'numeric', ...(withYear ? { year: 'numeric' } : {}), timeZone: 'UTC' });
+    text.textContent = `${s.name} is planned for ${nice(s.start)} – ${nice(s.end, true)}, Monday to Friday. Add it to your calendar now — the exact dates are confirmed by email in December 2026.`;
+    wrap.hidden = false;
+    document.querySelector('[data-ty-save-btn]').addEventListener('click', () => {
+      const ymd = (date) => date.toISOString().slice(0, 10).replace(/-/g, '');
+      const endExclusive = d(s.end); endExclusive.setUTCDate(endExclusive.getUTCDate() + 1);
+      const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+      const ics = [
+        'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//AIM//aimsummer.com//EN', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT',
+        `UID:aim-2027-${s.id}@aimsummer.com`, `DTSTAMP:${stamp}`,
+        `DTSTART;VALUE=DATE:${ymd(d(s.start))}`, `DTEND;VALUE=DATE:${ymd(endExclusive)}`,
+        `SUMMARY:AIM Summer 2027 — ${s.name} (planned dates)`,
+        'DESCRIPTION:AIM — Finance & Investment Summer Program. Planned dates\\, confirmed by email in December 2026. https://aimsummer.com',
+        'URL:https://aimsummer.com', 'TRANSP:TRANSPARENT', 'END:VEVENT', 'END:VCALENDAR', '',
+      ].join('\r\n');
+      const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+      const a = Object.assign(document.createElement('a'), { href: url, download: `AIM-Summer-2027-${s.name.replace(/\s+/g, '-')}.ics` });
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    });
   }
 
   /* ================================================================== page: application-confirmed.html (the parent's one click) */
@@ -98,7 +136,7 @@
         if (data.already_confirmed) {
           set('already', 'Already confirmed', `${student}'s application was already confirmed.`, 'Nothing else to do — thank you. We email our decision within 3 business days.', { reference: data.reference });
         } else {
-          set('ok', 'Confirmed', `Thank you${parent ? `, ${parent}` : ''} — ${student}'s application is confirmed.`, 'We have your confirmation as parent or guardian. Nothing else to do for now: we email our decision within 3 business days, and nothing is due before registration opens in December 2026.', { reference: data.reference });
+          set('ok', 'Confirmed', `Thank you${parent ? `, ${parent}` : ''} — ${student}'s application is confirmed.`, 'We have your confirmation as parent or guardian. Nothing else to do for now: we email our decision within 3 business days. Pay nothing until the first day of class.', { reference: data.reference });
         }
         return;
       }
@@ -326,6 +364,41 @@
     $$('.fld__err', form).forEach((e) => { e.hidden = true; e.textContent = ''; });
     $$('[aria-invalid]', form).forEach((i) => i.removeAttribute('aria-invalid'));
     $$('.form-status', form).forEach((s) => say(s, ''));
+    renderSummary(form);
+  }
+
+  /* The error summary sits at the top of the step: it names each field to fix, each name jumps to its field,
+     and it shrinks (then disappears) as the fields are fixed. */
+  function summaryEl(form) {
+    let el = $('[data-summary]', form);
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'ap__summary';
+      el.setAttribute('data-summary', '');
+      el.setAttribute('role', 'alert');
+      el.hidden = true;
+      const anchor = $('.ap__intro', form) || $('.ap__h', form);
+      if (anchor) anchor.after(el); else form.prepend(el);
+    }
+    return el;
+  }
+  function labelOf(box) {
+    const c = box.cloneNode(true);
+    c.querySelectorAll('[hidden], small, .fld__err, .fld__hint').forEach((h) => h.remove());
+    const lab = c.querySelector('.fld__lab, .fset__legend') || c.querySelector('strong');
+    const text = (lab ? lab.textContent : '').replace(/\s+/g, ' ').trim();
+    return text || box.dataset.field.replace(/_/g, ' ');
+  }
+  function renderSummary(form) {
+    if (!form) return;
+    const bad = $$('[data-field].is-invalid', form);
+    const existing = $('[data-summary]', form);
+    if (!bad.length) { if (existing) { existing.hidden = true; existing.innerHTML = ''; } return; }
+    const el = summaryEl(form);
+    const head = bad.length === 1 ? 'One thing to fix before you continue:' : `${bad.length} things to fix before you continue:`;
+    el.innerHTML = `<p class="ap__summary-h">${esc(head)}</p><ul>${bad.map((b) => `<li><button type="button" class="linkbtn" data-jump="${esc(b.dataset.field)}">${esc(labelOf(b))}</button></li>`).join('')}</ul>`;
+    el.hidden = false;
+    $$('[data-jump]', el).forEach((btn) => btn.addEventListener('click', () => focusField(btn.dataset.jump)));
   }
   function focusField(name) {
     const box = fieldBox(name);
@@ -338,8 +411,8 @@
   function showErrors(form, errors) {
     const names = Object.keys(errors);
     names.forEach((n) => setError(n, errors[n]));
+    renderSummary(form);
     if (!names.length) return false;
-    say($('.form-status', form), names.length === 1 ? 'Please fix the field highlighted below.' : `Please fix the ${names.length} fields highlighted below.`, 'error');
     focusField(names[0]);
     return true;
   }
@@ -444,7 +517,10 @@
     why(d) {
       const e = {};
       if (trim(d.motivation).length > 1000) e.motivation = 'Please keep it under 1,000 characters.';
-      if (trim(d.notes).length > 1000) e.notes = 'Please keep it under 1,000 characters.';
+      return e;
+    },
+    review(d) {
+      const e = {};
       if (d.consent_accuracy !== true) e.consent_accuracy = 'Please confirm that the information is accurate.';
       if (d.consent_privacy !== true) e.consent_privacy = 'Please confirm that you have read how we handle personal information.';
       if (d.consent_parent !== true) e.consent_parent = d.filled_by === 'parent' ? "Please confirm that you are the student's parent or guardian." : 'Please confirm that a parent or guardian knows about this application.';
@@ -555,18 +631,40 @@
     if (t.name === 'filled_by') applyVoice();
     if (t.name === 'level') syncProgram();
     if (t.name === 'heard_about_choice') syncHeard();
-    if (t.name === 'motivation' || t.name === 'notes') counters();
+    if (t.name === 'session_first') syncSecondChoice();
+    if (t.name === 'motivation') counters();
     if (t.name === 'student_first_name' || t.name === 'parent_first_name') law25Note();
-    // a field's error disappears as soon as it is fixed
+    // a field's error disappears as soon as it is fixed — and so does its line in the summary
     const box = t.closest('[data-field]');
     if (box && box.classList.contains('is-invalid')) {
       const name = box.dataset.field;
       const fn = validators[current];
       const errs = fn ? fn(data) : {};
-      if (!errs[name]) setError(name, '');
+      if (!errs[name]) { setError(name, ''); renderSummary(t.closest('form')); }
     }
     scheduleSave();
   }
+
+  /* ------------------------------------------------------------------ phone numbers: 438-978-1687, as you type */
+  function formatPhone(value, country) {
+    if (country && country !== 'Canada' && country !== 'United States') return value;   // other countries: as typed
+    let d = digits(value);
+    if (d.startsWith('1')) d = d.slice(1);           // North American area codes never start with 1: it's the country code
+    if (d.length > 10) return value;                 // something unusual (an extension?) — leave it alone
+    if (d.length <= 3) return d;
+    if (d.length <= 6) return `${d.slice(0, 3)}-${d.slice(3)}`;
+    return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`;
+  }
+  $$('input[type="tel"]').forEach((inp) => {
+    const apply = (force) => {
+      const atEnd = inp.selectionStart == null || inp.selectionStart === inp.value.length;
+      if (!force && !atEnd) return;                  // editing in the middle: tidy up on blur instead
+      const f = formatPhone(inp.value, data.country || 'Canada');
+      if (f !== inp.value) inp.value = f;
+    };
+    inp.addEventListener('input', (e) => { if (!e.inputType || !e.inputType.startsWith('delete')) apply(false); });
+    inp.addEventListener('blur', () => { apply(true); collect(); scheduleSave(); });
+  });
 
   /* ------------------------------------------------------------------ step: email */
   const emailForm = $('#ap-email');
@@ -876,6 +974,18 @@
     }
     $('[data-prev-year]').hidden = !data.level || data.level === 'beginner';
     syncHeard();
+    syncSecondChoice();
+  }
+  /* The second choice never offers the session already chosen first. */
+  const secondSel = $('#f-session-second');
+  const SECOND_OPTIONS = Array.from(secondSel.options).map((o) => ({ value: o.value, text: o.textContent }));
+  function syncSecondChoice() {
+    const first = data.session_first || '';
+    const keep = secondSel.value || data.session_second || 'none';
+    secondSel.innerHTML = '';
+    SECOND_OPTIONS.filter((o) => o.value === 'none' || o.value !== first).forEach((o) => secondSel.add(new Option(o.text, o.value)));
+    secondSel.value = keep !== first && SECOND_OPTIONS.some((o) => o.value === keep) ? keep : 'none';
+    data.session_second = secondSel.value;
   }
   function syncHeard() {
     const other = $('[data-heard-other]');
@@ -899,7 +1009,7 @@
 
   /* ------------------------------------------------------------------ step: why */
   function counters() {
-    for (const name of ['motivation', 'notes']) {
+    for (const name of ['motivation']) {
       const el = $(`[data-count="${name}"]`);
       if (el) el.textContent = String(trim(data[name]).length).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
@@ -957,9 +1067,8 @@
         ['Comfortable in English', yes(data.english_ok)],
       ] },
       { step: 'why', title: 'Why AIM?', rows: [
-        ['Motivation', trim(data.motivation) || 'Left empty (optional)'],
-        ['Anything else', trim(data.notes) || '—'],
-        ['Confirmed', [data.consent_accuracy && 'accurate information', data.consent_privacy && 'privacy terms read', data.consent_parent && (data.filled_by === 'parent' ? 'parent or guardian consent' : 'parent or guardian informed')].filter(Boolean).join(' · ') || '—'],
+        ['One thing to finally understand', trim(data.motivation) || 'Left empty (optional)'],
+        ...(trim(data.notes) ? [['Anything else', trim(data.notes)]] : []),   // only in applications started before Nov. 2026
       ] },
     ];
     box.innerHTML = sections.map((s) => `
@@ -975,7 +1084,7 @@
     collect();
     const dob = dobString(data);
     const heard = data.heard_about_choice === 'Other' && trim(data.heard_about_other) ? `Other — ${trim(data.heard_about_other)}` : (data.heard_about_choice || '');
-    const consentText = $$('.ap__consents .consent--main', forms.why).map(visibleText).join(' | ');
+    const consentText = $$('.ap__consents .consent--main', forms.review).map(visibleText).join(' | ');
     return {
       filled_by: data.filled_by,
       student_first_name: trim(data.student_first_name), student_last_name: trim(data.student_last_name), student_dob: dob,
@@ -1002,6 +1111,7 @@
     for (const s of ['start', 'student', 'parent', 'program', 'school', 'why']) {
       if (!validateStep(s, true)) { returnTo = 'review'; go(s); validateStep(s); return; }
     }
+    if (!validateStep('review')) return;               // the three boxes, just above the button
     const auth = getAuth();
     if (!auth) { pendingAfterAuth = 'review'; go('email'); return; }
     say(status, '');

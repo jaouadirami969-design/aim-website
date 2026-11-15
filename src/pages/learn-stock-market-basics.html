@@ -3,7 +3,7 @@
   "slug": "learn-stock-market-basics.html",
   "nav": "learn",
   "title": "Stock market basics — free lesson 2",
-  "description": "Free lesson 2: what a stock is, how the TSX, NYSE and Nasdaq work, what an index like the S&P 500 is, ETFs and dividends, bull and bear markets, diversification and why long-term investors win. A 4-minute video, a 10-minute read and a mini-quiz.",
+  "description": "Free lesson 2: what a stock is, how the TSX, NYSE and Nasdaq work, what an index like the S&P 500 is, ETFs and dividends, bull and bear markets, diversification and why long-term investors win. A 10-minute read and a mini-quiz.",
   "quiz": true
 }
 -->
@@ -15,16 +15,24 @@
       <h1>Stock market basics: how it works, in plain English</h1>
       <p class="lead">"The market is up 2 %." "Shares crashed." "Buy the dip." You hear it every day — here is what it all actually means, from what a share is to why patient investors end up ahead.</p>
       <ul class="lesson-meta">
-        <li><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 4-minute video</li>
+        {{#if site.videos.lesson2}}<li><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 4-minute video</li>{{/if}}
         <li><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg> 10-minute read</li>
         <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> 5-question quiz</li>
       </ul>
     </div>
+    {{#if site.videos.lesson2}}
     <button class="video" type="button" data-video="{{ site.videos.lesson2 }}" data-video-title="Lesson 2 — Stock market basics (video by Rami)" aria-label="Play the lesson 2 video">
       <span class="video__poster">{{> cover-2 }}</span>
       <span class="video__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
       <span class="video__label"><span>Stock market basics, by Rami</span><small>4 min</small></span>
     </button>
+    {{else}}
+    <button class="video" type="button" data-video="" data-video-title="Lesson 2 — Stock market basics (video by Rami)" aria-label="Lesson 2 video: being filmed">
+      <span class="video__poster">{{> cover-2 }}</span>
+      <span class="video__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
+      <span class="video__label"><span>Video by Rami</span><small>Being filmed</small></span>
+    </button>
+    {{/if}}
   </div>
 </section>
 

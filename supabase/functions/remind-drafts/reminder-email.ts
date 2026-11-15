@@ -53,7 +53,7 @@ export function reminderEmail(d: DraftRow) {
     `Hi${first ? ` ${esc(first)}` : ""},`,
     `On ${when} you started an application to AIM's summer program${student && byParent ? ` for ${esc(student)}` : ""} and got as far as ${b(STEP_NAME[step])}. ${b("Everything you typed is saved")} — finishing takes about ${minutes} minute${minutes === 1 ? "" : "s"}.`,
     `${b("Continue here:")} ${a(link, link)}<br>On the same device, press <i>Continue where I left off</i>. On another device, confirm your email with a new 6-digit code and we bring your answers back.`,
-    `${b("Why finish now?")} Seats are limited (32 per campus session) and earlier applications have more choice of session and format. There is no fee, nothing to pay before registration opens in December 2026, and we email our decision within 3 business days.`,
+    `${b("Why finish now?")} Seats are limited (32 per campus session) and earlier applications have more choice of session and format. There is no application fee, you pay nothing until the first day of class, and we email our decision within 3 business days.`,
     `If you've changed your mind, there is nothing to do — unfinished applications are deleted after ${PURGE_DAYS} days, and this is the only reminder we send. Questions? Just reply to this email.`,
   ].map(p).join("");
   const signoff = `<p style="margin:22px 0 0;">Warm regards,<br>${b(SIGNER)}<br><span style="color:${C.muted};">${esc(SIGNER_ROLE)}</span><br><span style="color:${C.muted};">${SENDER_EMAIL}${ORG_PHONE ? ` · ${esc(ORG_PHONE)} (${esc(ORG_HOURS)})` : ""}</span></p>`;

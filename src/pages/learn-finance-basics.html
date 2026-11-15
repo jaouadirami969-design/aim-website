@@ -3,7 +3,7 @@
   "slug": "learn-finance-basics.html",
   "nav": "learn",
   "title": "Finance basics — free lesson 1",
-  "description": "Free lesson 1: what finance really is, saving vs. investing, budgeting, interest and compound interest, inflation, and why risk and return go together. A 3-minute video, a 9-minute read and a mini-quiz.",
+  "description": "Free lesson 1: what finance really is, saving vs. investing, budgeting, interest and compound interest, inflation, and why risk and return go together. A 9-minute read and a mini-quiz.",
   "quiz": true
 }
 -->
@@ -15,16 +15,24 @@
       <h1>Finance basics: how money actually works</h1>
       <p class="lead">Finance isn't about being rich. It's the handful of decisions everybody makes with money — and most people are never taught. Here are the six ideas that matter most, explained the way we wish someone had explained them to us.</p>
       <ul class="lesson-meta">
-        <li><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 3-minute video</li>
+        {{#if site.videos.lesson1}}<li><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg> 3-minute video</li>{{/if}}
         <li><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg> 9-minute read</li>
         <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> 5-question quiz</li>
       </ul>
     </div>
+    {{#if site.videos.lesson1}}
     <button class="video" type="button" data-video="{{ site.videos.lesson1 }}" data-video-title="Lesson 1 — Finance basics (video by Rami)" aria-label="Play the lesson 1 video">
       <span class="video__poster">{{> cover-1 }}</span>
       <span class="video__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
       <span class="video__label"><span>Finance basics, by Rami</span><small>3 min</small></span>
     </button>
+    {{else}}
+    <button class="video" type="button" data-video="" data-video-title="Lesson 1 — Finance basics (video by Rami)" aria-label="Lesson 1 video: being filmed">
+      <span class="video__poster">{{> cover-1 }}</span>
+      <span class="video__play"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
+      <span class="video__label"><span>Video by Rami</span><small>Being filmed</small></span>
+    </button>
+    {{/if}}
   </div>
 </section>
 

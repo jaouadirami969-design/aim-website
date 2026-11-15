@@ -8,25 +8,53 @@
   "learnMore": true
 }
 -->
-<section class="page-hero page-hero--thanks" data-thank-you>
-  <div class="container">
+<section class="page-hero page-hero--thanks ty-hero" data-thank-you>
+  <div class="container ty-hero__inner">
     <span class="ty__badge" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span>
     <span class="kicker">Email verified</span>
-    <h1 data-ty-name>Thank you!</h1>
-    <p class="lead">Your AIM info pack is on its way<span data-ty-needs-state> to <strong data-ty-email>your inbox</strong></span>. It usually arrives within a minute. If you don't see it, look in <strong>Spam</strong> or <strong>Promotions</strong> — and add <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a> to your contacts so our next emails land in your inbox.</p>
+    <h1 data-ty-name>Welcome to AIM!</h1>
+    <p class="lead">Your info pack is on its way<span data-ty-needs-state> to <strong data-ty-email>your inbox</strong></span>. It usually arrives within a minute.</p>
+    {{#if site.guide.learn.family}}
+    <div class="guide" data-guide>
+      <div class="guide__v" data-edition="family">
+        <a class="btn btn--primary btn--lg" href="{{ site.guide.learn.family }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg> Open the Summer 2027 catalog</a>
+        <p class="guide__meta">Family edition · PDF, {{ site.guide.learn.pages }}{{#if site.guide.learn.student}} · <a href="{{ site.guide.learn.student }}" target="_blank" rel="noopener">Student edition</a>{{/if}}</p>
+      </div>
+      {{#if site.guide.learn.student}}
+      <div class="guide__v" data-edition="student" hidden>
+        <a class="btn btn--primary btn--lg" href="{{ site.guide.learn.student }}" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg> Open your Summer 2027 catalog</a>
+        <p class="guide__meta">Student edition · PDF, {{ site.guide.learn.pages }} · <a href="{{ site.guide.learn.family }}" target="_blank" rel="noopener">Family edition, to show a parent</a></p>
+      </div>
+      {{/if}}
+    </div>
+    {{/if}}
   </div>
 </section>
 
 <section class="band" aria-labelledby="ty-next">
   <div class="container">
-    <div class="section-head">
-      <h2 id="ty-next">What happens next</h2>
+    <div class="next">
+      <h2 id="ty-next" class="next__title">What happens next?</h2>
+      <ol class="next__list">
+        <li class="next__i">
+          <span class="next__ic"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg></span>
+          <h3>Check your inbox</h3>
+          <p>Dates, prices, the three classes, a typical day and how to apply — all in one email. Not there in a few minutes? Look in <strong>Spam</strong> or <strong>Promotions</strong>, and add <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a> to your contacts.</p>
+        </li>
+        <li class="next__i">
+          <span class="next__ic"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg></span>
+          <h3>Explore the program</h3>
+          <p>The eight lessons, the $1,000,000 portfolio, a day on campus or online. Questions? Just reply to the email — Rami or Ilyas answers within two business days, in English or in French.</p>
+          <p class="next__actions"><a class="btn btn--sky" href="program.html">See the program</a></p>
+        </li>
+        <li class="next__i">
+          <span class="next__ic"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+          <h3>Apply when you're ready</h3>
+          <p>About {{ site.apply.minutes }} minutes, no transcripts, no recommendation letters, nothing to pay. We email our decision within {{ site.apply.decisionDays }} business days.</p>
+          <p class="next__actions"><a class="btn btn--primary" href="apply.html">Start the application</a></p>
+        </li>
+      </ol>
     </div>
-    <ol class="steps">
-      <li class="step"><h3>Read the info pack</h3><p>Dates, prices, the three classes, a typical day, what's included — it's all in the email, written for parents and students alike.</p></li>
-      <li class="step"><h3>Ask us anything</h3><p>Just reply to the email. A real person — Rami or Ilyas — answers within two business days, in English or in French.</p></li>
-      <li class="step"><h3>Apply when you're ready</h3><p>About 10 minutes, no transcripts, no recommendation letters — applications for Summer 2027 are open now, and we email our decision within 3 business days.</p></li>
-    </ol>
   </div>
 </section>
 
@@ -34,27 +62,17 @@
   <div class="container">
     <div class="section-head">
       <h2 id="ty-more">While you wait</h2>
-      <p>Three things you can do right now.</p>
+      <p>Start with a free lesson — no account needed.</p>
     </div>
     <ul class="tycards">
+      {{#each site.lessons}}
       <li class="tycard">
-        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
-        <h3>Take a free lesson</h3>
-        <p>Finance basics in a 3-minute video and a 9-minute read — no account needed.</p>
-        <a class="btn btn--sky" href="learn-finance-basics.html">Lesson 1 · Finance basics</a>
+        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg></span>
+        <h3>{{ this.title }}</h3>
+        <p>{{ this.teaser }}</p>
+        <a class="btn btn--sky" href="{{ this.slug }}">{{ this.kicker }}</a>
       </li>
-      <li class="tycard">
-        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg></span>
-        <h3>See the program</h3>
-        <p>The eight lessons, the three levels, a day on campus, sessions and prices.</p>
-        <a class="btn btn--sky" href="program.html">The summer program</a>
-      </li>
-      <li class="tycard">
-        <span class="icon-disc"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
-        <h3>Apply</h3>
-        <p>About 10 minutes, six short steps, no transcripts. We answer within 3 business days.</p>
-        <a class="btn btn--primary" href="apply.html">Start the application</a>
-      </li>
+      {{/each}}
     </ul>
     <p class="muted" style="margin:1.75rem 0 0;font-size:var(--fs-1)">Didn't get the email after a few minutes? <a href="learn-more.html">Request it again</a> or write to <a href="mailto:{{ site.email }}" data-mail-chooser>{{ site.email }}</a>.</p>
   </div>

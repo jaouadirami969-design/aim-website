@@ -1,0 +1,22 @@
+<section class="band band--deep voices" aria-labelledby="voices-title" id="voices">
+  <div class="container">
+    <div class="voices__head">
+      <span class="kicker">Ilyas's previous class, summer 2026</span>
+      <h2 class="voices__title" id="voices-title">One student calls it “anything but boring.”</h2>
+      <p>Our first summer is 2027. Until then, here is one former student of Ilyas's previous finance class. Three questions, answered in the student's own words.</p>
+    </div>
+    <ul class="voices__grid">
+      {{#each site.testimonials.items}}
+      <li class="voice">
+        <span class="voice__mark" aria-hidden="true">“</span>
+        <p class="voice__label">{{ this.label }}</p>
+        <blockquote class="voice__q"><p>{{ this.quote }}</p></blockquote>
+      </li>
+      {{/each}}
+    </ul>
+    <p class="voices__source">
+      <span class="voices__who" aria-hidden="true"><svg class="icon"><use href="#i-user"/></svg></span>
+      <span><strong>{{ site.testimonials.source }}</strong></span>
+    </p>
+  </div>
+</section>
