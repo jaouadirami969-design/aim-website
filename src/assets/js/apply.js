@@ -12,6 +12,8 @@
 
   /* ================================================================== shared: one POST helper for the three pages */
   async function postTo(api, path, body, timeoutMs, contact) {
+    // Turnstile token for the one call that sends an email to an address typed by the visitor (see human.js).
+    if (path === 'request-code' && window.aimHuman) body = { ...body, turnstile: await window.aimHuman.token() };
     if (!api) return { status: 0, data: { ok: false, error: 'not_configured', message: `This page isn't connected yet. Please email us at ${contact}.` } };
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), timeoutMs || 25000);

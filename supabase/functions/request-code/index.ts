@@ -13,8 +13,8 @@
 
 import {
   CODE_TTL_SECONDS, MAX_ATTEMPTS_PER_CODE, MAX_CODES_PER_EMAIL_PER_HOUR, MAX_CODES_PER_IP_PER_HOUR,
-  RESEND_COOLDOWN_SECONDS, admin, brevoConfigured, clientIp, corsHeaders, domainAcceptsMail, fail,
-  hashCode, hashIp, isDisposable, json, logEvent, maskEmail, normalizeEmail, readJson, sendMail,
+  MAX_CODES_PER_HOUR_GLOBAL, RESEND_COOLDOWN_SECONDS, admin, brevoConfigured, clientIp, corsHeaders,
+  domainAcceptsMail, fail, hashCode, hashIp, humanCheck, isDisposable, json, logEvent, maskEmail, normalizeEmail, readJson, sendMail,
   sixDigitCode, str, suggestDomainFix,
 } from "./common.ts";
 import { codeEmail } from "./emails.ts";
@@ -43,6 +43,12 @@ Deno.serve(async (req) => {
     return fail(req, 400, "consent_required", purpose === "apply"
       ? "Please tick the box so we're allowed to email you about your application."
       : "Please tick the box so we're allowed to email you the info pack.");
+  }
+
+  // 2b. "Are you a human?" (Cloudflare Turnstile) — stops robots from making us email thousands of strangers.
+  if (!(await humanCheck(body.turnstile, ip))) {
+    await logEvent(sb, null, null, "rejected", { reason: "human_check", ip_hash: await hashIp(ip) });
+    return fail(req, 400, "human_check", "Please complete the quick check above the button, then try again.");
   }
 
   // 3. The address itself: format, disposable domains, obvious typos, then "does this domain receive mail?"
@@ -85,6 +91,14 @@ Deno.serve(async (req) => {
   if ((ipCount || 0) >= MAX_CODES_PER_IP_PER_HOUR) {
     await logEvent(sb, null, email, "rejected", { reason: "too_many_codes_ip" });
     return fail(req, 429, "too_many_requests", "Too many requests from your network. Please try again later, or write to hello@aimsummer.com.");
+  }
+
+  // Safety net: if far more codes than any real day would need went out this hour, stop sending for now.
+  const { count: globalCount } = await sb.from("email_codes").select("id", { count: "exact", head: true }).gte("created_at", hourAgo);
+  if ((globalCount || 0) >= MAX_CODES_PER_HOUR_GLOBAL) {
+    console.error(`[request-code] global cap reached: ${globalCount} codes in the last hour`);
+    await logEvent(sb, null, email, "rejected", { reason: "global_cap" });
+    return fail(req, 503, "busy", "We're receiving a lot of requests right now. Please try again in an hour, or write to hello@aimsummer.com.");
   }
 
   // 5. Create or update the lead (one row per email address).
@@ -137,7 +151,7 @@ Deno.serve(async (req) => {
   // 7. Email the code from hello@aimsummer.com.
   if (!brevoConfigured()) {
     // Not wired yet: keep the code usable for the team (visible in the function logs only) and tell the visitor.
-    console.log(`[request-code] BREVO_API_KEY missing — code for ${maskEmail(email)} (lead ${leadId}): ${code}`);
+    console.log(`[request-code] BREVO_API_KEY missing — no code sent to ${maskEmail(email)} (lead ${leadId})`);
     await logEvent(sb, leadId, email, "email_not_configured", {});
     return fail(req, 503, "email_not_configured", "Our email service isn't connected yet. Please write to hello@aimsummer.com and we'll send you the info pack by hand.");
   }

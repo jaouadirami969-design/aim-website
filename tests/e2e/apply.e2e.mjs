@@ -401,7 +401,7 @@ async function main() {
       return v.length === 1 ? { edition: v[0].dataset.edition, href: v[0].querySelector('a.btn').getAttribute('href') } : { edition: `visible:${v.length}`, href: '' };
     });
     const cases = [
-      ['thank-you.html', 'aim.learnMore', { email: 'a@example.org', role: 'student', done: true }, 'family', 'guide/AIM-Catalog-2027-Families.pdf', 'Learn more, student (student edition not published yet)'],
+      ['thank-you.html', 'aim.learnMore', { email: 'a@example.org', role: 'student', done: true }, 'student', 'guide/AIM-Catalog-2027-Students.pdf', 'Learn more, student'],
       ['thank-you.html', 'aim.learnMore', { email: 'a@example.org', role: 'parent', done: true }, 'family', 'guide/AIM-Catalog-2027-Families.pdf', 'Learn more, parent'],
       ['thank-you.html', 'aim.learnMore', { email: 'a@example.org', role: 'counselor', done: true }, 'family', 'guide/AIM-Catalog-2027-Families.pdf', 'Learn more, counselor'],
       ['thank-you.html', 'aim.learnMore', null, 'family', 'guide/AIM-Catalog-2027-Families.pdf', 'Learn more, page opened directly'],
@@ -416,7 +416,7 @@ async function main() {
       const got = await shown();
       ok(got.edition === edition && got.href === href, `PDF — ${label}: ${edition} edition (${href})`);
     }
-    for (const f of ['AIM-Catalog-2027-Families', 'AIM-Next-Steps-2027-Students', 'AIM-Next-Steps-2027-Families']) {
+    for (const f of ['AIM-Catalog-2027-Students', 'AIM-Catalog-2027-Families', 'AIM-Next-Steps-2027-Students', 'AIM-Next-Steps-2027-Families']) {
       const res = await page.request.get(`${BASE}/guide/${f}.pdf`);
       ok(res.status() === 200 && (await res.body()).subarray(0, 4).toString() === '%PDF', `PDF — ${f}.pdf is served`);
     }

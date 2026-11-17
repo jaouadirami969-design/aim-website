@@ -3,6 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {{! Security: only our own scripts may run; data goes only to our Edge Functions. GitHub Pages cannot send
+      HTTP security headers, so the policy is set here. Adding a new outside service? Add its address below. }}
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' {{ site.api.functions }}/ https://challenges.cloudflare.com; frame-src https://www.youtube-nocookie.com https://challenges.cloudflare.com; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  {{#if page.human}}<meta name="aim-turnstile" content="{{ site.turnstile.siteKey }}">{{/if}}
   <title>{{#if page.fullTitle}}{{ page.fullTitle }}{{else}}{{ page.title }} · {{ site.name }} — {{ site.program }}{{/if}}</title>
   <meta name="description" content="{{ page.description }}">
   {{#if page.noindex}}<meta name="robots" content="noindex">{{/if}}
@@ -49,6 +54,8 @@
   {{> video-modal }}
   <script src="assets/js/main.js" defer></script>
   {{#if page.quiz}}<script src="assets/js/quiz.js" defer></script>{{/if}}
+  {{#if page.human}}<script src="assets/js/human.js" defer></script>{{#if site.turnstile.siteKey}}
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=aimHumanReady&amp;render=explicit" defer></script>{{/if}}{{/if}}
   {{#if page.learnMore}}<script src="assets/js/learn-more.js" defer></script>{{/if}}
   {{#if page.apply}}<script src="assets/js/apply.js" defer></script>{{/if}}
 </body>

@@ -16,13 +16,16 @@ export const RESEND_COOLDOWN_SECONDS = 60;    // one code per minute per email
 export const MAX_CODES_PER_EMAIL_PER_HOUR = 5;
 export const MAX_CODES_PER_IP_PER_HOUR = 20;
 export const MAX_ATTEMPTS_PER_CODE = 5;
+export const MAX_WRONG_CODES_PER_DAY = 15;     // across every code sent to one address in 24 h
+export const MAX_CODES_PER_HOUR_GLOBAL = 300;  // safety net: above this, the site stops sending codes for the hour
+export const MAX_APPLICATIONS_PER_DAY = 2;     // per verified email, and per parent email
+export const MAX_APPLICATIONS_PER_IP_PER_DAY = 5;
 
+// Production origins only. For local tests against the real project, set the secret ALLOW_DEV_ORIGINS=1.
 const ALLOWED_ORIGINS = new Set([
   "https://aimsummer.com",
   "https://www.aimsummer.com",
-  "https://jaouadirami969-design.github.io",
-  "http://localhost:4000",
-  "http://127.0.0.1:4000",
+  ...(Deno.env.get("ALLOW_DEV_ORIGINS") === "1" ? ["http://localhost:4000", "http://127.0.0.1:4000"] : []),
 ]);
 
 /* ---------------- HTTP helpers ---------------- */
@@ -47,6 +50,12 @@ export function json(req: Request, status: number, body: Record<string, unknown>
 }
 
 export function fail(req: Request, status: number, error: string, message: string, extra: Record<string, unknown> = {}): Response {
+  // Database error details stay in the function logs — never in the visitor's browser.
+  if ("detail" in extra) {
+    console.error(`[${error}]`, extra.detail);
+    const { detail: _hidden, ...rest } = extra;
+    extra = rest;
+  }
   return json(req, status, { ok: false, error, message, ...extra });
 }
 
@@ -61,9 +70,30 @@ export async function readJson(req: Request): Promise<Record<string, unknown>> {
   }
 }
 
+/** The visitor's IP, for rate limits. The FIRST value of X-Forwarded-For is written by the visitor and can be
+ *  faked on every request, so it is never trusted: the CDN header comes first, then the LAST forwarded hop
+ *  (added by the infrastructure). */
 export function clientIp(req: Request): string {
-  const fwd = req.headers.get("x-forwarded-for") || "";
-  return (fwd.split(",")[0] || req.headers.get("cf-connecting-ip") || req.headers.get("x-real-ip") || "").trim();
+  const direct = req.headers.get("cf-connecting-ip") || req.headers.get("x-real-ip");
+  if (direct) return direct.trim();
+  const hops = (req.headers.get("x-forwarded-for") || "").split(",").map((s) => s.trim()).filter(Boolean);
+  return hops[hops.length - 1] || "";
+}
+
+/** Cloudflare Turnstile ("are you a human?"). True when the check passed, or when TURNSTILE_SECRET is not set yet. */
+export async function humanCheck(token: unknown, ip: string): Promise<boolean> {
+  const secret = Deno.env.get("TURNSTILE_SECRET");
+  if (!secret) return true;
+  if (typeof token !== "string" || !token || token.length > 2048) return false;
+  try {
+    const body = new URLSearchParams({ secret, response: token });
+    if (ip) body.set("remoteip", ip);
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body });
+    const out = (await res.json()) as { success?: boolean };
+    return out.success === true;
+  } catch {
+    return false;   // Cloudflare unreachable: refuse (the visitor can retry), never send a code unchecked
+  }
 }
 
 export function str(v: unknown, max = 200): string | null {

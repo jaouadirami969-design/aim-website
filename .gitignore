@@ -12,3 +12,6 @@ Thumbs.db
 .idea/
 
 tests/e2e/shots/
+
+# Supabase CLI working files
+supabase/.temp/

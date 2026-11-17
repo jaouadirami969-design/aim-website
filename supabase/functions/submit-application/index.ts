@@ -7,6 +7,7 @@
 // 4xx { ok:false, error, message, field? }
 
 import {
+  MAX_APPLICATIONS_PER_DAY, MAX_APPLICATIONS_PER_IP_PER_DAY,
   admin, brevoConfigured, clientIp, corsHeaders, fail, hashIp, hashToken, json, logEvent, normalizeEmail,
   randomToken, readJson, sendMail, str, verifyToken, SITE_URL,
 } from "./common.ts";
@@ -42,6 +43,13 @@ function parseDob(v: unknown): Date | null {
 function oneOf<T extends string>(v: unknown, allowed: readonly T[]): T | null {
   return allowed.includes(v as T) ? (v as T) : null;
 }
+// A person's name: letters (any language), spaces, apostrophes and hyphens — no links, digits or symbols.
+// Names end up in email subjects sent to the parent, so they must never carry a URL or an ad.
+const NAME_RE = /^[\p{L}][\p{L}\p{M}' ’-]{0,59}$/u;
+function personName(v: unknown): string | null {
+  const s = str(v, 60);
+  return s && NAME_RE.test(s) && !/https?|www/i.test(s) ? s : null;
+}
 function phone(v: unknown): string | null {
   const s = str(v, 40);
   if (!s) return null;
@@ -60,7 +68,7 @@ Deno.serve(async (req) => {
 
   // 1. The verified email (signed by verify-code less than 2 hours ago).
   const tok = await verifyToken(body.token);
-  if (!tok || typeof tok.e !== "string") {
+  if (!tok || tok.p !== "apply" || typeof tok.e !== "string") {
     return fail(req, 401, "token_invalid", "Your email verification has expired. Please verify your email again (step 1) — your answers are saved on this device.");
   }
   const applicantEmail = normalizeEmail(tok.e);
@@ -71,9 +79,9 @@ Deno.serve(async (req) => {
 
   // 2. The student.
   const filledBy = oneOf(a.filled_by, ENUM.filled_by);
-  const studentFirst = str(a.student_first_name, 60), studentLast = str(a.student_last_name, 60);
-  if (!studentFirst) return bad("student_first_name", "Please enter the student's first name.");
-  if (!studentLast) return bad("student_last_name", "Please enter the student's last name.");
+  const studentFirst = personName(a.student_first_name), studentLast = personName(a.student_last_name);
+  if (!studentFirst) return bad("student_first_name", "Please enter the student's first name (letters only).");
+  if (!studentLast) return bad("student_last_name", "Please enter the student's last name (letters only).");
   const dob = parseDob(a.student_dob);
   if (!dob) return bad("student_dob", "Please enter the student's date of birth (YYYY-MM-DD).");
   const ageAtProgram = ageOn(dob, new Date(`${PROGRAM_START}T00:00:00Z`));
@@ -92,9 +100,9 @@ Deno.serve(async (req) => {
   if (!postal) return bad("postal_code", "Please enter the postal code.");
 
   // 3. The parent or guardian.
-  const parentFirst = str(a.parent_first_name, 60), parentLast = str(a.parent_last_name, 60);
-  if (!parentFirst) return bad("parent_first_name", "Please enter the parent or guardian's first name.");
-  if (!parentLast) return bad("parent_last_name", "Please enter the parent or guardian's last name.");
+  const parentFirst = personName(a.parent_first_name), parentLast = personName(a.parent_last_name);
+  if (!parentFirst) return bad("parent_first_name", "Please enter the parent or guardian's first name (letters only).");
+  if (!parentLast) return bad("parent_last_name", "Please enter the parent or guardian's last name (letters only).");
   const parentEmail = normalizeEmail(a.parent_email);
   if (!parentEmail) return bad("parent_email", "Please enter a valid email address for the parent or guardian.");
   const parentPhone = phone(a.parent_phone);
@@ -103,6 +111,20 @@ Deno.serve(async (req) => {
   if (!relationship) return bad("parent_relationship", "Please tell us how this person is related to the student.");
   if (studentEmail && studentEmail === parentEmail) return bad("parent_email", "The parent or guardian's email must be different from the student's email.");
   if (filledBy === "student" && parentEmail === applicantEmail) return bad("parent_email", "The parent or guardian's email must be different from the email you verified.");
+
+  // Limits: a family sends one application, maybe a corrected second one — never dozens. Without this, one
+  // verified email could make hello@ send unlimited emails to any "parent" address.
+  const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
+  const ipHash = await hashIp(ip);
+  const countSince = async (col: string, val: string) =>
+    (await sb.from("applications").select("id", { count: "exact", head: true }).eq(col, val).gte("created_at", dayAgo)).count || 0;
+  const [byApplicant, byParent, byIp] = await Promise.all([
+    countSince("applicant_email", applicantEmail), countSince("parent_email", parentEmail), countSince("ip_hash", ipHash),
+  ]);
+  if (byApplicant >= MAX_APPLICATIONS_PER_DAY || byParent >= MAX_APPLICATIONS_PER_DAY || byIp >= MAX_APPLICATIONS_PER_IP_PER_DAY) {
+    await logEvent(sb, null, applicantEmail, "rejected", { reason: "too_many_applications", by_applicant: byApplicant, by_parent: byParent, by_ip: byIp });
+    return fail(req, 429, "too_many_requests", `We already received an application today. If you need to change something, write to us at ${NOTIFY_EMAIL} — we'll update it for you.`);
+  }
 
   // 4. The program.
   const program = oneOf(a.program, ENUM.program);
@@ -150,7 +172,7 @@ Deno.serve(async (req) => {
     consent_accuracy: true, consent_privacy: true, consent_parent: true, consent_newsletter: a.consent_newsletter === true,
     consent_text: str(a.consent_text, 1200), consent_at: nowIso,
     source_page: str(a.source_page, 300), referrer: str(a.referrer, 300), utm_source: str(a.utm_source, 100), utm_medium: str(a.utm_medium, 100), utm_campaign: str(a.utm_campaign, 150),
-    user_agent: str(req.headers.get("user-agent"), 300), ip_hash: await hashIp(ip),
+    user_agent: str(req.headers.get("user-agent"), 300), ip_hash: ipHash,
   };
   const { data: inserted, error } = await sb.from("applications").insert(row).select("*").single();
   if (error || !inserted) {

@@ -1057,3 +1057,7 @@ select.fld__inp { appearance: none; -webkit-appearance: none; background-image: 
   .site-header, .site-footer, .video, .modal, .nav-toggle { display: none !important; }
   body { color: #0B2F5B; }
 }
+
+/* Cloudflare Turnstile ("are you a human?") — empty and invisible for most visitors */
+.human-check { display: flex; justify-content: center; margin-top: 12px; }
+.human-check:empty { display: none; }

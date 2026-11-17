@@ -7,7 +7,7 @@
 // 4xx { ok:false, error: no_code | code_expired | wrong_code | too_many_attempts | invalid_email | invalid_code, message, attempts_left? }
 
 import {
-  MAX_ATTEMPTS_PER_CODE, admin, brevoConfigured, clientIp, corsHeaders, fail, hashCode, hashIp, json,
+  MAX_ATTEMPTS_PER_CODE, MAX_WRONG_CODES_PER_DAY, admin, brevoConfigured, clientIp, corsHeaders, fail, hashCode, hashIp, json,
   logEvent, normalizeEmail, readJson, sendMail, signToken, str, timingSafeEqual, upsertBrevoContact,
 } from "./common.ts";
 import { INFO_SENDER_NAME, infoPackEmail, notifyEmail } from "./emails.ts";
@@ -48,19 +48,37 @@ Deno.serve(async (req) => {
     return fail(req, 400, "too_many_attempts", "Too many wrong attempts — this code is now cancelled. Please request a new one.");
   }
 
-  const expected = row.code_hash as string;
+  // Too many wrong codes for this address in the last 24 h (across several codes) → stop for the day.
+  const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
+  const { count: wrongToday } = await sb.from("lead_events").select("id", { count: "exact", head: true })
+    .eq("email", email).eq("type", "wrong_code").gte("created_at", dayAgo);
+  if ((wrongToday || 0) >= MAX_WRONG_CODES_PER_DAY) {
+    await sb.from("email_codes").update({ consumed_at: nowIso }).eq("id", row.id);
+    await logEvent(sb, lead.id, email, "rejected", { reason: "too_many_wrong_codes_today" });
+    return fail(req, 429, "too_many_requests", "Too many wrong codes for this address today. Please try again tomorrow, or write to hello@aimsummer.com.");
+  }
+
+  // Count this attempt in the database BEFORE comparing (one atomic UPDATE): guesses sent in parallel
+  // can no longer all read the same "0 attempts" and slip past the limit.
+  const { data: attempts } = await sb.rpc("try_code", { p_code_id: row.id, p_max: MAX_ATTEMPTS_PER_CODE });
+  if (typeof attempts !== "number") {
+    await sb.from("email_codes").update({ consumed_at: nowIso }).eq("id", row.id);
+    return fail(req, 400, "too_many_attempts", "Too many wrong attempts — this code is now cancelled. Please request a new one.");
+  }
+
   const given = await hashCode(email, code);
-  if (!timingSafeEqual(expected, given)) {
-    const attempts = (row.attempts as number) + 1;
+  if (!timingSafeEqual(row.code_hash as string, given)) {
     const left = MAX_ATTEMPTS_PER_CODE - attempts;
-    await sb.from("email_codes").update({ attempts, ...(left <= 0 ? { consumed_at: nowIso } : {}) }).eq("id", row.id);
+    if (left <= 0) await sb.from("email_codes").update({ consumed_at: nowIso }).eq("id", row.id);
     await logEvent(sb, lead.id, email, "wrong_code", { attempts });
     if (left <= 0) return fail(req, 400, "too_many_attempts", "Too many wrong attempts — this code is now cancelled. Please request a new one.");
     return fail(req, 400, "wrong_code", `That code isn't right. ${left} attempt${left === 1 ? "" : "s"} left.`, { attempts_left: left });
   }
 
-  // Correct code: consume it, mark the address verified.
-  await sb.from("email_codes").update({ consumed_at: nowIso }).eq("id", row.id);
+  // Correct code: claim it exactly once (a second request with the same code, at the same moment, gets nothing).
+  const { data: claimed } = await sb.from("email_codes").update({ consumed_at: nowIso })
+    .eq("id", row.id).is("consumed_at", null).select("id");
+  if (!claimed || !claimed.length) return fail(req, 400, "no_code", "This code was already used. Please request a new one.");
   await sb.from("leads").update({ status: "verified", verified_at: nowIso }).eq("id", lead.id);
   await logEvent(sb, lead.id, email, "verified", { purpose });
 

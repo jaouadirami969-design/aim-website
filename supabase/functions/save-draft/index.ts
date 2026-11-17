@@ -32,7 +32,8 @@ Deno.serve(async (req) => {
 
   const body = await readJson(req);
   const tok = await verifyToken(body.token);
-  const email = tok && typeof tok.e === "string" ? normalizeEmail(tok.e) : null;
+  // Only a token from the application flow ("apply") can save a draft — not one from Learn more.
+  const email = tok && tok.p === "apply" && typeof tok.e === "string" ? normalizeEmail(tok.e) : null;
   if (!email) return fail(req, 401, "token_invalid", "Please verify your email again.");
 
   const sb = admin();

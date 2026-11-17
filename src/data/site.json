@@ -23,6 +23,11 @@
     "functions": "https://eflwuetywanrlboiifda.supabase.co/functions/v1"
   },
 
+  "_comment_turnstile": "Cloudflare Turnstile protects the two forms that send emails (Learn more, Apply) from robots. Paste the PUBLIC site key here (Cloudflare → Turnstile → aimsummer.com). The SECRET key goes only in Supabase → Edge Functions → Secrets as TURNSTILE_SECRET. Empty = no check (the site works as before).",
+  "turnstile": {
+    "siteKey": ""
+  },
+
   "_comment_videos": "YouTube video IDs (the part after v= in the URL). Empty = a 'coming soon' message is shown.",
   "videos": {
     "intro": "",
@@ -34,15 +39,14 @@
   "_comment_guide": "The four 2027 PDFs. The files live in src/static/guide/. 'learn' is offered on the page shown after the Learn more form, 'apply' on the page shown after the application. 'student' is shown to a student, 'family' to everyone else. An empty 'family' path hides the whole block; an empty 'student' path shows the family edition to everyone.",
   "guide": {
     "learn": {
-      "_student_when_ready": "guide/AIM-Catalog-2027-Students.pdf — put this path back in 'student' once Rami has rewritten the letter on page 2 in his own words.",
-      "student": "",
+      "student": "guide/AIM-Catalog-2027-Students.pdf",
       "family": "guide/AIM-Catalog-2027-Families.pdf",
-      "pages": "10 pages"
+      "pages": "11 pages"
     },
     "apply": {
       "student": "guide/AIM-Next-Steps-2027-Students.pdf",
       "family": "guide/AIM-Next-Steps-2027-Families.pdf",
-      "pages": "8 pages"
+      "pages": "9 pages"
     }
   },
 

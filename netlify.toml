@@ -1,3 +1,6 @@
+# NOT USED TODAY: the site is published by GitHub Pages (.github/workflows/deploy.yml), which ignores this file.
+# The headers below are therefore NOT sent. The security policy lives in src/layouts/base.html (CSP meta tag).
+# Kept only in case the site moves to Netlify one day.
 # Netlify (free plan works with a private GitHub repo): build command + publish folder.
 [build]
   command = "npm run build"

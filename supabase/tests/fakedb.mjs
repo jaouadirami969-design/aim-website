@@ -63,5 +63,15 @@ export function makeDb() {
       return { data: hit.map(r => ({ ...r })), error: null, count: hit.length };
     }
   }
-  return { client: { from: (t) => new Q(t) }, tables };
+  // supabase-js rpc(): only the functions our migrations define.
+  const rpc = async (fn, args) => {
+    if (fn === 'try_code') {
+      const r = tables.email_codes.find((x) => x.id === args.p_code_id && x.consumed_at == null && (x.attempts || 0) < args.p_max && new Date(x.expires_at).getTime() > Date.now());
+      if (!r) return { data: null, error: null };
+      r.attempts = (r.attempts || 0) + 1;
+      return { data: r.attempts, error: null };
+    }
+    return { data: null, error: { message: `unknown function ${fn}` } };
+  };
+  return { client: { from: (t) => new Q(t), rpc }, tables };
 }

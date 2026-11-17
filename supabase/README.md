@@ -44,6 +44,10 @@ and the website never talks to the database directly — only the two functions 
 | `SENDER_EMAIL`, `SENDER_NAME` | no | Defaults `hello@aimsummer.com` / "AIM — Academy of Investment & Management". The sender must be verified in Brevo (it is). |
 | `SITE_URL` | no | Default `https://aimsummer.com` — used for links and the logo in the emails. |
 | `EMAIL_LOGO_URL` | no | Default `https://aimsummer.com/assets/logo/email-logo.png`. |
+| `TURNSTILE_SECRET` | **yes (before launch)** | Cloudflare → Turnstile → aimsummer.com → *Secret key*. With it, `request-code` refuses requests that did not pass the "are you a human?" check. The PUBLIC site key goes in `src/data/site.json` → `turnstile.siteKey`. Set both the same day. |
+| `CRON_SECRET` | **yes** | A long random string. `remind-drafts` refuses to run without it. Store the same value in Vault once: `select vault.create_secret('<value>', 'cron_secret');` — the hourly job reads it from there. |
+| `ALLOW_DEV_ORIGINS` | no | `1` lets `http://localhost:4000` call the real functions (local testing only). Leave unset in production. |
+| `LEAD_PURGE_MONTHS` | no | Default 24 — Learn-more requests older than this are deleted by `remind-drafts`. |
 | `CODE_PEPPER` | no | Extra secret mixed into the code hashes. Defaults to the project's service-role key. |
 
 `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are injected automatically by Supabase.
@@ -108,7 +112,21 @@ request with `delete from public.leads where email = '…'` (cascades to codes a
 | `remind-drafts` | Called every hour by `pg_cron` (job `aim-remind-drafts`): one reminder 48 h after an unfinished application, deletion after 60 days. |
 
 Tables: `applications`, `application_drafts` (RLS on, no policies — service role only). A database trigger deletes the draft when the application is submitted.
-Optional secrets: `PROGRAM_START` (2027-06-28), `DECISION_DAYS` (3), `DRAFT_REMIND_HOURS` (48), `DRAFT_PURGE_DAYS` (60), `CRON_SECRET` (if set, add the header `x-cron-secret` to the cron job).
+Optional secrets: `PROGRAM_START` (2027-06-28), `DECISION_DAYS` (3), `DRAFT_REMIND_HOURS` (48), `DRAFT_PURGE_DAYS` (60). `CRON_SECRET` is required (see the table above).
 To change an application's status today: Supabase → Table editor → `applications` → column `status`.
 
 Tests: `npm run test:functions` (71 checks, all faked locally) and `node tests/e2e/apply.e2e.mjs` (Playwright, mocked API, 56 checks, desktop + phone).
+
+## Security limits (November 2026)
+
+| Where | Limit |
+|---|---|
+| `request-code` | Turnstile check (when `TURNSTILE_SECRET` is set) · 1 code / min / email · 5 / h / email · 20 / h / IP · 300 / h for the whole site (safety net) |
+| `verify-code` | 5 attempts per code, counted atomically by `public.try_code()` before the comparison · a correct code is claimed once · 15 wrong codes / 24 h / email |
+| `save-draft`, `submit-application` | only a token from the application flow (`purpose: "apply"`) |
+| `submit-application` | names: letters, spaces, `'` and `-` only · 2 applications / day per verified email and per parent email · 5 / day / IP |
+| `remind-drafts` | refuses to run without `CRON_SECRET` |
+| Database | `anon` and `authenticated` have no rights on any table (migration `20261116091000`) |
+| Errors | database details are logged, never returned to the browser |
+
+The IP used for limits is `cf-connecting-ip` / `x-real-ip`, else the LAST `x-forwarded-for` hop — never the first one, which the visitor can fake.

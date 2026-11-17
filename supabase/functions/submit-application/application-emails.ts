@@ -2,7 +2,9 @@
 //   1. applicationReceivedEmail  → the person who applied (and a short copy to the other party)
 //   2. parentNoticeEmail         → the parent/guardian, with the one-click confirmation link
 //   3. teamApplicationEmail      → hello@aimsummer.com, every answer on one screen
-// Same plain, personal style as the info pack: paragraphs, a few bold lead-ins, very few links.
+// The two emails a family reads (1 and 2) use the same design as the info pack: sky header, serif titles, tinted
+// cards, one button. Kept light on purpose so they read as a personal message: one small image, one button.
+// The alert to the team (3) stays plain.
 
 import { SENDER_EMAIL, SITE_URL } from "./common.ts";
 
@@ -14,6 +16,7 @@ export const INFO_SENDER_NAME = Deno.env.get("INFO_SENDER_NAME") || "Rami Jaouad
 const SIGNER = Deno.env.get("INFO_SIGNER") || "Rami Jaouadi";
 const SIGNER_ROLE = Deno.env.get("INFO_SIGNER_ROLE") || "Co-founder, AIM — with Ilyas Zakiat, instructor";
 const DECISION_DAYS = Deno.env.get("DECISION_DAYS") || "3";
+const LOGO = Deno.env.get("EMAIL_LOGO_URL") || `${SITE_URL}/assets/logo/email-logo.png`;
 
 const C = { sky: "#3FA9F5", skyD: "#2B8FD8", skyT: "#EAF6FE", skyL: "#BFE2FB", yel: "#FFC72C", yelT: "#FFF6DC", amber: "#B07A10", deep: "#0B2F5B", ink: "#1E3A5F", muted: "#5A7089", white: "#FFFFFF" };
 
@@ -43,6 +46,59 @@ ${inner}
 </div>
 </body></html>`;
 }
+
+
+/** The AIM design shared with the info pack (request-code/emails.ts): header band, yellow rule, white card, footer. */
+function shell(opts: { title: string; preheader: string; body: string; footerNote: string }): string {
+  return `<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>${esc(opts.title)}</title>
+</head>
+<body style="margin:0;padding:0;background:${C.skyT};">
+<div style="display:none;font-size:1px;color:${C.skyT};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${esc(opts.preheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.skyT};">
+<tr><td align="center" style="padding:24px 12px;">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%;">
+    <tr><td style="background:${C.sky};border-radius:16px 16px 0 0;padding:22px 28px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td style="width:52px;padding-right:14px;"><img src="${LOGO}" width="52" height="52" alt="AIM" style="display:block;border:0;"></td>
+        <td style="font-family:Arial,Helvetica,sans-serif;color:${C.white};">
+          <div style="font-size:22px;font-weight:bold;letter-spacing:4px;line-height:1;">AIM</div>
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:${C.yel};font-weight:bold;margin-top:4px;">Academy of Investment &amp; Management</div>
+        </td>
+      </tr></table>
+    </td></tr>
+    <tr><td style="height:6px;background:${C.yel};font-size:0;line-height:0;">&nbsp;</td></tr>
+    <tr><td style="background:${C.white};padding:30px 28px 26px;font-family:Arial,Helvetica,sans-serif;color:${C.ink};font-size:16px;line-height:1.55;">
+      ${opts.body}
+    </td></tr>
+    <tr><td style="background:${C.white};border-radius:0 0 16px 16px;padding:18px 28px 24px;border-top:1px solid ${C.skyL};font-family:Arial,Helvetica,sans-serif;color:${C.muted};font-size:12px;line-height:1.5;">
+      <strong style="color:${C.deep};">${ORG_NAME}</strong><br>
+      ${esc(ORG_ADDRESS)} · <a href="mailto:${SENDER_EMAIL}" style="color:${C.skyD};">${SENDER_EMAIL}</a>${ORG_PHONE ? ` · ${esc(ORG_PHONE)}` : ""}<br>
+      <a href="${SITE_URL}" style="color:${C.skyD};">aimsummer.com</a> · <a href="${SITE_URL}/privacy.html" style="color:${C.skyD};">Privacy &amp; consent</a><br><br>
+      ${opts.footerNote}<br>
+      AIM is an independent program and is not affiliated with McGill University. Classes are taught in English.
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+</body>
+</html>`;
+}
+const kicker = (s: string) => `<div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:${C.amber};font-weight:bold;">${s}</div>`;
+const h1 = (s: string) => `<h1 style="margin:8px 0 14px;font-family:Georgia,'Times New Roman',serif;font-size:27px;line-height:1.2;color:${C.deep};">${s}</h1>`;
+const h2 = (s: string) => `<h2 style="margin:26px 0 8px;font-family:Georgia,'Times New Roman',serif;font-size:21px;line-height:1.25;color:${C.deep};">${s}</h2>`;
+const card = (inner: string, bg = C.skyT) => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:10px 0;"><tr>
+    <td style="background:${bg};border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.5;color:${C.ink};">${inner}</td></tr></table>`;
+const button = (href: string, text: string) => `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 6px;"><tr>
+    <td style="background:${C.yel};border-radius:999px;">
+      <a href="${href}" style="display:inline-block;padding:13px 26px;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:${C.deep};text-decoration:none;">${text}</a>
+    </td></tr></table>`;
+const list = (items: string[]) => `<ul style="margin:0;padding-left:20px;">${items.map((i) => `<li style="margin:0 0 6px;">${i}</li>`).join("")}</ul>`;
 
 function signoff(closing = "Warm regards,"): string {
   return `<p style="margin:22px 0 0;">${closing}<br>${b(SIGNER)}<br><span style="color:${C.muted};">${esc(SIGNER_ROLE)}</span><br><span style="color:${C.muted};">${SENDER_EMAIL}${ORG_PHONE ? ` · ${esc(ORG_PHONE)} (${esc(ORG_HOURS)})` : ""}</span></p>`;
@@ -96,11 +152,12 @@ export function applicationReceivedEmail(app: AppRow, opts: { to: "applicant" | 
   const subject = `Application received — ${app.reference} · ${app.student_first_name} ${app.student_last_name}`;
   const whose = toStudent ? "your" : `${esc(app.student_first_name)}'s`;
 
-  const next = ul([
+  const nextItems = [
     `${b("We read it.")} Ilyas or Rami reads every application personally — no algorithm. You'll receive our answer by email within ${esc(DECISION_DAYS)} business days.`,
     `${b("If it's a yes,")} the email explains how to reserve the seat. Registration opens in December 2026, and the dates will be confirmed first. Pay nothing until the first day of class.`,
     `${b("Questions in the meantime?")} Just reply to this email (keep the reference in the subject). We answer in English or in French.`,
-  ]);
+  ];
+  const next = ul(nextItems);
   const parentLine = !applicantIsParent && opts.parentNotified
     ? p(`We also sent a short email to ${esc(app.parent_first_name)} ${esc(app.parent_last_name)} at ${esc(app.parent_email)} asking them to confirm the application with one click — every AIM registration is confirmed by a parent or guardian.`)
     : (applicantIsParent && app.student_email && opts.to === "applicant" ? p(`A short copy went to ${esc(app.student_first_name)} at ${esc(app.student_email)}.`) : "");
@@ -114,7 +171,17 @@ export function applicationReceivedEmail(app: AppRow, opts: { to: "applicant" | 
     p(`Until then, the full program page is here: ${a(`${SITE_URL}/program.html`, "aimsummer.com/program")}.`) +
     signoff(toStudent ? "Talk soon," : "Warm regards,") +
     footer(`You received this email because an application was submitted on aimsummer.com with this address (${esc(opts.to === "student_copy" ? (app.student_email || "") : app.applicant_email)}). If that wasn't you, reply and we'll delete it.`);
-  const html = plainShell(subject, inner);
+  const note = `You received this email because an application was submitted on aimsummer.com with this address (${esc(opts.to === "student_copy" ? (app.student_email || "") : app.applicant_email)}). If that wasn't you, reply and we'll delete it.`;
+  const designed =
+    kicker("Application received") +
+    h1(`${esc(first)}, we have ${whose} application.`) +
+    p(`Thank you for applying to AIM's Finance &amp; Investment Summer Program. Your reference is ${b(app.reference)}. Keep it in your replies.`) +
+    h2("What you told us") + card(list(summaryItems(app))) +
+    h2("What happens next") + card(list(nextItems), C.yelT) +
+    parentLine +
+    button(`${SITE_URL}/program.html`, "See the full program") +
+    signoff(toStudent ? "Talk soon," : "Warm regards,");
+  const html = shell({ title: subject, preheader: `We received ${toText(whose)} application. Our answer comes by email within ${DECISION_DAYS} business days.`, body: designed, footerNote: note });
   return { subject, html, text: toText(inner) };
 }
 
@@ -136,7 +203,25 @@ export function parentNoticeEmail(app: AppRow, confirmUrl: string) {
     p(`Questions? Just reply to this email — we answer in English or in French. Didn't expect this email? Reply and we'll delete the application.`) +
     signoff() +
     footer(`You received this email because ${s} named you as parent or guardian in an application on aimsummer.com (reference ${esc(app.reference)}).`);
-  const html = plainShell(subject, inner);
+  const designed =
+    kicker("Please confirm") +
+    h1(`${s} applied to AIM. One click to confirm.`) +
+    p(`Hello ${esc(app.parent_first_name)},`) +
+    p(`${s} ${esc(app.student_last_name)} just applied to AIM's ${b("Finance &amp; Investment Summer Program")} and named you as parent or guardian. It is two weeks in summer 2027 for students aged 13 to 18, on the McGill University campus in Montréal or live online, taught by Ilyas Zakiat (CEO of BIASafe AI and finance lecturer at McGill).`) +
+    lawLine +
+    button(confirmUrl, "Yes, I confirm this application") +
+    `<p style="margin:0 0 14px;font-size:13px;color:${C.muted};">Or copy this link into your browser: ${esc(confirmUrl)}</p>` +
+    h2(`What ${s} told us`) + card(list(summaryItems(app))) +
+    h2("What happens next") +
+    card(`We read every application personally and reply within ${esc(DECISION_DAYS)} business days. If it's a yes, the email explains how to reserve the seat; registration opens in December 2026. ${b("Pay nothing until the first day of class.")} The campus class is $1,895 plus taxes, the online class $1,495 plus taxes.`, C.yelT) +
+    p(`Questions? Just reply to this email. We answer in English or in French. Didn't expect this email? Reply and we'll delete the application.`) +
+    signoff();
+  const html = shell({
+    title: subject,
+    preheader: `${app.student_first_name} named you as parent or guardian. One click confirms that you know about the application.`,
+    body: designed,
+    footerNote: `You received this email because ${s} named you as parent or guardian in an application on aimsummer.com (reference ${esc(app.reference)}).`,
+  });
   return { subject, html, text: toText(inner) };
 }
 

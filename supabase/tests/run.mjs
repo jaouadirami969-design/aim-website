@@ -189,6 +189,63 @@ r = await call(requestCode, { email: 'trap-test@gmail.com', consent_info: true, 
 // OPTIONS preflight
 const pre = await requestCode(new Request('https://x/f', { method: 'OPTIONS', headers: { origin: 'https://www.aimsummer.com' } })); expect('preflight', pre.status === 204 && pre.headers.get('access-control-allow-origin') === 'https://www.aimsummer.com');
 const bad = await requestCode(new Request('https://x/f', { method: 'OPTIONS', headers: { origin: 'https://evil.example' } })); expect('foreign origin not echoed', bad.headers.get('access-control-allow-origin') === 'https://aimsummer.com');
+
+// ---------------- security hardening (November 2026) ----------------
+const ipH = (n) => ({ 'x-forwarded-for': `203.0.113.${n}` });
+const codeFor = (email) => { const m = [...sent].reverse().find((x) => x.to && x.to[0].email === email && /code: \d{6}$/.test(x.subject || '')); return m && m.subject.slice(-6); };
+// 1. many wrong guesses sent at the same moment: never more than 5 counted as "wrong_code", then the code is dead
+sent.length = 0;
+r = await call(requestCode, { email: 'race.test@gmail.com', consent_info: true, purpose: 'apply' }, ipH(1));
+const raceCode = codeFor('race.test@gmail.com');
+const guesses = Array.from({ length: 30 }, (_, i) => String((Number(raceCode) + 1 + i) % 1000000).padStart(6, '0'));
+const results = await Promise.all(guesses.map((g) => call(verifyCode, { email: 'race.test@gmail.com', code: g, purpose: 'apply' })));
+const wrongs = results.filter((x) => x.body.error === 'wrong_code').length;
+expect('race: at most 5 guesses evaluated', wrongs <= 4 && results.every((x) => !x.body.ok), { wrongs, errors: results.map((x) => x.body.error) });
+r = await call(verifyCode, { email: 'race.test@gmail.com', code: raceCode, purpose: 'apply' });
+expect('race: the right code no longer works after the burst', r.body.ok !== true, r.body);
+// 2. the right code sent twice at the same moment: only one request gets a token
+for (const c of db.tables.email_codes) c.created_at = new Date(Date.now() - 120000).toISOString();
+sent.length = 0;
+r = await call(requestCode, { email: 'twice.test@gmail.com', consent_info: true, purpose: 'apply' }, ipH(2));
+const twiceCode = codeFor('twice.test@gmail.com');
+const both = await Promise.all([1, 2].map(() => call(verifyCode, { email: 'twice.test@gmail.com', code: twiceCode, purpose: 'apply' })));
+expect('single use under concurrency', both.filter((x) => x.body.ok).length === 1, both.map((x) => x.body.error || 'ok'));
+const applyToken = both.find((x) => x.body.ok).body.token;
+// 3. a Learn-more token cannot save a draft or submit an application
+for (const c of db.tables.email_codes) c.created_at = new Date(Date.now() - 120000).toISOString();
+sent.length = 0;
+r = await call(requestCode, { email: 'info.only@gmail.com', consent_info: true }, ipH(3));
+r = await call(verifyCode, { email: 'info.only@gmail.com', code: codeFor('info.only@gmail.com') });
+const infoToken = r.body.token;
+r = await call(saveDraft, { token: infoToken, draft: { step: 'student', data: { a: 'b' } } }); expect('info token refused by save-draft', r.status === 401, r);
+r = await call(submitApplication, { token: infoToken, application: base }); expect('info token refused by submit-application', r.status === 401, r);
+// 4. names cannot carry links; a verified email cannot send dozens of applications
+const twin = { ...base, parent_email: 'parent.twice@gmail.com' };
+r = await call(submitApplication, { token: applyToken, application: { ...twin, student_first_name: 'Win $500 www.spam.example' } }); expect('name with a link refused', r.status === 400 && r.body.field === 'student_first_name', r);
+r = await call(submitApplication, { token: applyToken, application: { ...twin, student_first_name: "Zoë-Anne", student_last_name: "O'Brien" } }); expect('real names with accents, hyphen, apostrophe accepted', r.status === 200, r);
+r = await call(submitApplication, { token: applyToken, application: twin }); expect('second application the same day accepted', r.status === 200, r);
+r = await call(submitApplication, { token: applyToken, application: twin }); expect('third application the same day refused', r.status === 429 && r.body.error === 'too_many_requests', r);
+// 5. Turnstile: once the secret is set, request-code needs a valid token
+const realFetch = globalThis.fetch;
+globalThis.fetch = async (url, init) => {
+  if (String(url) === 'https://challenges.cloudflare.com/turnstile/v0/siteverify') {
+    const f = new URLSearchParams(init.body);
+    return new Response(JSON.stringify({ success: f.get('secret') === 'ts-secret' && f.get('response') === 'good-token' }), { status: 200 });
+  }
+  return realFetch(url, init);
+};
+env.TURNSTILE_SECRET = 'ts-secret';
+r = await call(requestCode, { email: 'bot.test@gmail.com', consent_info: true }, ipH(4)); expect('turnstile: no token refused', r.status === 400 && r.body.error === 'human_check', r);
+r = await call(requestCode, { email: 'bot.test@gmail.com', consent_info: true, turnstile: 'forged' }, ipH(4)); expect('turnstile: forged token refused', r.body.error === 'human_check', r);
+r = await call(requestCode, { email: 'bot.test@gmail.com', consent_info: true, turnstile: 'good-token' }, ipH(4)); expect('turnstile: valid token accepted', r.status === 200 && r.body.ok, r);
+delete env.TURNSTILE_SECRET; globalThis.fetch = realFetch;
+// 6. a faked first X-Forwarded-For value does not change the IP used for limits
+r = await call(requestCode, { email: 'xff.one@gmail.com', consent_info: true }, { 'x-forwarded-for': '6.6.6.6, 198.51.100.7' });
+r = await call(requestCode, { email: 'xff.two@gmail.com', consent_info: true }, { 'x-forwarded-for': '7.7.7.7, 198.51.100.7' });
+const xff = db.tables.email_codes.filter((c) => c.email === 'xff.one@gmail.com' || c.email === 'xff.two@gmail.com').map((c) => c.ip_hash);
+expect('xff: spoofed first hop ignored', xff.length === 2 && xff[0] === xff[1], xff);
+// 7. errors never carry database details; dev origins are not allowed in production
+const dev = await requestCode(new Request('https://x/f', { method: 'OPTIONS', headers: { origin: 'http://localhost:4000' } })); expect('localhost not allowed without ALLOW_DEV_ORIGINS', dev.headers.get('access-control-allow-origin') === 'https://aimsummer.com');
 console.log(`events: ${db.tables.lead_events.map(e => e.type).join(', ')}`);
 console.log(`PASS ${pass}  FAIL ${fail}`);
 process.exit(fail ? 1 : 0);
